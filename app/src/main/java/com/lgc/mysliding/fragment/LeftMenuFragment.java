@@ -83,6 +83,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         click_correlate = (LinearLayout) mView.findViewById(R.id.click_correlate);//轨迹分析
         click_about = (LinearLayout) mView.findViewById(R.id.click_about);//关于
 
+        iv_head.setOnClickListener(this);
         click_needle.setOnClickListener(this);
         click_track.setOnClickListener(this);
         click_fence.setOnClickListener(this);
@@ -97,6 +98,10 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch(v.getId())
         {
+            case R.id.iv_head:
+                Intent login=new Intent(getActivity(), MLoginActivity.class);
+                startActivityForResult(login,LOGIN_REQUEST);
+                break;
             case R.id.click_needle:
                 showFragment(0);
                break;
@@ -116,9 +121,6 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
                 showFragment(5);
                 break;
             case R.id.click_about://关于
-
-                Intent login=new Intent(getActivity(), MLoginActivity.class);
-                startActivityForResult(login,LOGIN_REQUEST);
 
                 break;
 

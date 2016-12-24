@@ -31,6 +31,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private List<Fragment> mFragments=new ArrayList<Fragment>();
     private FragmentPagerAdapter mAdapter;
     private ImageView iv_show_menu;
+    private SlidingMenu menu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,11 +63,11 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                 .beginTransaction().replace(R.id.left_menu_frame_id,leftMenu).commit();
 
         //初始化 SlidingMenu 属性参数
-        SlidingMenu menu=getSlidingMenu();
+        menu = getSlidingMenu();
         //左边菜单模式
         menu.setMode(SlidingMenu.LEFT);
-        //打开菜单的触摸方式
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+//        //打开菜单的触摸方式
+//        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         //回到主页面的触摸方式
         menu.setTouchModeBehind(SlidingMenu.TOUCHMODE_MARGIN);
         //设置阴影部分宽度
@@ -124,6 +125,14 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
             @Override
             public void onPageSelected(int position) {
+
+                if(position==0){
+                    //打开菜单的触摸方式
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+                }else if(position>0){
+                    //打开菜单的触摸方式
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                }
 
                 Log.d(TAG,"onPageSelected"+"\n"+"position--"+position);
 

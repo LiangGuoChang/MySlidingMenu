@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MySliding.iml" filepath="$PROJECT_DIR$/MySliding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MySlidingMenu.iml" filepath="$PROJECT_DIR$/MySlidingMenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/SlidingMenu/library/SlidingMenu_library.iml" filepath="$PROJECT_DIR$/libraries/SlidingMenu/library/SlidingMenu_library.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
