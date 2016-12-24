@@ -2,8 +2,8 @@
 #.gradle
 #/local.properties
 #/.idea/workspace.xml
-#/.idea/libraries
-#.DS_Store
+/.idea/libraries
+.DS_Store
 #/build
 #/captures#以上是本地的gitignore
 # Built application files
