@@ -40,7 +40,9 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences preferences;
     private SlidingMenu slMenu;
     private MyMainActivity mActivity;
+//    private MainActivity mainActivity;
     private boolean logined;
+    private MainFragment mainFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +51,24 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         if(null == mView){
             //初始化view
             initView(inflater,container);
+
+//            //获取MyMainActivity
+//            mainActivity = (MainActivity) getActivity();
+//            Log.d(TAG,"mActivity--"+ mainActivity.getComponentName());
+//
+//            //获取 MainFragment
+//            mainFragment = new MainFragment();
+//
+//            //获取侧滑菜单
+//            slMenu = mainActivity.getSlidingMenu();
+//            Log.d(TAG,"menu--"+ slMenu +"--"+ slMenu.isMenuShowing());
+//
+//            //获取登录与否
+//            preferences = mainActivity.getSharedPreferences("Login", Context.MODE_PRIVATE);
+//            logined = preferences.getBoolean("isLogin", false);
+//            //首次打开,根据上次保存的登录信息,更新UI
+//            updateUI(logined);
+
         }
 
         //获取MyMainActivity
@@ -145,6 +165,10 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
 
         //调用MyMainActivity中的切换ViewPager的方法
         boolean select= mActivity.selectViewPager(item);
+
+//        //调用MainFragment中的切换ViewPager的方法
+//        boolean select=mainFragment.selectPager(item);
+
         Log.d(TAG,"select--"+select);
 
     }

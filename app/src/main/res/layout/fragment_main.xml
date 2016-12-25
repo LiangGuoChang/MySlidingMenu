@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.MyMainActivity"
-    >
+    tools:context="com.lgc.mysliding.fragment.MainFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:id="@+id/relative_tittle"
+        android:id="@+id/main_title"
         >
+
         <RelativeLayout
-            android:id="@+id/show_menu"
+            android:id="@+id/main_show_menu"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:clickable="true"
@@ -26,11 +25,10 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             />
-
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/tv_my_title"
+            android:id="@+id/tv_main_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="主页面"
@@ -41,9 +39,8 @@
 
     </RelativeLayout>
 
-
     <android.support.v4.view.ViewPager
-        android:id="@+id/main_viewpager"
+        android:id="@+id/main_fragment_viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

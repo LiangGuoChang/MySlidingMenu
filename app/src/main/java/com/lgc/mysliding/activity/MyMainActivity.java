@@ -2,16 +2,17 @@ package com.lgc.mysliding.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.lgc.mysliding.R;
+import com.lgc.mysliding.adapter.MyFSAdapter;
 import com.lgc.mysliding.fragment.CorrelateFragment;
 import com.lgc.mysliding.fragment.FenceFragment;
 import com.lgc.mysliding.fragment.LeftMenuFragment;
@@ -28,10 +29,13 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private final static String TAG="MyMainActivity";
 
     private ViewPager mViewPager;
-    private List<Fragment> mFragments=new ArrayList<Fragment>();
-    private FragmentPagerAdapter mAdapter;
-    private ImageView iv_show_menu;
+    private List<Fragment> mFragments=new ArrayList<>();
+//    private FragmentPagerAdapter mAdapter;
+    private RelativeLayout show_menu;
     private SlidingMenu menu;
+    private MyFSAdapter myFSAdapter;
+    private String[] titles=new String[]{"探针管理","轨迹查询","电子围栏","目标导航","视频联动分析","轨迹关联分析"};
+    private TextView my_title;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,8 +45,13 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
         Log.d(TAG,"MyMainActivity---onCreate");
 
-        iv_show_menu = (ImageView) findViewById(R.id.iv_show_menu);
-        iv_show_menu.setOnClickListener(this);
+        show_menu = (RelativeLayout) findViewById(R.id.show_menu);
+        my_title = (TextView) findViewById(R.id.tv_my_title);
+
+        show_menu.setOnClickListener(this);
+
+        //设置初始标题
+        setTitle(titles[0]);
 
         //初始化 SlidingMune
         initLeftMenu();
@@ -98,33 +107,24 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         mFragments.add(videoFragment);
         mFragments.add(correlateFragment);
 
-        //初始化 adapter // TODO: 2016/12/22 需要做优化
-        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return mFragments.get(position);
-            }
+        myFSAdapter = new MyFSAdapter(getSupportFragmentManager());
+        myFSAdapter.setFragmentList(mFragments);
 
-            @Override
-            public int getCount() {
-                return mFragments.size();
-            }
-        };
-
-        mViewPager.setAdapter(mAdapter);
+        mViewPager.setAdapter(myFSAdapter);
         mViewPager.setCurrentItem(0);
         
         //ViewPager监听事件
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                Log.d(TAG,"onPageScrolled"+"\n"+"position--"+position
-//                        +"\n"+"positionOffset--"+positionOffset
-//                        +"\n"+"positionOffsetPixels--"+positionOffsetPixels);
+
             }
 
             @Override
             public void onPageSelected(int position) {
+
+                String title=titles[position];
+                setTitle(title);
 
                 if(position==0){
                     //打开菜单的触摸方式
@@ -134,7 +134,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                 }
 
-                Log.d(TAG,"onPageSelected"+"\n"+"position--"+position);
+                Log.d(TAG,"onPageSelected"+"\n"+"position--"+position+"title--"+title);
 
             }
 
@@ -151,10 +151,15 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     public void onClick(View v) {
         switch(v.getId())
         {
-            case R.id.iv_show_menu:
+            case R.id.show_menu:
                 getSlidingMenu().showMenu();//点击显示菜单
                break;
         }
+    }
+
+    //设置标题
+    private void setTitle(String title){
+        my_title.setText(title);
     }
 
     public boolean selectViewPager(int selectItem){
