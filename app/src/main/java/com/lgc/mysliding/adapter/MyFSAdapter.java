@@ -8,15 +8,12 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-/**
- * Created by LiangGuoChang on 2016/12/24.
- */
 public class MyFSAdapter extends FragmentStatePagerAdapter{
 
     private final static String TAG="MyFSAdapter";
 
     private List<Fragment> fragmentList;
-    private String[] titles;
+//    private String[] titles;
 
     public MyFSAdapter(FragmentManager fm) {
         super(fm);
@@ -53,7 +50,7 @@ public class MyFSAdapter extends FragmentStatePagerAdapter{
     }
 
     //设置每个fragment的title
-    public void setTitles(String[] titles){
-
-    }
+//    public void setTitles(String[] titles){
+//
+//    }
 }

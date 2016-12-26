@@ -42,20 +42,14 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_my_main);
-
         Log.d(TAG,"MyMainActivity---onCreate");
 
         show_menu = (RelativeLayout) findViewById(R.id.show_menu);
         my_title = (TextView) findViewById(R.id.tv_my_title);
-
         show_menu.setOnClickListener(this);
-
         //设置初始标题
         setTitle(titles[0]);
-
-        //初始化 SlidingMune
         initLeftMenu();
-        //初始化 ViewPager
         initViewPager();
 
     }
@@ -76,7 +70,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         //左边菜单模式
         menu.setMode(SlidingMenu.LEFT);
 //        //打开菜单的触摸方式
-//        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         //回到主页面的触摸方式
         menu.setTouchModeBehind(SlidingMenu.TOUCHMODE_MARGIN);
         //设置阴影部分宽度
@@ -135,7 +129,6 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                 }
 
                 Log.d(TAG,"onPageSelected"+"\n"+"position--"+position+"title--"+title);
-
             }
 
             @Override
@@ -145,6 +138,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
             }
         });
+
     }
 
     @Override
@@ -162,6 +156,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         my_title.setText(title);
     }
 
+    //外部调用切换
     public boolean selectViewPager(int selectItem){
 
         int currentItem=mViewPager.getCurrentItem();

@@ -12,11 +12,15 @@ import com.lgc.mysliding.R;
 
 public class NavigateFragment extends Fragment {
 
+    private View mView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_navigate, container, false);
+        if (null==mView){
+            mView = inflater.inflate(R.layout.fragment_navigate, container, false);
+        }
+        return mView;
     }
 
 }

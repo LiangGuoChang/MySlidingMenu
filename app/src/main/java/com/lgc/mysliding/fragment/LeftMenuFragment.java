@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lgc.mysliding.R;
-import com.lgc.mysliding.activity.MLoginActivity;
+import com.lgc.mysliding.activity.EnterActivity;
 import com.lgc.mysliding.activity.MyMainActivity;
 
 public class LeftMenuFragment extends Fragment implements View.OnClickListener {
@@ -42,7 +42,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
     private MyMainActivity mActivity;
 //    private MainActivity mainActivity;
     private boolean logined;
-    private MainFragment mainFragment;
+//    private MainFragment mainFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,39 +51,19 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         if(null == mView){
             //初始化view
             initView(inflater,container);
+            //获取MyMainActivity
+            mActivity = (MyMainActivity) getActivity();
+            Log.d(TAG,"mActivity--"+ mActivity.getComponentName());
+            //获取侧滑菜单
+            slMenu = mActivity.getSlidingMenu();
+            Log.d(TAG,"menu--"+ slMenu +"--"+ slMenu.isMenuShowing());
 
-//            //获取MyMainActivity
-//            mainActivity = (MainActivity) getActivity();
-//            Log.d(TAG,"mActivity--"+ mainActivity.getComponentName());
-//
-//            //获取 MainFragment
-//            mainFragment = new MainFragment();
-//
-//            //获取侧滑菜单
-//            slMenu = mainActivity.getSlidingMenu();
-//            Log.d(TAG,"menu--"+ slMenu +"--"+ slMenu.isMenuShowing());
-//
-//            //获取登录与否
-//            preferences = mainActivity.getSharedPreferences("Login", Context.MODE_PRIVATE);
-//            logined = preferences.getBoolean("isLogin", false);
-//            //首次打开,根据上次保存的登录信息,更新UI
-//            updateUI(logined);
-
+            //获取登录与否
+            preferences = mActivity.getSharedPreferences("Login", Context.MODE_PRIVATE);
+            logined = preferences.getBoolean("isLogin", false);
+            //首次打开,根据上次保存的登录信息,更新UI
+            updateUI(logined);
         }
-
-        //获取MyMainActivity
-        mActivity = (MyMainActivity) getActivity();
-        Log.d(TAG,"mActivity--"+ mActivity.getComponentName());
-        //获取侧滑菜单
-        slMenu = mActivity.getSlidingMenu();
-        Log.d(TAG,"menu--"+ slMenu +"--"+ slMenu.isMenuShowing());
-
-        //获取登录与否
-        preferences = mActivity.getSharedPreferences("Login", Context.MODE_PRIVATE);
-        logined = preferences.getBoolean("isLogin", false);
-        //首次打开,根据上次保存的登录信息,更新UI
-        updateUI(logined);
-
         return mView;
     }
 
@@ -119,7 +99,10 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         switch(v.getId())
         {
             case R.id.iv_head:
-                Intent login=new Intent(getActivity(), MLoginActivity.class);
+                Intent login=new Intent(getActivity(), EnterActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putInt("item",1);
+                login.putExtras(bundle);
                 startActivityForResult(login,LOGIN_REQUEST);
                 break;
             case R.id.click_needle:
@@ -141,7 +124,11 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
                 showFragment(5);
                 break;
             case R.id.click_about://关于
-
+                Intent about=new Intent(getActivity(), EnterActivity.class);
+                Bundle bundle1=new Bundle();
+                bundle1.putInt("item",2);
+                about.putExtras(bundle1);
+                startActivity(about);
                 break;
 
             default:
@@ -162,13 +149,8 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         if(slMenu.isMenuShowing()){
             slMenu.showContent();
         }
-
         //调用MyMainActivity中的切换ViewPager的方法
         boolean select= mActivity.selectViewPager(item);
-
-//        //调用MainFragment中的切换ViewPager的方法
-//        boolean select=mainFragment.selectPager(item);
-
         Log.d(TAG,"select--"+select);
 
     }
