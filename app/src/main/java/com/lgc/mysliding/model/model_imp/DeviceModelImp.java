@@ -1,6 +1,7 @@
 package com.lgc.mysliding.model.model_imp;
 
 import com.lgc.mysliding.model.model_interface.ModelInterface;
+import com.lgc.mysliding.utils.DeviceAsyncTask;
 
 public class DeviceModelImp implements ModelInterface{
 
@@ -12,5 +13,6 @@ public class DeviceModelImp implements ModelInterface{
     @Override
     public void getData(onDataCompleteListener dataCompleteListener, String urlPath) {
 
+        new DeviceAsyncTask(dataCompleteListener).execute(urlPath);
     }
 }
