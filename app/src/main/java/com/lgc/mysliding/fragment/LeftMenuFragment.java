@@ -42,7 +42,8 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
     private MyMainActivity mActivity;
 //    private MainActivity mainActivity;
     private boolean logined;
-//    private MainFragment mainFragment;
+    private LinearLayout feature;
+    //    private MainFragment mainFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +83,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         click_video_analyst = (LinearLayout) mView.findViewById(R.id.click_video_analyst);//视频分析
         click_correlate = (LinearLayout) mView.findViewById(R.id.click_correlate);//轨迹分析
         click_about = (LinearLayout) mView.findViewById(R.id.click_about);//关于
+        feature = (LinearLayout) mView.findViewById(R.id.linear_feature);//整个功能栏
 
         iv_head.setOnClickListener(this);
         click_needle.setOnClickListener(this);
@@ -229,6 +231,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
             switch (requestCode){
                 //更新UI
                 case LOGIN_REQUEST:
+                    Log.i(TAG,"4545");
                     updateUI(login);
                     break;
             }

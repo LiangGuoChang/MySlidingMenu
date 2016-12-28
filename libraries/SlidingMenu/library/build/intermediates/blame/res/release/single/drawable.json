@@ -20,24 +20,24 @@
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_ic_search_api_material.xml"
     },
     {
-        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\notification_bg.xml",
-        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\notification_bg.xml"
-    },
-    {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_dialog_material_background.xml",
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_dialog_material_background.xml"
+    },
+    {
+        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\notification_bg.xml",
+        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\notification_bg.xml"
     },
     {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ratingbar_small_material.xml",
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_ratingbar_small_material.xml"
     },
     {
-        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_spinner_textfield_background_material.xml",
-        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_spinner_textfield_background_material.xml"
-    },
-    {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_list_selector_background_transition_holo_light.xml",
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
+    },
+    {
+        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_spinner_textfield_background_material.xml",
+        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_spinner_textfield_background_material.xml"
     },
     {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_seekbar_tick_mark_material.xml",

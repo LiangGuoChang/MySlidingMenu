@@ -40,7 +40,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+                requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Log.i(TAG,"oncreate");
+        Log.i(TAG,"oncreate");
         setContentView(R.layout.activity_my_main);
         Log.d(TAG,"MyMainActivity---onCreate");
 
@@ -56,6 +58,8 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
     //初始化 SlidingMune
     private void initLeftMenu(){
+
+        Log.d(TAG,"initLeftMenu");
 
         //获取 LeftMenuFragment 对象
         LeftMenuFragment leftMenu=new LeftMenuFragment();
@@ -86,6 +90,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
     //初始化 ViewPager
     private void initViewPager(){
+        Log.d(TAG,"initViewPager");
 
         mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         NeedleFragment needleFragment=new NeedleFragment();

@@ -13,7 +13,7 @@ public class MLoginActivity extends AppCompatActivity implements View.OnClickLis
 
     private static final int LOGIN_RESULT=201;
 
-    private Button btn_login;
+    private Button btn_1;
     private Button btn_regist;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
@@ -26,10 +26,10 @@ public class MLoginActivity extends AppCompatActivity implements View.OnClickLis
         preferences = getSharedPreferences("Login",MODE_PRIVATE);
         editor = preferences.edit();
 
-        btn_login = (Button) findViewById(R.id.btn_login);
+        btn_1 = (Button) findViewById(R.id.btn_1);
         btn_regist = (Button) findViewById(R.id.btn_regist);
 
-        btn_login.setOnClickListener(this);
+        btn_1.setOnClickListener(this);
         btn_regist.setOnClickListener(this);
     }
 
@@ -39,14 +39,13 @@ public class MLoginActivity extends AppCompatActivity implements View.OnClickLis
 
         switch(v.getId())
         {
-            case R.id.btn_login:
+            case R.id.btn_1:
 
                 editor.putBoolean("isLogin",true);
                 editor.commit();
                 Intent login=new Intent();
                 login.putExtra("login", true);
                 setResult(LOGIN_RESULT,login);
-                finish();
                 finish();
                break;
 
