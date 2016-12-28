@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 
 import com.lgc.mysliding.model.model_interface.ModelInterface;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -64,8 +66,16 @@ public class DeviceAsyncTask extends AsyncTask<String,Void,byte[]>{
             if (code==HttpURLConnection.HTTP_OK){
                 //获取返回的字节流
                 InputStream is=connection.getInputStream();
-               // BufferedInputStream bis=new BufferedReader(is); // TODO: 2016/12/28 访问网络，获取json
-
+                BufferedInputStream bis=new BufferedInputStream(is);
+                //保存数据到内存
+                ByteArrayOutputStream bos=new ByteArrayOutputStream();
+                int len=-1;
+                byte[] bytes=new byte[1024*4];
+                while ((len=bis.read(bytes))!=-1){
+                    bos.write(bytes,0,len);
+                }
+                bis.close();
+                return bos.toByteArray();
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
