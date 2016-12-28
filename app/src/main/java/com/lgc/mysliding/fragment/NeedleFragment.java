@@ -7,32 +7,32 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.ListView;
 
 import com.lgc.mysliding.R;
 
-public class NeedleFragment extends Fragment implements View.OnClickListener {
+public class NeedleFragment extends Fragment {
 
     private static final String TAG="NeedleFragment";
     private View mView;
-    private TextView textview;
-    private Button btn;
-    private int item=0;
+    private EditText et_mac;
+    private ListView lv_detector;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (mView==null){
             mView = inflater.inflate(R.layout.fragment_needle, container, false);
-
-            textview = (TextView) mView.findViewById(R.id.textView);
-            btn = (Button) mView.findViewById(R.id.btn_1);
-            btn.setOnClickListener(this);
+            initView();
         }
-
         Log.d(TAG,"onCreateView");
         return mView;
+    }
+
+    private void initView(){
+        et_mac = (EditText)mView.findViewById(R.id.et_search);
+        lv_detector = (ListView) mView.findViewById(R.id.lv_detector);
     }
 
     @Override
@@ -58,20 +58,5 @@ public class NeedleFragment extends Fragment implements View.OnClickListener {
     public void onDestroyView() {
         Log.d(TAG,"onDestroyView");
         super.onDestroyView();
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_1:
-                if (item==0){
-                    textview.setText("hello");
-                    item=1;
-                }else {
-                    textview.setText("探针管理");
-                    item=0;
-                }
-                break;
-        }
     }
 }
