@@ -1,4 +1,4 @@
-package com.lgc.mysliding.activity_interface;
+package com.lgc.mysliding.view_interface;
 
 import com.lgc.mysliding.bean.DetectorInfoBean;
 
