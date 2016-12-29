@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/tv_mac"
-        android:layout_width="140dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="8cab8e54c884"
         android:textSize="20sp"
@@ -37,7 +37,7 @@
         />
     <TextView
         android:id="@+id/tv_rssi"
-        android:layout_width="40dp"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:text="80"
         android:textSize="20sp"
