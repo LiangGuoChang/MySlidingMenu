@@ -36,6 +36,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private MyFSAdapter myFSAdapter;
     private String[] titles=new String[]{"探针管理","轨迹查询","电子围栏","目标导航","视频联动分析","轨迹关联分析"};
     private TextView my_title;
+    private String url="http://192.168.1.184:8080/json/detectorInfo.json";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,7 +172,6 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
         return true;
     }
-
 
 
 //    @Override
