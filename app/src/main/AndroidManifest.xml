@@ -31,6 +31,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
+        android:name=".MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -63,7 +64,7 @@
         </activity>
         <activity android:name=".activity.MLoginActivity" />
         <activity android:name=".activity.EnterActivity" />
-        <activity android:name=".activity.LocationActivity"></activity>
+        <activity android:name=".activity.AMapFragmentActivity"></activity>
     </application>
 
 </manifest>
