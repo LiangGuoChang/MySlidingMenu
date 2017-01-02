@@ -1,5 +1,10 @@
 package com.lgc.mysliding.adapter;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +14,19 @@ import com.lgc.mysliding.R;
 import com.lgc.mysliding.adapter.baseadapter.DeviceBaseAdapter;
 import com.lgc.mysliding.bean.DetectorInfoBean;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class MyDeviceAdapter extends DeviceBaseAdapter{
 
-    public MyDeviceAdapter(List<DetectorInfoBean.DeviceListBean> deviceListBeanList) {
+    private static final String TAG="MyDeviceAdapter";
+    private Context context;
+
+    public MyDeviceAdapter(Context context,List<DetectorInfoBean.DeviceListBean> deviceListBeanList) {
         super(deviceListBeanList);
+        this.context=context;
     }
 
     /**
@@ -28,6 +38,7 @@ public class MyDeviceAdapter extends DeviceBaseAdapter{
      */
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+
         //先拿到要展示的数据
         DetectorInfoBean.DeviceListBean deviceListBean=getDeviceListBeen().get(i);
         //优化布局帮助类
@@ -44,18 +55,26 @@ public class MyDeviceAdapter extends DeviceBaseAdapter{
             view.setTag(viewHolder);
         }
         viewHolder= (ViewHolder) view.getTag();
-        viewHolder.mac_tv.setText(deviceListBean.getMac());
         //换算时间戳
         int time=deviceListBean.getTime();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date=sdf.format(new Date(time*1000L));
-        viewHolder.time_tv.setText(date);
-        viewHolder.rssi_tv.setText(String.valueOf(deviceListBean.getRssi()));
-        // TODO: 2016/12/29 时间戳，经纬度需要换算
+        // 经纬度换算为地址信息
         double latitude=deviceListBean.getLatitude();
         double longitude=deviceListBean.getLongitude();
-        String titude=String.valueOf(latitude)+"+"+String.valueOf(longitude);
-        viewHolder.address_tv.setText("惠州市");
+        Double[] mAddr=new Double[]{latitude,longitude};
+        //异步加载地址信息
+        new AddressTask(viewHolder.address_tv,mAddr).execute(mAddr);
+
+        viewHolder.mac_tv.setText(deviceListBean.getMac());
+        viewHolder.time_tv.setText(date);
+        viewHolder.rssi_tv.setText(String.valueOf(deviceListBean.getRssi()));
+
+        if(i%2==0){
+            view.setBackgroundResource(R.color.double_item);
+        }else {
+            view.setBackgroundResource(R.color.single_item);
+        }
 
         return view;
     }
@@ -66,4 +85,41 @@ public class MyDeviceAdapter extends DeviceBaseAdapter{
         TextView rssi_tv;
         TextView address_tv;
     }
+
+    class AddressTask extends AsyncTask<Double,Void,String>{
+        private TextView  textView;
+        private Double[] mAddress;
+
+        public AddressTask(TextView tv,Double[] mAddr){
+            this.textView=tv;
+            this.mAddress=mAddr;
+        }
+
+        @Override
+        protected String doInBackground(Double... params) {
+            double latitude=params[0];
+            double longitude=params[1];
+            //换算经纬度为地址
+            Geocoder geocoder=new Geocoder(context);
+            String strAdd = null;
+            try {
+                List<Address> addressList=geocoder.getFromLocation(latitude,longitude,1);
+                if(addressList.size()>0){
+                    Address address=addressList.get(0);
+                    strAdd =address.getAddressLine(0).substring(3);
+                    Log.d(TAG,"strAdd--"+ strAdd);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return strAdd;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            textView.setText(s);
+        }
+    }
+
 }

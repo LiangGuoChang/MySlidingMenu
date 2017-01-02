@@ -1,10 +1,10 @@
 [
     {
-        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_light.xml",
-        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\color-v11\\abc_background_cache_hint_selector_material_light.xml"
+        "merged": "E:\\GitRep\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_dark.xml",
+        "source": "E:\\GitRep\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\color-v11\\abc_background_cache_hint_selector_material_dark.xml"
     },
     {
-        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_dark.xml",
-        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\color-v11\\abc_background_cache_hint_selector_material_dark.xml"
+        "merged": "E:\\GitRep\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\color-v11\\abc_background_cache_hint_selector_material_light.xml",
+        "source": "E:\\GitRep\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\color-v11\\abc_background_cache_hint_selector_material_light.xml"
     }
 ]

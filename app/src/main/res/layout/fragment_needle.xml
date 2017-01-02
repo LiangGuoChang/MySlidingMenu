@@ -10,10 +10,12 @@
         android:id="@+id/rl_search"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#b6beda"
+        >
 
         <TextView
-            android:layout_width="148dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:text="探针MAC"
             android:textColor="#000000"
@@ -24,11 +26,11 @@
         <View
             android:layout_width="0.1dp"
             android:layout_height="wrap_content"
-            android:background="#9845f7"
+            android:background="#818181"
             />
 
         <TextView
-            android:layout_width="120dp"
+            android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:text="时间"
             android:textSize="20sp"
@@ -39,7 +41,7 @@
         <View
             android:layout_width="0.1dp"
             android:layout_height="wrap_content"
-            android:background="#9845f7"
+            android:background="#818181"
             />
         <TextView
             android:layout_width="40dp"
@@ -53,7 +55,7 @@
         <View
             android:layout_width="0.1dp"
             android:layout_height="wrap_content"
-            android:background="#9845f7"
+            android:background="#818181"
             />
         <TextView
             android:layout_width="match_parent"
@@ -67,11 +69,20 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/v1"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#969696"
+        android:layout_below="@id/rl_search"
+        />
+
     <ListView
         android:id="@+id/lv_detector"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_search"
+        android:layout_below="@id/v1"
+
         >
     </ListView>
 
