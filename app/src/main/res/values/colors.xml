@@ -7,4 +7,7 @@
     <color name="btn_click">#7c8ce2</color>
     <color name="btn_unclick">#a8cdf2</color>
 
+    <color name="single_item">#cff2da</color>
+    <color name="double_item">#cdd3e9</color>
+
 </resources>

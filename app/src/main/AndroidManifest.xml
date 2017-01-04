@@ -39,9 +39,12 @@
         android:theme="@style/AppTheme">
 
         <!-- 高德地图配置 -->
+        <!--<meta-data-->
+            <!--android:name="com.amap.api.v2.apikey"-->
+            <!--android:value="fe5b8d5442314c6229c37073e8bd4d07" />-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="03fa07c6deb7107b492311ff854290fb" />
+            android:value="4f9023d1674e80f75a019962378e2ce4"/>
 
         <service android:name="com.amap.api.location.APSService" />
 
@@ -64,7 +67,8 @@
         </activity>
         <activity android:name=".activity.MLoginActivity" />
         <activity android:name=".activity.EnterActivity" />
-        <activity android:name=".activity.AMapFragmentActivity"></activity>
+        <activity android:name=".activity.AMapFragmentActivity" />
+        <activity android:name=".activity.MAmapActivity"></activity>
     </application>
 
 </manifest>

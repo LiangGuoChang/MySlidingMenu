@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    >
+
+    <RelativeLayout
+        android:id="@+id/relative_head"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        >
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_pull"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            />
+        <ProgressBar
+            android:id="@+id/pb_rotate"
+            android:layout_width="32dip"
+            android:layout_height="32dip"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            style="@style/refresh_rotate_pb"
+            />
+        <RelativeLayout
+            android:id="@+id/rl_head"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/iv_arrow"
+            android:layout_toEndOf="@id/iv_arrow"
+            android:layout_alignTop="@id/iv_arrow"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            >
+
+            <TextView
+                android:id="@+id/tv_pull_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="下拉刷新"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/tv_time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="最后刷新："
+                android:layout_below="@id/tv_pull_state"
+                />
+
+            <TextView
+                android:id="@+id/tv_refresh_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2017-1-3 19:36:36"
+                android:layout_toEndOf="@id/tv_time_text"
+                android:layout_toRightOf="@id/tv_time_text"
+                android:layout_below="@id/tv_pull_state"
+                />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

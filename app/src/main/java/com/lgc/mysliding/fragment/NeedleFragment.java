@@ -1,6 +1,5 @@
 package com.lgc.mysliding.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.lgc.mysliding.MyApp;
@@ -21,6 +21,7 @@ import com.lgc.mysliding.bean.DetectorInfoBean;
 import com.lgc.mysliding.presenter.DevicePresenter;
 import com.lgc.mysliding.view_interface.ViewInterface;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class NeedleFragment extends Fragment implements ViewInterface, AdapterView.OnItemClickListener {
@@ -31,9 +32,11 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
     private ListView lv_detector;
 //    private String url="http://192.168.1.184:8080/json/detectorInfo.json";
     private String url="http://o1510u4870.iok.la/1/json/detectorInfo.json";
+//    private String mapUriStr = "http://maps.google.cn/maps/api/geocode/json?latlng={0},{1}&sensor=true&language=zh-CN";
     private MyDeviceAdapter adapter;
     private List<DetectorInfoBean.DeviceListBean> mDeviceList;
     private List<MarkerOptions> markerOptions;
+    private MyApp myApp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,9 +44,18 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
         if (mView==null){
             mView = inflater.inflate(R.layout.fragment_needle, container, false);
             initView();
+            myApp= (MyApp) getActivity().getApplicationContext();
 
             new DevicePresenter(this).load(String.format(url,2));
         }
+
+        String sha1=null;
+        try {
+            sha1=myApp.getSHA1(myApp.getApplicationContext());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG,"sha1--"+sha1);
         Log.d(TAG,"onCreateView");
         return mView;
     }
@@ -56,38 +68,13 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
     }
 
     @Override
-    public void onAttach(Context context) {
-
-        Log.d(TAG,"onAttach");
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        Log.d(TAG,"onDetach");
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG,"onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.d(TAG,"onDestroyView");
-        super.onDestroyView();
-    }
-
-    @Override
     public void showDevice(List<DetectorInfoBean.DeviceListBean> deviceListBeen) {
 
-        adapter = new MyDeviceAdapter(deviceListBeen);
+        adapter = new MyDeviceAdapter(getContext(),deviceListBeen);
         lv_detector.setAdapter(adapter);
         Log.d(TAG,"showDevice--"+ adapter);
 
-        MyApp myApp= (MyApp) getActivity().getApplicationContext();
+//        MyApp myApp= (MyApp) getActivity().getApplicationContext();
 //        if (deviceListBeen.size()>0){
 //        for (int i=0;i<deviceListBeen.size();i++){
 //            LatLng latlng=new LatLng(deviceListBeen.get(i).getLatitude(),deviceListBeen.get(i).getLongitude());
@@ -109,7 +96,18 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
     //lv_detector 条目点击事件
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        TextView tvMac= (TextView) view.findViewById(R.id.tv_mac);
+        String mac= tvMac.getText().toString();
+        Log.d(TAG,"mac--"+mac);
+        TextView tv_mac=(TextView)view.findViewById(R.id.tv_mac);
+        String select_mac=tv_mac.getText().toString();
         Intent start=new Intent(getContext(), AMapFragmentActivity.class);
+//        Intent start=new Intent(getContext(), MAmapActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putString("select_mac",select_mac);
+        start.putExtras(bundle);
         startActivity(start);
     }
+
 }

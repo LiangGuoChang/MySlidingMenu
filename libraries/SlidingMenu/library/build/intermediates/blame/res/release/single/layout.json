@@ -52,12 +52,12 @@
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\support_simple_spinner_dropdown_item.xml"
     },
     {
-        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\layout\\select_dialog_singlechoice_material.xml",
-        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\select_dialog_singlechoice_material.xml"
-    },
-    {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\layout\\abc_dialog_title_material.xml",
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\abc_dialog_title_material.xml"
+    },
+    {
+        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\layout\\select_dialog_singlechoice_material.xml",
+        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\select_dialog_singlechoice_material.xml"
     },
     {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\layout\\abc_popup_menu_item_layout.xml",
