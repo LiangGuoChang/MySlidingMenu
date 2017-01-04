@@ -6,10 +6,22 @@
     android:background="#fffbbb"
     >
 
+   <TextView
+       android:id="@+id/tv_track"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="轨迹查询"
+       android:textSize="25sp"
+       android:textColor="#000000"
+       android:gravity="center"
+       />
+
    <com.lgc.mysliding.views.MyRefreshListView
        android:id="@+id/refresh_lv"
        android:layout_width="match_parent"
-       android:layout_height="match_parent">
+       android:layout_height="match_parent"
+       android:layout_below="@id/tv_track"
+       >
    </com.lgc.mysliding.views.MyRefreshListView>
 
 </RelativeLayout>

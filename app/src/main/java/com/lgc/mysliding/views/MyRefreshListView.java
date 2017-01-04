@@ -195,9 +195,11 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
             //滑动
             case MotionEvent.ACTION_MOVE:
                 Log.d(TAG,"MotionEvent.ACTION_MOVE");
-
-                whenMove(ev);
+                if (current_state!=REFRESHING){
+                    whenMove(ev);
+                }
                 break;
+//                return true;
 
             //抬起
             case MotionEvent.ACTION_UP:
