@@ -44,14 +44,14 @@ public class TrackFragment extends Fragment implements MyRefreshListView.OnRefre
                              Bundle savedInstanceState) {
         if (null==mView){
             mView = inflater.inflate(R.layout.fragment_track, container, false);
-            initView();
+//            initView();
         }
         return mView;
     }
 
     //初始化view
     private void initView(){
-        rflv = (MyRefreshListView) mView.findViewById(R.id.refresh_lv);
+//        rflv = (MyRefreshListView) mView.findViewById(R.id.refresh_lv);
 //        mList = getData();
         mAdapter = new RefreshAdapter(getContext(), mList);
         rflv.setAdapter(mAdapter);

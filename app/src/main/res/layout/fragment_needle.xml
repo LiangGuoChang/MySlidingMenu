@@ -6,11 +6,74 @@
     android:background="#ffffff"
     >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/rl_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="3dp"
+        android:visibility="gone"
+        >
+        <ImageView
+            android:id="@+id/iv_search_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/search_icon"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            />
+
+        <ImageView
+            android:id="@+id/iv_clear_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/clear_search"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:clickable="true"
+            />
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_search_icon"
+            android:layout_toEndOf="@id/iv_search_icon"
+            android:layout_toLeftOf="@id/iv_clear_search"
+            android:layout_toStartOf="@id/iv_clear_search"
+            android:layout_centerVertical="true"
+            android:hint="输入MAC地址"
+            android:digits="@string/search_mac"
+            android:background="@null"
+            />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_below="@id/et_search"
+            android:background="#78d0fa"
+            android:layout_marginTop="6dp"
+            android:layout_alignStart="@id/et_search"
+            android:layout_alignLeft="@id/et_search"
+            android:layout_toLeftOf="@id/iv_clear_search"
+            android:layout_toStartOf="@id/iv_clear_search"
+
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_classify"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:orientation="horizontal"
+        android:layout_below="@id/rl_search"
         android:background="#b6beda"
         >
 
@@ -74,7 +137,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:background="#969696"
-        android:layout_below="@id/rl_search"
+        android:layout_below="@id/ll_classify"
         />
 
     <ListView
@@ -82,7 +145,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/v1"
-
         >
     </ListView>
 

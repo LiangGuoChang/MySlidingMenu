@@ -20,6 +20,7 @@ import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.lgc.mysliding.MyApp;
 import com.lgc.mysliding.R;
+import com.lgc.mysliding.adapter.MInfoWindowAdapter;
 import com.lgc.mysliding.bean.DetectorInfoBean;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class AMapFragmentActivity extends FragmentActivity {
     private double lat;
     private double lon;
     private String select_mac;
+    private MInfoWindowAdapter mInfoWindowAdapter;//自定义的适配器
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +95,7 @@ public class AMapFragmentActivity extends FragmentActivity {
             }
             //显示当前选择的探针
             aMap.moveCamera(CameraUpdateFactory.changeLatLng(select));
-            aMap.moveCamera(CameraUpdateFactory.zoomTo(18));
+            aMap.moveCamera(CameraUpdateFactory.zoomTo(24));
         }
     }
     @Override
@@ -103,11 +105,14 @@ public class AMapFragmentActivity extends FragmentActivity {
     }
 
     private void setUpMApIfNeeded(){
+        mInfoWindowAdapter = new MInfoWindowAdapter();
         if (aMap==null){
             aMap=((SupportMapFragment)getSupportFragmentManager()
                     .findFragmentById(R.id.map_fragment_id))
                     .getMap();
         }
+        //设置自定义的适配器
+        aMap.setInfoWindowAdapter(mInfoWindowAdapter);
     }
 
     /**

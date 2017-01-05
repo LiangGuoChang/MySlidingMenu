@@ -17,4 +17,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string name="search_mac">0123456789abcdefghijklmnopqrstuvwxyz</string>
 </resources>

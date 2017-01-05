@@ -16,12 +16,12 @@
        android:gravity="center"
        />
 
-   <com.lgc.mysliding.views.MyRefreshListView
-       android:id="@+id/refresh_lv"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:layout_below="@id/tv_track"
-       >
-   </com.lgc.mysliding.views.MyRefreshListView>
+   <!--<com.lgc.mysliding.views.MyRefreshListView-->
+       <!--android:id="@+id/refresh_lv"-->
+       <!--android:layout_width="match_parent"-->
+       <!--android:layout_height="match_parent"-->
+       <!--android:layout_below="@id/tv_track"-->
+       <!--&gt;-->
+   <!--</com.lgc.mysliding.views.MyRefreshListView>-->
 
 </RelativeLayout>

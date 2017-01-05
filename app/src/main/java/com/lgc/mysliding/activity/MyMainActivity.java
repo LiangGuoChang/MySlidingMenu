@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private String[] titles=new String[]{"探针管理","轨迹查询","电子围栏","目标导航","视频联动分析","轨迹关联分析"};
     private TextView my_title;
     private String url="http://192.168.1.184:8080/json/detectorInfo.json";
+    public ImageView iv_search_mac;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
         show_menu = (RelativeLayout) findViewById(R.id.show_menu);
         my_title = (TextView) findViewById(R.id.tv_my_title);
+        iv_search_mac = (ImageView) findViewById(R.id.iv_search_mac);
         show_menu.setOnClickListener(this);
         //设置初始标题
         setTitle(titles[0]);
@@ -129,9 +132,15 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                 if(position==0){
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+                    //显示搜索控件
+                    iv_search_mac.setVisibility(View.VISIBLE);
+                    iv_search_mac.setClickable(true);
                 }else if(position>0){
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //隐藏搜索控件
+                    iv_search_mac.setVisibility(View.INVISIBLE);
+                    iv_search_mac.setClickable(false);
                 }
 
                 Log.d(TAG,"onPageSelected"+"\n"+"position--"+position+"title--"+title);

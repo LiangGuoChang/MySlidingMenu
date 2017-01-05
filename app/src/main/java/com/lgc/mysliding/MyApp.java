@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.lgc.mysliding.adapter.MyDeviceAdapter;
 import com.lgc.mysliding.bean.DetectorInfoBean;
 
 import java.security.MessageDigest;
@@ -16,9 +17,21 @@ import java.util.Locale;
 public class MyApp extends Application{
 
     private static final String TAG="MyApp";
-
+    private static MyApp myApp;
+    //解析json数据后的数据列表集合
     private List<DetectorInfoBean.DeviceListBean> deviceListBeen;
     private List<MarkerOptions> markerOptions;
+    public MyDeviceAdapter myDeviceAdapter;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        myApp=this;
+    }
+
+    public static MyApp getMyApp(){
+        return myApp;
+    }
 
     public List<MarkerOptions> getMarkerOptions() {
         return markerOptions;
