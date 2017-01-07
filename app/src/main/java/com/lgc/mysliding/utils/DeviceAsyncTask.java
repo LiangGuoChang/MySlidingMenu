@@ -15,7 +15,8 @@ import java.net.URL;
 public class DeviceAsyncTask extends AsyncTask<String,Void,byte[]>{
     private static final String TAG="DeviceAsyncTask";
 
-    private String urlPath; //json网络地址
+    //json网络地址
+    private String urlPath;
     //接口回调实例
     private ModelInterface.onDataCompleteListener dataCompleteListener;
 

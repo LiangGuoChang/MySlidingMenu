@@ -22,7 +22,7 @@ import java.util.List;
 public class MyDeviceAdapter extends DeviceBaseAdapter{
 
     private static final String TAG="MyDeviceAdapter";
-    private Context context;
+    private static Context context;
 
     public MyDeviceAdapter(Context context,List<DetectorInfoBean.DeviceListBean> deviceListBeanList) {
         super(deviceListBeanList);
@@ -38,11 +38,14 @@ public class MyDeviceAdapter extends DeviceBaseAdapter{
      */
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-
-        Log.d(TAG,"i::"+i);
+        Log.d(TAG,"getView--"+"i::"+i);
 
         //先拿到要展示的数据
-        DetectorInfoBean.DeviceListBean deviceListBean=getDeviceListBeen().get(i);
+//        DetectorInfoBean.DeviceListBean deviceListBean=getDeviceListBeen().get(i);
+//        Log.d(TAG,"deviceListBean--"+String.valueOf(deviceListBean));
+        DetectorInfoBean.DeviceListBean deviceListBean= (DetectorInfoBean.DeviceListBean) getItem(i);
+        Log.d(TAG,"object--"+String.valueOf(deviceListBean));
+
         //换算时间戳
         int time=deviceListBean.getTime();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -54,7 +57,7 @@ public class MyDeviceAdapter extends DeviceBaseAdapter{
 
         //优化布局类
         ViewHolder viewHolder=null;
-//        if (view==null){
+        if (view==null){
             viewHolder=new ViewHolder();
             view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_detector_list,null);
             //查找相应的控件
@@ -64,11 +67,11 @@ public class MyDeviceAdapter extends DeviceBaseAdapter{
             viewHolder.address_tv=(TextView) view.findViewById(R.id.tv_address);
             //将 viewHolder 保存到每个对象标记中，下次获取
             view.setTag(viewHolder);
-//        }else {
-//            viewHolder= (ViewHolder) view.getTag();
-//        }
+        }else {
+            viewHolder= (ViewHolder) view.getTag();
+        }
 
-//        viewHolder.address_tv.setText("");
+        viewHolder.address_tv.setText("");
         //异步加载地址信息
         new AddressTask(viewHolder.address_tv,mAddr).execute(mAddr);
         viewHolder.mac_tv.setText(deviceListBean.getMac());
@@ -91,6 +94,7 @@ public class MyDeviceAdapter extends DeviceBaseAdapter{
         TextView address_tv;
     }
 
+    //异步加载地址信息
     class AddressTask extends AsyncTask<Double,Void,String>{
         private TextView  textView;
         private Double[] mAddress;

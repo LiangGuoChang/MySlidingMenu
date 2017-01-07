@@ -36,7 +36,6 @@
                 android:id="@+id/tv_set_signal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="84"
                 android:textSize="12sp"
                 android:textColor="#000000"
                 android:layout_gravity="center"
@@ -77,7 +76,6 @@
             android:id="@+id/tv_set_mac"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="8cab8e54c884"
             android:textSize="12sp"
             android:textColor="#000000"
             android:layout_gravity="center"
@@ -117,7 +115,6 @@
                 android:id="@+id/tv_set_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="梅州市梅县广场一街1-11"
                 android:textSize="12sp"
                 android:textColor="#000000"
                 android:layout_gravity="center"
@@ -132,6 +129,6 @@
     <!--用来偏移infowindow的位置-->
     <View
         android:layout_width="38dp"
-        android:layout_height="80dp"/>
+        android:layout_height="100dp"/>
 
 </LinearLayout>

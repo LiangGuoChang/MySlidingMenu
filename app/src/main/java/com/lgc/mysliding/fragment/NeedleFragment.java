@@ -36,8 +36,8 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
     private static final String TAG="NeedleFragment";
     private static final int ListChange=2017;
 //    private String url="http://192.168.1.184:8080/json/my.json";
-    private String url="http://192.168.1.184:8080/json/detectorInfo.json";
-    //    private String url="http://o1510u4870.iok.la/1/json/detectorInfo.json";
+//    private String url="http://192.168.1.184:8080/json/detectorInfo1.json";
+    private String url="http://o1510u4870.iok.la/1/json/detectorInfo1.json";
     private View mView;
     private ListView lv_detector;
     private EditText et_search;
@@ -165,6 +165,7 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
         adapter = new MyDeviceAdapter(getContext(),mDeviceList);
         myAppAdapter = myApp.myDeviceAdapter;
         myAppAdapter =adapter;
+
         //一开始先显示所有列表
         lv_detector.setAdapter(adapter);
 
@@ -195,7 +196,7 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
         }
 
         //搜索不为空时显示匹配的数据
-        if (searchStr!=null && searchStr.trim().length()!=0){
+        if (/*searchStr!=null && */searchStr.trim().length()!=0){
             for (DetectorInfoBean.DeviceListBean d:mDeviceList) {
                 if (d.getMac().toLowerCase().contains(searchStr.toLowerCase())){
                     searchDeviceList.add(d);

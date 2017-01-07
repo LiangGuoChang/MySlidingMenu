@@ -78,7 +78,9 @@ public class AMapFragmentActivity extends FragmentActivity {
                 LatLng latLng =new LatLng(lat, lon);
                 MarkerOptions options = new MarkerOptions();
                 options.position(latLng);
-                options.title(deviceListBeen.get(i).getMac());
+                options.period(deviceListBeen.get(i).getRssi());//信号强度
+                options.title(deviceListBeen.get(i).getMac());//mac地址
+//                options.snippet(String.valueOf(lat));//位置信息
                 options.visible(true);
                 if (mac.equals(select_mac)) {
                     select=latLng;

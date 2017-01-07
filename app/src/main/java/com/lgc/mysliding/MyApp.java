@@ -23,6 +23,9 @@ public class MyApp extends Application{
     private List<MarkerOptions> markerOptions;
     public MyDeviceAdapter myDeviceAdapter;
 
+    //转换经纬度为详细地址集合
+    private List<String> addrList;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -47,6 +50,15 @@ public class MyApp extends Application{
 
     public void setDeviceListBeen(List<DetectorInfoBean.DeviceListBean> deviceListBeen) {
         this.deviceListBeen = deviceListBeen;
+    }
+
+    //经纬度转详细地址
+    public List<String> getAddrList() {
+        return addrList;
+    }
+
+    public void setAddrList(List<String> addrList) {
+        this.addrList = addrList;
     }
 
     //获取应用的 key
