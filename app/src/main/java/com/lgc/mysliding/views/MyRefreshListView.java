@@ -72,10 +72,31 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
         this.onRefreshListener=onRefreshListener;
     }
 
-    //下拉刷新结束后回调方法
-    public void onRefreshComplete(){
+    //定义外部调用的上拉加载监听
+    public void setOnLoadListener(OnLoadListener onLoadListener){
+        this.loadEnable=true;//设为可以上拉加载
+        this.onLoadListener=onLoadListener;
+    }
+
+    //外部关闭、开启加载功能
+    public void setLoadEnable(boolean mLoadEnable){
+        this.loadEnable=mLoadEnable;
+    }
+    public boolean getLoadEnable(){
+        return this.loadEnable;
+    }
+
+    //外部调用的下拉刷新结束后回调方法
+    public void OnRefreshComplete(){
         String currentTime=getRefreshTime();
         onRefreshComplete(currentTime);
+    }
+
+    //外部调用的上拉加载完成的回调方法
+    public void OnLoadComplete(){
+        isLoading=false;
+
+        Log.d(TAG,"加载完成！");
     }
 
     //获取刷新的时间
@@ -150,7 +171,7 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
         Log.d(TAG,"底部布局原始宽度::"+footViewHeight);
 
         //设置 padding 隐藏底部布局
-        footView.setPadding(0,-footViewHeight,0,0);
+//        footView.setPadding(0,-footViewHeight,0,0);
         //添加底部布局
         addFooterView(footView);
     }
@@ -158,14 +179,21 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
     private int firstVisibleItem;//显示的第一个条目的id,只有为0时才下拉刷新
     private boolean isRecorded;
     private OnRefreshListener onRefreshListener;
-    private int downY;//按下时的y轴
+    private int starY;//按下时的y轴
     private static final int SPACE=100;//区分 Pull和release的大小
     private int mScrollState;//当前滑动状态
+    private OnLoadListener onLoadListener;
+    private boolean loadEnable;//能否加载更多
+    private boolean isLoading=false;//是否正在加载
+    private boolean isLoadFull;//是否加载满
+    private int itemSize=22;//定义listview显示22条时需要上拉加载
 
     //实现下拉刷新接口的方法
     private void onRefresh(){
         if (null != onRefreshListener){
             onRefreshListener.onRefresh();
+
+            Log.d(TAG,"onRefresh--正在刷新...");
         }
     }
 
@@ -174,6 +202,8 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
         refresh_time.setText(refreshTime);
         current_state=NONE;
         refreshHeadViewByState();
+
+        Log.d(TAG,"onRefreshComplete--刷新完成！");
     }
 
     //触摸事件判断
@@ -188,18 +218,20 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
 
                 if (firstVisibleItem==0){
                     isRecorded=true;
-                    downY= (int) getY();
+                    starY= (int) ev.getY();
+                    Log.d(TAG,"starY::"+starY);
                 }
                 break;
 
             //滑动
             case MotionEvent.ACTION_MOVE:
                 Log.d(TAG,"MotionEvent.ACTION_MOVE");
+                getCurrState();//获取当前状态
+
                 if (current_state!=REFRESHING){
                     whenMove(ev);
                 }
                 break;
-//                return true;
 
             //抬起
             case MotionEvent.ACTION_UP:
@@ -231,14 +263,15 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
             return;
         }
         //获取滑动偏移量
-        int deltaY= (int)event.getY()-downY;
+        int endY= (int) event.getY();
+        Log.d(TAG,"滑动时endY--"+endY);
+        int deltaY= endY-starY;
         Log.d(TAG,"deltaY::"+deltaY);
 
         //获取新的padding
         int newPaddingTop=-headViewHeight+deltaY;
         Log.d(TAG,"newPaddingTop::"+newPaddingTop);
 
-        Log.d(TAG,"滑动的时候当前状态::"+String.valueOf(current_state));
         switch (current_state){
 
             case NONE:
@@ -248,16 +281,21 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
                 }
                 break;
             case PULL:
-//                headView.setPadding(0,newPaddingTop,0,0);
-                headView.setPadding(0,100,0,0);
+                headView.setPadding(0,newPaddingTop/2,0,0);
+//                headView.setPadding(0,100,0,0);
+                if (mScrollState==SCROLL_STATE_IDLE){
+                    // TODO: 2017/1/9 下滑时向左右切换到其它界面时，即取消滑动
+                    current_state=NONE;
+                    refreshHeadViewByState();
+                }
                 if (mScrollState==SCROLL_STATE_TOUCH_SCROLL && deltaY > headViewHeight+SPACE){
                     current_state=RELEASE;
                     refreshHeadViewByState();
                 }
                 break;
             case RELEASE:
-//                headView.setPadding(0,newPaddingTop,0,0);
-                headView.setPadding(0,100,0,0);
+                headView.setPadding(0,newPaddingTop/2,0,0);
+//                headView.setPadding(0,100,0,0);
                 if (deltaY > 0 && deltaY < headViewHeight+SPACE){
                     current_state=PULL;
                     refreshHeadViewByState();
@@ -266,11 +304,10 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
                     refreshHeadViewByState();
                 }
                 break;
-
         }
     }
 
-    //根据当前状态设置控件
+    //根据当前下滑状态设置控件
     private void refreshHeadViewByState(){
         switch (current_state){
             case NONE:
@@ -320,16 +357,94 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
         }
     }
 
+    //获取当前状态
+    private int getCurrState(){
+        int state=current_state;
+        Log.d(TAG,"当前状态--"+state);
+        return state;
+    }
+
     //滑动状态改变
     @Override
     public void onScrollStateChanged(AbsListView absListView, int i) {
         this.mScrollState=i;
+        //上拉加载
+        needLoad(absListView,i);
     }
 
     @Override
     public void onScroll(AbsListView absListView, int i, int i1, int i2) {
         //滑动时，获取当前页面的第一个条目id
         this.firstVisibleItem=i;
+
+        Log.d(TAG,"getCount--"+absListView.getCount());
+        Log.d(TAG,"onScroll--"+i2);
+    }
+
+    //实现上拉加载的方法
+    private void onLoad(){
+        if (onLoadListener!=null){
+            onLoadListener.onLoad();
+            Log.d(TAG,"onLoad-正在加载...");
+        }
+    }
+
+    /**
+     * 根据滑动状态判断是否需要加载更多
+     * @param absListView
+     * @param scrollState
+     */
+    private void needLoad(AbsListView absListView,int scrollState){
+        if (!loadEnable){
+            //如果不能加载则退出
+            return;
+        }
+
+        try {
+            //判断滑动状态，加载更多
+            if (scrollState==OnScrollListener.SCROLL_STATE_IDLE
+                    && !isLoading
+                    && absListView.getLastVisiblePosition()==absListView.getPositionForView(footView)
+                    && !isLoadFull){
+
+                Log.d(TAG,"needLoad-加载更多...");
+
+                onLoad();
+                isLoading=true;
+            }
+        }catch (Exception e){
+            Log.d(TAG,"needLoad--"+e.getMessage());
+        }
+    }
+
+    /**
+     * 外部调用的根据显示的条目数量来显示 footView
+     * @param resultSize
+     * 这里假设显示22条时表示还有数据；不足22条时，表示数据已经全部加载
+     */
+    public void setResultSize(int resultSize){
+        if (resultSize==0){
+            //0条，即没有数据时也表示加载满了
+            isLoadFull=true;
+            pb_foot.setVisibility(View.GONE);
+            foot_text.setVisibility(View.GONE);
+
+            Log.d(TAG,"setResultSize-无数据-"+resultSize);
+        }else if (resultSize >0 && resultSize < itemSize){
+            //小于22条时也表示加载满了
+            isLoadFull=true;
+            pb_foot.setVisibility(View.GONE);
+            foot_text.setVisibility(View.GONE);
+
+            Log.d(TAG,"setResultSize-小于22-"+resultSize);
+        }else if (resultSize == itemSize){
+            //大于等于22条时也表示还有数据，可以加载更多
+            isLoadFull=false;
+            pb_foot.setVisibility(View.VISIBLE);
+            foot_text.setVisibility(View.VISIBLE);
+
+            Log.d(TAG,"setResultSize-大于等于22-"+resultSize);
+        }
     }
 
     /**
@@ -337,6 +452,13 @@ public class MyRefreshListView extends ListView implements AbsListView.OnScrollL
      */
     public interface OnRefreshListener{
         void onRefresh();
+    }
+
+    /**
+     * 定义上拉加载更多接口
+     */
+    public interface OnLoadListener{
+        void onLoad();
     }
 
 }

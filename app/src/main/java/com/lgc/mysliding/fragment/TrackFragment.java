@@ -15,9 +15,8 @@ import com.lgc.mysliding.views.MyRefreshListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class TrackFragment extends Fragment implements MyRefreshListView.OnRefreshListener {
+public class TrackFragment extends Fragment implements MyRefreshListView.OnRefreshListener, MyRefreshListView.OnLoadListener {
 
     private View mView;
     private MyRefreshListView rflv;
@@ -31,11 +30,17 @@ public class TrackFragment extends Fragment implements MyRefreshListView.OnRefre
             List<String> result= (List<String>) msg.obj;
             switch (msg.what){
                 case MyRefreshListView.LV_REFRESH:
-                    rflv.onRefreshComplete();
+                    rflv.OnRefreshComplete();
                     mList.clear();
                     mList.addAll(result);
                     break;
+                case MyRefreshListView.LV_LOAD:
+                    rflv.OnLoadComplete();
+                    mList.addAll(result);
+                    break;
             }
+            rflv.setResultSize(result.size());
+            mAdapter.notifyDataSetChanged();
         }
     };
 
@@ -44,28 +49,27 @@ public class TrackFragment extends Fragment implements MyRefreshListView.OnRefre
                              Bundle savedInstanceState) {
         if (null==mView){
             mView = inflater.inflate(R.layout.fragment_track, container, false);
-//            initView();
+            initView();
         }
         return mView;
     }
 
     //初始化view
     private void initView(){
-//        rflv = (MyRefreshListView) mView.findViewById(R.id.refresh_lv);
-//        mList = getData();
+        rflv = (MyRefreshListView) mView.findViewById(R.id.refresh_lv);
+        mList = getData();
         mAdapter = new RefreshAdapter(getContext(), mList);
         rflv.setAdapter(mAdapter);
         rflv.setOnRefreshListener(this);
+        rflv.setOnLoadListener(this);
         setData(MyRefreshListView.LV_REFRESH);
     }
 
     // 测试数据
     public List<String> getData() {
         List<String> result = new ArrayList<String>();
-        Random random = new Random();
-        for (int i = 0; i < 1000; i++) {
-            long l = random.nextInt(10000);
-            result.add("当前条目的ID：" + l);
+        for (int i = 0; i < 22; i++) {
+            result.add("当前条目的ID：" + i);
         }
         return result;
     }
@@ -73,6 +77,11 @@ public class TrackFragment extends Fragment implements MyRefreshListView.OnRefre
     @Override
     public void onRefresh() {
         setData(MyRefreshListView.LV_REFRESH);
+    }
+
+    @Override
+    public void onLoad() {
+        setData(MyRefreshListView.LV_LOAD);
     }
 
     //模拟刷新（或加载）时的方法
@@ -94,4 +103,5 @@ public class TrackFragment extends Fragment implements MyRefreshListView.OnRefre
             }
         }).start();
     }
+
 }

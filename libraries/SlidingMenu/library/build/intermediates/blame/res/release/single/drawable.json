@@ -20,12 +20,12 @@
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_ic_search_api_material.xml"
     },
     {
-        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_dialog_material_background.xml",
-        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_dialog_material_background.xml"
-    },
-    {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\notification_bg.xml",
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\notification_bg.xml"
+    },
+    {
+        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_dialog_material_background.xml",
+        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\drawable\\abc_dialog_material_background.xml"
     },
     {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ratingbar_small_material.xml",

@@ -10,4 +10,7 @@
     <color name="single_item">#cff2da</color>
     <color name="double_item">#cdd3e9</color>
 
+    <color name="menu_click">#cbcbcc</color>
+    <color name="menu_unclick">#ffffff</color>
+
 </resources>
