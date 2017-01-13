@@ -261,6 +261,12 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
 
             //确定按扭
             case R.id.btn_ensure:
+
+                //设置回放按钮可以点击
+                if (!btn_replay.isEnabled()){
+                    btn_replay.setEnabled(true);
+                }
+
                 //选择了时间段并且时间段不为0才能执行
                 if (isSelected&&(startTime>0&&endTime>0)){
                     // TODO: 2017/1/13 先清除地图
@@ -337,8 +343,9 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
             }
             //循环完将 deltaList 赋值给 path_list
             path_list.addAll(deltaList);
-            //设置 SeekBar 最大值 // TODO: 2017/1/13
+            //设置 SeekBar 最大值 和当前进度为 0 // TODO: 2017/1/13
             sb_play.setMax(deltaLatlngs.size());
+            sb_play.setProgress(0);
             Log.d(TAG,"sb_play.max="+sb_play.getMax());
             Log.d(TAG,"sb_play.progress="+sb_play.getProgress());
             Log.d(TAG,"deltaLatlngs.size()="+deltaLatlngs.size());
@@ -807,7 +814,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
             delta_path.clear();
-            if (i != 0){
+            if (i != 0 && deltaLatlngs.size()>0){
                 //获取画线轨迹 // TODO: 2017/1/13
                 for (int j=0;j < sb_play.getProgress();j++){
                     delta_path.add(deltaLatlngs.get(j));
@@ -833,7 +840,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
 
             delta_path.clear();
             int current=seekBar.getProgress();
-            if (current != 0){
+            if (current != 0 && deltaLatlngs.size()>0){
                 //获取画线轨迹
                 for (int j=0;j < sb_play.getProgress();j++){
                     delta_path.add(deltaLatlngs.get(j));
