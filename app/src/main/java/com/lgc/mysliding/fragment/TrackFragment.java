@@ -88,7 +88,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
     //匹配时间的集合
     private List<TraceInfo.TraceBean> deltaList=new ArrayList<TraceInfo.TraceBean>();
     //用于画轨迹点集合
-    private List<TraceInfo.TraceBean> path_list=new ArrayList<TraceInfo.TraceBean>();
+    private List<TraceInfo.TraceBean> path_list=new ArrayList<TraceInfo.TraceBean>();//暂不使用
     //匹配时间的经纬度集合
     private ArrayList<LatLng> deltaLatlngs=new ArrayList<LatLng>();
     //用于画线的经纬度集合
@@ -319,6 +319,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
 //        //测试数据-->
         Log.d(TAG, "getDeltaList-" + "startTime-" + startTime + "-endTime-" + endTime);
         //先清空列表
+        path_list.clear();
         deltaList.clear();
         deltaLatlngs.clear();
         if (startTime > 0L && endTime > 0L) {
@@ -337,7 +338,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
             //循环完将 deltaList 赋值给 path_list
             path_list.addAll(deltaList);
             //设置 SeekBar 最大值 // TODO: 2017/1/13
-//            sb_play.setMax(deltaLatlngs.size()-1);
+            sb_play.setMax(deltaLatlngs.size());
             Log.d(TAG,"sb_play.max="+sb_play.getMax());
             Log.d(TAG,"sb_play.progress="+sb_play.getProgress());
             Log.d(TAG,"deltaLatlngs.size()="+deltaLatlngs.size());
@@ -726,14 +727,14 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_point)));
         marker.showInfoWindow();
 
-        //添加起点后画线
-        if (delta_path.size()>1){
-            PolylineOptions options=(new PolylineOptions())
-                    .addAll(delta_path)
-                    .color(Color.rgb(9,129,260))
-                    .width(8f);
-            aMap.addPolyline(options);
-        }
+//        //添加起点后画线
+//        if (delta_path.size()>1){
+//            PolylineOptions options=(new PolylineOptions())
+//                    .addAll(delta_path)
+//                    .color(Color.rgb(9,129,260))
+//                    .width(8f);
+//            aMap.addPolyline(options);
+//        }
 
         //添加到达的位置点
 //        marker=aMap.addMarker(new MarkerOptions()
@@ -768,14 +769,14 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
 //                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_point)));
 //        marker.showInfoWindow();
 
-//        //添加起点后画线
-//        if (delta_path.size()>1){
-//            PolylineOptions options=(new PolylineOptions())
-//                    .addAll(delta_path)
-//                    .color(Color.rgb(9,129,260))
-//                    .width(8f);
-//            aMap.addPolyline(options);
-//        }
+        //添加起点后画线
+        if (delta_path.size()>1){
+            PolylineOptions options=(new PolylineOptions())
+                    .addAll(delta_path)
+                    .color(Color.rgb(9,129,260))
+                    .width(8f);
+            aMap.addPolyline(options);
+        }
 
         //添加终点
         if (delta_path.size()==deltaLatlngs.size()){
