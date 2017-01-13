@@ -39,6 +39,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private TextView my_title;
     private String url="http://192.168.1.184:8080/json/detectorInfo.json";
     public ImageView iv_search_mac;
+    public ImageView iv_search_trace;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,8 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
         show_menu = (RelativeLayout) findViewById(R.id.show_menu);
         my_title = (TextView) findViewById(R.id.tv_my_title);
-        iv_search_mac = (ImageView) findViewById(R.id.iv_search_mac);
+        iv_search_mac = (ImageView) findViewById(R.id.iv_search_mac);//探针管理的搜索按钮
+        iv_search_trace = (ImageView) findViewById(R.id.iv_search_trace);//轨迹查询按钮
         show_menu.setOnClickListener(this);
         //设置初始标题
         setTitle(titles[0]);
@@ -98,7 +100,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
         mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
         NeedleFragment needleFragment=new NeedleFragment();
-        TrackFragment trackFragment=new TrackFragment();
+        final TrackFragment trackFragment=new TrackFragment();
         FenceFragment fenceFragment=new FenceFragment();
         NavigateFragment navigateFragment=new NavigateFragment();
         VideoFragment videoFragment=new VideoFragment();
@@ -130,17 +132,32 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                 setTitle(title);
 
                 if(position==0){
-                    //打开菜单的触摸方式
+                    //打开菜单的触摸方式 全屏触摸
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
                     //显示搜索控件
                     iv_search_mac.setVisibility(View.VISIBLE);
                     iv_search_mac.setClickable(true);
-                }else if(position>0){
+                    //隐藏轨迹查询控件
+                    iv_search_trace.setVisibility(View.INVISIBLE);
+                    iv_search_trace.setClickable(false);
+                }else if(position==1){
+                    //打开菜单的触摸方式 边缘触摸
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //显示轨迹查询控件
+                    iv_search_trace.setVisibility(View.VISIBLE);
+                    iv_search_trace.setClickable(true);
+                    //隐藏搜索控件
+                    iv_search_mac.setVisibility(View.INVISIBLE);
+                    iv_search_mac.setClickable(false);
+                }else if (position > 1){
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                     //隐藏搜索控件
                     iv_search_mac.setVisibility(View.INVISIBLE);
                     iv_search_mac.setClickable(false);
+                    //隐藏轨迹查询控件
+                    iv_search_trace.setVisibility(View.INVISIBLE);
+                    iv_search_trace.setClickable(false);
                 }
 
                 Log.d(TAG,"onPageSelected"+"\n"+"position--"+position+"title--"+title);

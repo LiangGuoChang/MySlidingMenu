@@ -3,25 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.lgc.mysliding.fragment.TrackFragment"
-    android:background="#fffbbb"
+    android:background="#ffffff"
     >
 
-   <TextView
-       android:id="@+id/tv_track"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:text="轨迹查询"
-       android:textSize="25sp"
-       android:textColor="#000000"
-       android:gravity="center"
-       />
+    <com.amap.api.maps2d.MapView
+        android:id="@+id/map_view_2d"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.amap.api.maps2d.MapView>
 
-   <com.lgc.mysliding.views.MyRefreshListView
-       android:id="@+id/refresh_lv"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:layout_below="@id/tv_track"
-       >
-   </com.lgc.mysliding.views.MyRefreshListView>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="回放"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:id="@+id/btn_replay"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        />
+
+    <SeekBar
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/sb_play"
+        android:layout_toRightOf="@+id/btn_replay"
+        android:layout_toEndOf="@+id/btn_replay"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        />
 
 </RelativeLayout>

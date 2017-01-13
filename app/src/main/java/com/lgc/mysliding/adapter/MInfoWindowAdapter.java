@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/1/5.
+ * 探针管理功能的
  * 高德地图自定义 infoWindow 的 adapter
  */
 public class MInfoWindowAdapter implements AMap.InfoWindowAdapter {

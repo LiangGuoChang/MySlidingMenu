@@ -86,8 +86,8 @@ public class DeviceAsyncTask extends AsyncTask<String,Void,byte[]>{
                 }
 
                 Log.d(TAG,"getURLDevice保存到内存的数据长度--"+len);
-                bis.close();
-                return bos.toByteArray();
+                bis.close();return bos.toByteArray();
+
             }
         } catch (IOException e) {
             e.printStackTrace();
