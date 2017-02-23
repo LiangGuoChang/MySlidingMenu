@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <item android:id="@+id/item_add_fence"
+        android:title="添加围栏"
+        app:showAsAction="withText"
+        android:width="20dp"
+        />
+    <item android:id="@+id/item_del_fence"
+        android:title="删除围栏"
+        app:showAsAction="withText"
+        android:width="20dp"
+        />
+    <item android:id="@+id/item_update_fence"
+        android:title="修改围栏"
+        app:showAsAction="withText"
+        android:width="20dp"
+        />
+
+</menu>

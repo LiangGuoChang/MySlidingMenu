@@ -1,20 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_fence"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.lgc.mysliding.fragment.FenceFragment"
-    android:background="#f5caca"
+    android:background="#ffffff"
     >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="电子围栏"
-        android:textSize="30sp"
-        android:textColor="#000000"
-        android:layout_marginTop="68dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    <com.amap.api.maps2d.MapView
+        android:id="@+id/map_view_fence"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.amap.api.maps2d.MapView>
 
 </RelativeLayout>

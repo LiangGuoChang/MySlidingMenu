@@ -16,7 +16,7 @@ public interface ModelInterface {
      * 网络请求完成后的接口回调方法
      * 调用这个方法可以获得json数据
      */
-    public interface onDataCompleteListener{
+    interface onDataCompleteListener{
         void onLoadComplete(byte[] bytes,String urlPath);
     }
 }

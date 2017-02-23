@@ -54,6 +54,7 @@ public class MyDeviceAdapter extends DeviceBaseAdapter{
         double latitude=deviceListBean.getLatitude();
         double longitude=deviceListBean.getLongitude();
         Double[] mAddr=new Double[]{latitude,longitude};
+        Log.d(TAG,"LngLat--"+String.valueOf(latitude)+"-"+String.valueOf(longitude));
 
         //优化布局类
         ViewHolder viewHolder=null;

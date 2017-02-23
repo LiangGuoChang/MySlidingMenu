@@ -97,16 +97,17 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        if (null==mView){
+        if (null==mView){
             mView = inflater.inflate(R.layout.fragment_track, container, false);
             initView(savedInstanceState);
-//        }
+        }
 
         //解析assets目录下的json数据
         traceInfoList=getJson();
         //异步解析assets目录下的json数据
 //        new getJsonAsyncTask(traceInfoList,"trace.json").execute("trace.json");
         Log.d(TAG,"onCreateView");
+        Log.d(TAG,"sb_play--"+sb_play.getProgress());
         return mView;
     }
 
@@ -139,7 +140,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                 .inflate(R.layout.track_popupwindow,null,false);
         //创建popupWindow,设置高宽，并获取焦点true
         popupWindow = new PopupWindow(popupView,mView.getMeasuredWidth()
-                ,mView.getMeasuredHeight()/3 + 100,true);
+                ,mView.getMeasuredHeight()/3 + 150,true);
         //设置popupWindow消失监听
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -514,7 +515,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
     private void setAmapMarker(){
         Log.d(TAG,"setAmapMarker");
         if (aMap!=null){
-            Log.d(TAG,"aMap");
+            Log.d(TAG,"aMap!=null");
         }else {
             Log.d(TAG,"aMap==null");
         }
@@ -546,6 +547,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
              aMap.moveCamera(CameraUpdateFactory.changeLatLng(first));
              aMap.moveCamera(CameraUpdateFactory.zoomTo(14));
 
+             Log.d(TAG,"放大地图");
 //             Polyline polyline=aMap.addPolyline(new PolylineOptions()
 //                     .addAll(lngList)
 //                     .color(Color.rgb(9,129,260))
@@ -594,8 +596,9 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         map_view.onDestroy();
-//        mView=null;
-
+        mView=null;
+        aMap=null;
+        sb_play.setProgress(0);// TODO: 2017/2/13 设置进度为0
         Log.d(TAG,"onDestroy");
     }
 
@@ -617,7 +620,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
-
+//        sb_play.setProgress(0);// TODO: 2017/2/13 设置进度为0
         Log.d(TAG,"onDetach");
     }
 
@@ -783,6 +786,8 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                     .color(Color.rgb(9,129,260))
                     .width(8f);
             aMap.addPolyline(options);
+
+            Log.d(TAG,"添加起点后画线");
         }
 
         //添加终点
@@ -801,7 +806,11 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                     .title(leStr)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_point)));
             marker.showInfoWindow();
+
+            Log.d(TAG,"添加终点");
         }
+
+
     }
 
     /**
@@ -814,13 +823,15 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
             delta_path.clear();
-            if (i != 0 && deltaLatlngs.size()>0){
+            if (i != 0 && deltaLatlngs.size()>0 ){
                 //获取画线轨迹 // TODO: 2017/1/13
                 for (int j=0;j < sb_play.getProgress();j++){
                     delta_path.add(deltaLatlngs.get(j));
                 }
                 //画线
                 drawLine(i);
+
+                Log.d(TAG,"onProgressChanged-i-"+i);
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -840,6 +851,8 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
 
             delta_path.clear();
             int current=seekBar.getProgress();
+
+            Log.d(TAG,"onStopTrackingTouch-current-"+current);
             if (current != 0 && deltaLatlngs.size()>0){
                 //获取画线轨迹
                 for (int j=0;j < sb_play.getProgress();j++){

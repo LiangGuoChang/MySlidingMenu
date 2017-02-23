@@ -36,8 +36,8 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
     private static final String TAG="NeedleFragment";
     private static final int ListChange=2017;
 //    private String url="http://192.168.1.184:8080/json/my.json";
-//    private String url="http://192.168.1.184:8080/json/detectorInfo1.json";
-    private String url="http://o1510u4870.iok.la/1/json/detectorInfo1.json";
+    private String url="http://192.168.1.184:8080/json/detectorInfo1.json";
+//    private String url="http://o1510u4870.iok.la/1/json/detectorInfo1.json";
     private View mView;
     private ListView lv_detector;
     private EditText et_search;
@@ -119,9 +119,9 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        TextView tvMac= (TextView) view.findViewById(R.id.tv_mac);
-        String mac= tvMac.getText().toString();
-        Log.d(TAG,"mac--"+mac);
+//        TextView tvMac= (TextView) view.findViewById(R.id.tv_mac);
+//        String mac= tvMac.getText().toString();
+//        Log.d(TAG,"mac--"+mac);
         TextView tv_mac=(TextView)view.findViewById(R.id.tv_mac);
         String select_mac=tv_mac.getText().toString();
         Intent start=new Intent(getContext(), AMapFragmentActivity.class);

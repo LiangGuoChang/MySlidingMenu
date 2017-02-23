@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <item
+        android:id="@+id/item_fence_list"
+        android:title="围栏列表"
+        app:showAsAction="never"
+        android:width="20dp"
+        />
+
+    <item android:id="@+id/item_alert_msg"
+        android:title="报警信息"
+        app:showAsAction="never"
+        android:width="20dp"
+        />
+
+</menu>

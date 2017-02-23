@@ -13,6 +13,10 @@ import com.lgc.mysliding.view_interface.ViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * presenter层
+ * 获取探针列表
+ */
 public class DevicePresenter {
     private static final String TAG="DevicePresenter";
     private Context context= MyApp.getMyApp().getBaseContext();

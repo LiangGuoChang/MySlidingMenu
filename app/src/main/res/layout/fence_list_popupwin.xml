@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="48dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    >
+
+    <LinearLayout
+        android:id="@+id/ll_fence_list"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00ffffff"
+            >
+        <ImageView
+            android:id="@+id/iv_dismiss_fence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dismiss_fence"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:scaleType="center"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:background="#7c7b7b"
+            android:layout_below="@+id/iv_dismiss_fence"
+            android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/lv_fence_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#dcffffff"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            >
+        </ListView>
+
+    </LinearLayout>
+
+</LinearLayout>

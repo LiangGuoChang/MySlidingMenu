@@ -1,5 +1,7 @@
 package com.lgc.mysliding.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -21,6 +23,10 @@ import com.lgc.mysliding.fragment.NavigateFragment;
 import com.lgc.mysliding.fragment.NeedleFragment;
 import com.lgc.mysliding.fragment.TrackFragment;
 import com.lgc.mysliding.fragment.VideoFragment;
+import com.lgc.mysliding.views.MyViewPager;
+import com.tencent.android.tpush.XGPushConfig;
+import com.tencent.android.tpush.XGPushManager;
+import com.tencent.android.tpush.service.XGPushService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +35,6 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 
     private final static String TAG="MyMainActivity";
 
-    private ViewPager mViewPager;
     private List<Fragment> mFragments=new ArrayList<>();
 //    private FragmentPagerAdapter mAdapter;
     private RelativeLayout show_menu;
@@ -40,11 +45,15 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private String url="http://192.168.1.184:8080/json/detectorInfo.json";
     public ImageView iv_search_mac;
     public ImageView iv_search_trace;
+    public ImageView iv_fenceMenu;
+//    private ViewPager mViewPager;
+    private MyViewPager my_viewpager;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-                requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         Log.i(TAG,"oncreate");
         Log.i(TAG,"oncreate");
         setContentView(R.layout.activity_my_main);
@@ -54,11 +63,36 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         my_title = (TextView) findViewById(R.id.tv_my_title);
         iv_search_mac = (ImageView) findViewById(R.id.iv_search_mac);//探针管理的搜索按钮
         iv_search_trace = (ImageView) findViewById(R.id.iv_search_trace);//轨迹查询按钮
+        iv_fenceMenu = (ImageView) findViewById(R.id.iv_fence_menu);//电子围栏的菜单按钮
         show_menu.setOnClickListener(this);
         //设置初始标题
         setTitle(titles[0]);
         initLeftMenu();
         initViewPager();
+
+
+        // 开启logcat输出，方便debug，发布时请关闭
+// XGPushConfig.enableDebug(this, true);
+// 如果需要知道注册是否成功，请使用registerPush(getApplicationContext(), XGIOperateCallback)带callback版本
+// 如果需要绑定账号，请使用registerPush(getApplicationContext(),account)版本
+// 具体可参考详细的开发指南
+// 传递的参数为ApplicationContext
+        Context context = getApplicationContext();
+        XGPushManager.registerPush(context);
+
+// 2.36（不包括）之前的版本需要调用以下2行代码
+        Intent service = new Intent(context, XGPushService.class);
+        context.startService(service);
+
+        String token=XGPushConfig.getToken(this);
+        Log.d("Token","token--"+token);
+
+// 其它常用的API：
+// 绑定账号（别名）注册：registerPush(context,account)或registerPush(context,account, XGIOperateCallback)，其中account为APP账号，可以为任意字符串（qq、openid或任意第三方），业务方一定要注意终端与后台保持一致。
+// 取消绑定账号（别名）：registerPush(context,"*")，即account="*"为取消绑定，解绑后，该针对该账号的推送将失效
+// 反注册（不再接收消息）：unregisterPush(context)
+// 设置标签：setTag(context, tagName)
+// 删除标签：deleteTag(context, tagName)
 
     }
 
@@ -98,7 +132,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private void initViewPager(){
         Log.d(TAG,"initViewPager");
 
-        mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
+//        mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
+        my_viewpager = (MyViewPager) findViewById(R.id.main_my_viewpager);
+        my_viewpager.setScroll(false);//设置不能滑动
         NeedleFragment needleFragment=new NeedleFragment();
         final TrackFragment trackFragment=new TrackFragment();
         FenceFragment fenceFragment=new FenceFragment();
@@ -115,11 +151,11 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         myFSAdapter = new MyFSAdapter(getSupportFragmentManager());
         myFSAdapter.setFragmentList(mFragments);
 
-        mViewPager.setAdapter(myFSAdapter);
-        mViewPager.setCurrentItem(0);
+        my_viewpager.setAdapter(myFSAdapter);
+        my_viewpager.setCurrentItem(0);
         
         //ViewPager监听事件
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        my_viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -140,6 +176,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //隐藏轨迹查询控件
                     iv_search_trace.setVisibility(View.INVISIBLE);
                     iv_search_trace.setClickable(false);
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.INVISIBLE);
+                    iv_fenceMenu.setClickable(false);
                 }else if(position==1){
                     //打开菜单的触摸方式 边缘触摸
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
@@ -149,9 +188,27 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //隐藏搜索控件
                     iv_search_mac.setVisibility(View.INVISIBLE);
                     iv_search_mac.setClickable(false);
-                }else if (position > 1){
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.INVISIBLE);
+                    iv_fenceMenu.setClickable(false);
+                }else if (position == 2){
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.VISIBLE);
+                    iv_fenceMenu.setClickable(true);
+                    //隐藏搜索控件
+                    iv_search_mac.setVisibility(View.INVISIBLE);
+                    iv_search_mac.setClickable(false);
+                    //隐藏轨迹查询控件
+                    iv_search_trace.setVisibility(View.INVISIBLE);
+                    iv_search_trace.setClickable(false);
+                }else if (position > 2){
+                    //打开菜单的触摸方式
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.INVISIBLE);
+                    iv_fenceMenu.setClickable(false);
                     //隐藏搜索控件
                     iv_search_mac.setVisibility(View.INVISIBLE);
                     iv_search_mac.setClickable(false);
@@ -191,9 +248,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     //外部调用切换
     public boolean selectViewPager(int selectItem){
 
-        int currentItem=mViewPager.getCurrentItem();
+        int currentItem=my_viewpager.getCurrentItem();
         if(selectItem!=currentItem){
-            mViewPager.setCurrentItem(selectItem,false);
+            my_viewpager.setCurrentItem(selectItem,false);
         }
 
         return true;

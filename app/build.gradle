@@ -30,4 +30,7 @@ dependencies {
     compile files('libs/Amap_2DMap_V3.0.0_20161227.jar')
     compile files('libs/AMap_Search_V3.6.1_20161222.jar')
     compile 'com.google.code.gson:gson:2.8.0'
+    compile files('libs/jg_filter_sdk_1.1.jar')
+    compile files('libs/wup-1.0.0.E-SNAPSHOT.jar')
+    compile files('libs/Xg_sdk_v2.47_20161026_0936.jar')
 }

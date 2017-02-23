@@ -8,9 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    //刷新、加载时旋转动画
+    <!--刷新、加载时旋转动画-->
     <style name="refresh_rotate_pb" parent="@android:style/Widget.ProgressBar.Small">
         <item name="android:indeterminateDrawable">@drawable/refresh_progress</item>
     </style>
+
 
 </resources>
