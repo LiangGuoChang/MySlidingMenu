@@ -37,9 +37,11 @@ import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
 import com.lgc.mysliding.R;
 import com.lgc.mysliding.activity.MyMainActivity;
+import com.lgc.mysliding.adapter.AlertMsgAdapter;
 import com.lgc.mysliding.adapter.FenceListAdapter;
 import com.lgc.mysliding.bean.FenceBean;
 import com.lgc.mysliding.presenter.FenceListPresenter;
+import com.lgc.mysliding.service.AlertMsgService;
 import com.lgc.mysliding.view_interface.FenceViewInterface;
 import com.lgc.mysliding.views.MyCustomDialog;
 import com.lgc.mysliding.views.MyEditTextDel;
@@ -291,6 +293,7 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
                     case R.id.item_alert_msg:
                         Log.d(TAG,"选择报警信息");
                         popupAlertMsgWin();
+//                        int allMsgCount=mainActivity.getAllAlertMsgCount();
                         break;
                 }
                 return false;
@@ -298,6 +301,12 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         });
         //显示菜单
         fenceMenu.show();
+    }
+
+    private void getAlertMsgWithouImg(String msg_id,int allRecord,View view){
+        if (allRecord!=0){
+            view.setVisibility(View.GONE);
+        }
     }
 
     //显示围栏列表
@@ -494,12 +503,24 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         alertMsgWin.setOutsideTouchable(true);
         alertMsgWin.setFocusable(true);
         alertMsgWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
+        ImageView iv_no_data= (ImageView) alertView.findViewById(R.id.iv_no_data);
+        ListView msgListView=(ListView)alertView.findViewById(R.id.push_list);
         alertView.findViewById(R.id.iv_dismiss_msg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertMsgWin.dismiss();
             }
         });
+
+        int allMsgCount=mainActivity.getAllAlertMsgCount();
+        Log.d(TAG,"allMsgCount-"+allMsgCount);
+        if (allMsgCount!=0){
+            iv_no_data.setVisibility(View.GONE);
+        }
+        AlertMsgAdapter alertMsgAdapter=new AlertMsgAdapter(getContext());
+        alertMsgAdapter.setAlertMsgBeanList(AlertMsgService.
+                getMsgServiceInstance(getContext()).getScrollData(1,10,""));
+        msgListView.setAdapter(alertMsgAdapter);
     }
 
     private Circle getUpdateCircle() {

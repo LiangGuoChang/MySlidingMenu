@@ -1,7 +1,9 @@
 package com.lgc.mysliding.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -23,6 +25,7 @@ import com.lgc.mysliding.fragment.NavigateFragment;
 import com.lgc.mysliding.fragment.NeedleFragment;
 import com.lgc.mysliding.fragment.TrackFragment;
 import com.lgc.mysliding.fragment.VideoFragment;
+import com.lgc.mysliding.service.AlertMsgService;
 import com.lgc.mysliding.views.MyViewPager;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
@@ -49,15 +52,23 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 //    private ViewPager mViewPager;
     private MyViewPager my_viewpager;
 
+    private MsgReceiver msgReceiver;
+    private AlertMsgService alertMsgService;//获取报警信息服务
+    private int allAlertMsgCount=0;//全部报警信息记录
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Log.i(TAG,"oncreate");
-        Log.i(TAG,"oncreate");
         setContentView(R.layout.activity_my_main);
         Log.d(TAG,"MyMainActivity---onCreate");
+
+        //注册广播接收者
+        msgReceiver=new MsgReceiver();
+        IntentFilter intentFilter=new IntentFilter();
+        intentFilter.addAction("com.lgc.mysliding.reciver.UPDATE_LISTVIEW");
+        registerReceiver(msgReceiver,intentFilter);
 
         show_menu = (RelativeLayout) findViewById(R.id.show_menu);
         my_title = (TextView) findViewById(R.id.tv_my_title);
@@ -93,6 +104,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
 // 反注册（不再接收消息）：unregisterPush(context)
 // 设置标签：setTag(context, tagName)
 // 删除标签：deleteTag(context, tagName)
+
+        //获取报警信息服务
+        alertMsgService=AlertMsgService.getMsgServiceInstance(this);
 
     }
 
@@ -256,10 +270,32 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         return true;
     }
 
+    public int getAllAlertMsgCount() {
+        return allAlertMsgCount;
+    }
 
-//    @Override
+    public void setAllAlertMsgCount(int allAlertMsgCount) {
+        this.allAlertMsgCount = allAlertMsgCount;
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(msgReceiver);
+        super.onDestroy();
+    }
+
+
+    //    @Override
 //    public void onSelectViewPager(int selectItem) {
 //        selectViewPager(selectItem);
 //    }
+
+    public class MsgReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setAllAlertMsgCount(alertMsgService.getMsgCount());
+        }
+    }
 
 }
