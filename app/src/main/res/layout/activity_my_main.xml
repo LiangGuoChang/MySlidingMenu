@@ -57,13 +57,13 @@
         <ImageView
             android:id="@+id/iv_search_trace"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/arrows_up"
+            android:src="@drawable/search_trace_up"
             android:visibility="invisible"
             />
         <ImageView
@@ -95,12 +95,20 @@
         <!--&gt;-->
     <!--</android.support.v4.view.ViewPager>-->
 
-    <com.lgc.mysliding.views.MyViewPager
+    <!--<com.lgc.mysliding.views.MyViewPager
         android:id="@+id/main_my_viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         >
-    </com.lgc.mysliding.views.MyViewPager>
+    </com.lgc.mysliding.views.MyViewPager>-->
+
+    <com.lgc.mysliding.views.NoCacheViewPager
+        android:id="@+id/vp_nocache"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+    </com.lgc.mysliding.views.NoCacheViewPager>
 
 </LinearLayout>

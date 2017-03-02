@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -26,7 +26,7 @@ import com.lgc.mysliding.fragment.NeedleFragment;
 import com.lgc.mysliding.fragment.TrackFragment;
 import com.lgc.mysliding.fragment.VideoFragment;
 import com.lgc.mysliding.service.AlertMsgService;
-import com.lgc.mysliding.views.MyViewPager;
+import com.lgc.mysliding.views.NoCacheViewPager;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.service.XGPushService;
@@ -50,11 +50,12 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     public ImageView iv_search_trace;
     public ImageView iv_fenceMenu;
 //    private ViewPager mViewPager;
-    private MyViewPager my_viewpager;
+//    private MyViewPager my_viewpager;
 
     private MsgReceiver msgReceiver;
     private AlertMsgService alertMsgService;//获取报警信息服务
     private int allAlertMsgCount=0;//全部报警信息记录
+    private NoCacheViewPager noCacheViewPager;
 
 
     @Override
@@ -140,6 +141,10 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         //主页面淡入淡出效果 自定义的
         menu.setOffsetFadeDegree(0.25f);
 
+        //添加解决问题的就是这行代码
+        if(Build.VERSION.SDK_INT >= 21){
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
     }
 
     //初始化 ViewPager
@@ -147,10 +152,15 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         Log.d(TAG,"initViewPager");
 
 //        mViewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        my_viewpager = (MyViewPager) findViewById(R.id.main_my_viewpager);
-        my_viewpager.setScroll(false);//设置不能滑动
+//        my_viewpager = (MyViewPager) findViewById(R.id.main_my_viewpager);
+//        my_viewpager.setScroll(false);//设置不能滑动
+
+        noCacheViewPager = (NoCacheViewPager) findViewById(R.id.vp_nocache);
+        noCacheViewPager.setOffscreenPageLimit(0);
+        noCacheViewPager.setScroll(false);//设置不能滑动
+
         NeedleFragment needleFragment=new NeedleFragment();
-        final TrackFragment trackFragment=new TrackFragment();
+        TrackFragment trackFragment=new TrackFragment();
         FenceFragment fenceFragment=new FenceFragment();
         NavigateFragment navigateFragment=new NavigateFragment();
         VideoFragment videoFragment=new VideoFragment();
@@ -165,11 +175,82 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         myFSAdapter = new MyFSAdapter(getSupportFragmentManager());
         myFSAdapter.setFragmentList(mFragments);
 
-        my_viewpager.setAdapter(myFSAdapter);
-        my_viewpager.setCurrentItem(0);
+        noCacheViewPager.setAdapter(myFSAdapter);
+        noCacheViewPager.setCurrentItem(0);
+
+        noCacheViewPager.setOnPageChangeListener(new NoCacheViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                String title=titles[position];
+                setTitle(title);
+
+                if(position==0){
+                    //打开菜单的触摸方式 全屏触摸
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+                    //显示搜索控件
+                    iv_search_mac.setVisibility(View.VISIBLE);
+                    iv_search_mac.setClickable(true);
+                    //隐藏轨迹查询控件
+                    iv_search_trace.setVisibility(View.INVISIBLE);
+                    iv_search_trace.setClickable(false);
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.INVISIBLE);
+                    iv_fenceMenu.setClickable(false);
+                }else if(position==1){
+                    //打开菜单的触摸方式 边缘触摸
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //显示轨迹查询控件
+                    iv_search_trace.setVisibility(View.VISIBLE);
+                    iv_search_trace.setClickable(true);
+                    //隐藏搜索控件
+                    iv_search_mac.setVisibility(View.INVISIBLE);
+                    iv_search_mac.setClickable(false);
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.INVISIBLE);
+                    iv_fenceMenu.setClickable(false);
+                }else if (position == 2){
+                    //打开菜单的触摸方式
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.VISIBLE);
+                    iv_fenceMenu.setClickable(true);
+                    //隐藏搜索控件
+                    iv_search_mac.setVisibility(View.INVISIBLE);
+                    iv_search_mac.setClickable(false);
+                    //隐藏轨迹查询控件
+                    iv_search_trace.setVisibility(View.INVISIBLE);
+                    iv_search_trace.setClickable(false);
+                }else if (position > 2){
+                    //打开菜单的触摸方式
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.INVISIBLE);
+                    iv_fenceMenu.setClickable(false);
+                    //隐藏搜索控件
+                    iv_search_mac.setVisibility(View.INVISIBLE);
+                    iv_search_mac.setClickable(false);
+                    //隐藏轨迹查询控件
+                    iv_search_trace.setVisibility(View.INVISIBLE);
+                    iv_search_trace.setClickable(false);
+                }
+
+                Log.d(TAG,"onPageSelected"+"\n"+"position--"+position+"title--"+title);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         
         //ViewPager监听事件
-        my_viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        /*my_viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -240,7 +321,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                 Log.d(TAG,"onPageScrollStateChanged"+"\n"+"state--"+state);
 
             }
-        });
+        });*/
 
     }
 
@@ -262,9 +343,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     //外部调用切换
     public boolean selectViewPager(int selectItem){
 
-        int currentItem=my_viewpager.getCurrentItem();
+        int currentItem=noCacheViewPager.getCurrentItem();
         if(selectItem!=currentItem){
-            my_viewpager.setCurrentItem(selectItem,false);
+            noCacheViewPager.setCurrentItem(selectItem,false);
         }
 
         return true;

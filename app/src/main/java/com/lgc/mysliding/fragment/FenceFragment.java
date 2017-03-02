@@ -3,7 +3,9 @@ package com.lgc.mysliding.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -13,7 +15,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,24 +22,34 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.BitmapDescriptor;
+import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.Circle;
 import com.amap.api.maps2d.model.CircleOptions;
 import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.Marker;
+import com.amap.api.maps2d.model.MarkerOptions;
 import com.lgc.mysliding.R;
 import com.lgc.mysliding.activity.MyMainActivity;
 import com.lgc.mysliding.adapter.AlertMsgAdapter;
 import com.lgc.mysliding.adapter.FenceListAdapter;
+import com.lgc.mysliding.bean.AlertMsgBean;
 import com.lgc.mysliding.bean.FenceBean;
 import com.lgc.mysliding.presenter.FenceListPresenter;
 import com.lgc.mysliding.service.AlertMsgService;
@@ -71,6 +82,8 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
     private boolean isUpdate=false;//修改围栏标志
     private Circle updateCircle;//修改的围栏圆圈
     private String longClickId;//长按围栏列表项的id
+    private String longClickMsg_Id;//长按报警信息的msg_id
+    private boolean isSetList;//显示围栏列表或者显示所有围栏
     private View mView;
     private MapView mv_fence;
     private AMap aMap;
@@ -98,10 +111,17 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
     private Spinner spinner_phones;
     private ImageView iv_addPhone;
     private ArrayAdapter<String> spinnerAdapter;
+    private ListView msgListView;
+    private AlertMsgService alertMsgService;//报警信息服务
+    private List<AlertMsgBean> alertMsgBeanList=new ArrayList<AlertMsgBean>();//报警信息集合
+    private LocationSource.OnLocationChangedListener locationChangedListener;//地图定位回调
+    private AMapLocationClient mapLocationClient;
+    private AMapLocationClientOption mapLocationClientOption;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG,"onCreateView");
         if (null==mView){
             mView = inflater.inflate(R.layout.fragment_fence, container, false);
             initView(savedInstanceState);
@@ -113,7 +133,7 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
     }
 
     //初始化view
-    private void initView(Bundle bundle){
+    private void initView(final Bundle bundle){
         rl_fence = (RelativeLayout) mView.findViewById(R.id.rl_fence);
         iv_fence_menu =mainActivity.iv_fenceMenu;
         mv_fence = (MapView) mView.findViewById(R.id.map_view_fence);
@@ -121,9 +141,27 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         if (aMap==null){
             aMap = mv_fence.getMap();
         }
-
         iv_fence_menu.setOnClickListener(this);
+        //地图点击事件
         aMap.setOnMapClickListener(this);
+//        //地图定位事件
+        aMap.setLocationSource(mLocationSource);
+        aMap.setMyLocationEnabled(true);
+
+        /*mainActivity.getSlidingMenu().setOnClosedListener(new SlidingMenu.OnClosedListener() {
+            @Override
+            public void onClosed() {
+                boolean b=aMap.getUiSettings().isZoomGesturesEnabled();
+                Log.d(TAG,"onClosed-"+b);
+            }
+        });
+        mainActivity.getSlidingMenu().setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
+            @Override
+            public void onOpened() {
+                boolean b=aMap.getUiSettings().isZoomGesturesEnabled();
+                Log.d(TAG,"onOpened-"+b);
+            }
+        });*/
     }
 
     //初始化用户输入围栏信息PopupWindow窗口
@@ -159,7 +197,10 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
             @Override
             public void onDismiss() {
                 //将围栏各个参数设置为初始值
-                isUpdate=false;//处于非修改状态
+                if (isUpdate){
+                    Toast.makeText(getContext(),"取消修改",Toast.LENGTH_LONG).show();
+                    isUpdate=false;//回到非修改状态
+                }
                 fenceName=null;
                 fenceRadius=0;
                 fence_phone=null;
@@ -268,45 +309,69 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         Log.d(TAG,"报警类型alertType--"+alertType);
     }
 
-    //初始化弹出菜单
+    //弹出电子围栏右上角菜单
     private void showFenceMenu(View view){
-        PopupMenu fenceMenu = new PopupMenu(getContext(),view);
-        fenceMenu.getMenuInflater().inflate(R.menu.menu_fence,fenceMenu.getMenu());
-        //点击条目监听
-        fenceMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        View v=LayoutInflater.from(getContext()).inflate(R.layout.fence_menu,null);
+        final PopupWindow pw=new PopupWindow(v,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        pw.setContentView(v);
+        pw.setOutsideTouchable(true);
+        pw.setFocusable(true);
+        pw.setBackgroundDrawable(new BitmapDrawable());
+        pw.showAsDropDown(view);
+        TextView add_fence=(TextView)v.findViewById(R.id.tv_add_fence);
+        TextView show_all_fences= (TextView) v.findViewById(R.id.tv_fence_list);
+        TextView show_fence=(TextView)v.findViewById(R.id.tv_show_fence);
+        TextView show_alert=(TextView)v.findViewById(R.id.tv_show_alert);
+        //添加围栏
+        add_fence.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    //围栏列表选项
-                    case R.id.item_fence_list:
-                        Log.d(TAG,"选择围栏列表");
-                        if (fenceListWin != null && fenceListWin.isShowing()){
-                            fenceListWin.dismiss();
-                        }else {
-                            popupFenceWin();
-                            fenceListWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
-                        }
-                        //获取服务器围栏列表数据
-                        fenceListPresenter.loadFenceList(urlPath);
-                        break;
-                    //报警信息选项
-                    case R.id.item_alert_msg:
-                        Log.d(TAG,"选择报警信息");
-                        popupAlertMsgWin();
-//                        int allMsgCount=mainActivity.getAllAlertMsgCount();
-                        break;
-                }
-                return false;
+            public void onClick(View view) {
+                pw.dismiss();
+                Log.d(TAG,"添加围栏");
+                Toast.makeText(getContext(),"选择地图位置添加围栏",Toast.LENGTH_SHORT).show();
             }
         });
-        //显示菜单
-        fenceMenu.show();
-    }
-
-    private void getAlertMsgWithouImg(String msg_id,int allRecord,View view){
-        if (allRecord!=0){
-            view.setVisibility(View.GONE);
-        }
+        //显示围栏列表
+        show_fence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pw.dismiss();
+                Log.d(TAG,"选择围栏列表");
+                if (fenceListWin != null && fenceListWin.isShowing()){
+                    fenceListWin.dismiss();
+                }else {
+                    popupFenceWin();
+//                    fenceListWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
+                    isSetList=true;//显示围栏列表标志
+                }
+                //获取服务器围栏列表数据
+                fenceListPresenter.loadFenceList(urlPath);
+//                mFenceListAdapter = new FenceListAdapter(getContext(),mFenceListBeanList);
+//                lv_fenceList.setAdapter(mFenceListAdapter);
+            }
+        });
+        //显示报警信息
+        show_alert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pw.dismiss();
+                Log.d(TAG,"选择报警信息");
+                popupAlertMsgWin();
+            }
+        });
+        //显示所有围栏
+        show_all_fences.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pw.dismiss();
+                Log.d(TAG,"显示所有围栏");
+                isSetList=false;//显示所有围栏
+                //获取服务器所有围栏数据
+                fenceListPresenter.loadFenceList(urlPath);
+            }
+        });
     }
 
     //显示围栏列表
@@ -319,6 +384,9 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         fenceListWin.setContentView(fenceseView);
         fenceListWin.setOutsideTouchable(true);
         fenceListWin.setFocusable(true);
+        fenceListWin.setBackgroundDrawable(new BitmapDrawable());
+//        fenceListWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
+        fenceListWin.showAsDropDown(mainActivity.findViewById(R.id.relative_tittle));
         iv_dismiss_fence = (ImageView) fenceseView.findViewById(R.id.iv_dismiss_fence);
         lv_fenceList = (ListView) fenceseView.findViewById(R.id.lv_fence_list);
         //长按列表项事件监听
@@ -432,8 +500,31 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
     public void showFenceList(List<FenceBean.FenceListBean> fenceListBeen) {
         mFenceListBeanList=fenceListBeen;
         Log.d(TAG,"mFenceListBeanList-size-"+mFenceListBeanList.size());
-        mFenceListAdapter = new FenceListAdapter(getContext(),fenceListBeen);
-        lv_fenceList.setAdapter(mFenceListAdapter);
+        if (isSetList){
+            //展示围栏列表
+            mFenceListAdapter = new FenceListAdapter(getContext(),fenceListBeen);
+            lv_fenceList.setAdapter(mFenceListAdapter);
+        }else {
+            //在地图上绘制所有围栏
+            drawAllFence(fenceListBeen);
+        }
+    }
+
+    //绘制所有围栏
+    private void drawAllFence(List<FenceBean.FenceListBean> fenceListBeen){
+        for (FenceBean.FenceListBean fenceBean:fenceListBeen) {
+//            drawFence(new LatLng(fenceBean.getLatitude(),fenceBean.getLongitude()),
+//                    (double) fenceBean.getRadius());
+            aMap.addCircle(new CircleOptions()
+                    .center(new LatLng(fenceBean.getLatitude(),fenceBean.getLongitude()))
+                    .radius((double) fenceBean.getRadius())
+                    .fillColor(Color.argb(100,247,101,101))
+                    .strokeColor(Color.argb(100,101,101,101))
+                    .strokeWidth(1));
+        }
+
+        aMap.moveCamera(CameraUpdateFactory.changeLatLng(new LatLng(fenceListBeen.get(0).getLatitude(),fenceListBeen.get(0).getLongitude())));
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(14));
     }
 
     //对围栏进行增删改时获取服务器返回的信息
@@ -446,8 +537,9 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         FenceBean.FenceListBean fenceListBean=mFenceListBeanList.get(i);
-        showFenceMenuDialog(fenceListBean);
         setLongClickId(fenceListBean.getId());
+        showFenceMenuDialog(fenceListBean);
+//        setLongClickId(fenceListBean.getId());
         Log.d(TAG,"onItemLongClick-"+i);
         Log.d(TAG,"onItemLongClick-"+fenceListBean.getId());
         return false;
@@ -455,41 +547,47 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
 
     //长按围栏列表弹出菜单
     private void showFenceMenuDialog(final FenceBean.FenceListBean fenceListBean){
-        final String[] itemStr={"修改围栏","删除围栏"};
-        AlertDialog.Builder fenceMenuDia=new AlertDialog.Builder(getContext());
-        fenceMenuDia.setItems(itemStr, new DialogInterface.OnClickListener() {
+        LayoutInflater inflater=LayoutInflater.from(getContext());
+        final View dialogView=inflater.inflate(R.layout.fence_list_dialog,null);
+        TextView updFence= (TextView) dialogView.findViewById(R.id.tv_update_fence);
+        TextView delFence= (TextView) dialogView.findViewById(R.id.tv_del_fence);
+        final AlertDialog.Builder mBuilder= new AlertDialog.Builder(getContext());
+        mBuilder.setView(dialogView);
+        final AlertDialog fenceMenuDia=mBuilder.create();
+        fenceMenuDia.show();
+        //修改围栏
+        updFence.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                switch (i){
-                    case 0://修改围栏
-                        LatLng updateLatLng=new LatLng(fenceListBean.getLatitude(),fenceListBean.getLongitude());
-                        //取消列表窗口
-                        if (fenceListWin != null && fenceListWin.isShowing()){
-                            fenceListWin.dismiss();
-                        }
-                        //绘画修改前的围栏
-                        Circle mUpdateCircle=drawFence(updateLatLng,(double) fenceListBean.getRadius());
-                        setUpdateCircle(mUpdateCircle);
-                        //设置修改标志
-                        isUpdate=true;
-                        Toast.makeText(getContext(),"点击地图进行修改",Toast.LENGTH_LONG).show();
-                        break;
-                    case 1://删除围栏
-                        //获取组拼的删除的url
-                        String deleteUrl=deleteFence();
-                        //删除围栏到服务器
-                        fenceListPresenter.CRUDFence(deleteUrl);
-                        Log.d(TAG,"确定按钮-deleteUrl"+"\n"+deleteUrl);
-                        //获取服务器围栏列表数据
-                        fenceListPresenter.loadFenceList(urlPath);
-                        Toast.makeText(getActivity().getApplicationContext(),"删除成功"
-                                , Toast.LENGTH_SHORT).show();
-                        break;
+            public void onClick(View view) {
+                LatLng updateLatLng=new LatLng(fenceListBean.getLatitude(),fenceListBean.getLongitude());
+                //取消列表窗口
+                if (fenceListWin != null && fenceListWin.isShowing()){
+                    fenceListWin.dismiss();
                 }
-                Log.d(TAG,itemStr[i]);
+                //绘画修改前的围栏
+                Circle mUpdateCircle=drawFence(updateLatLng,(double) fenceListBean.getRadius());
+                setUpdateCircle(mUpdateCircle);
+                //设置修改标志
+                isUpdate=true;
+                Toast.makeText(getContext(),"点击地图进行修改",Toast.LENGTH_LONG).show();
+                fenceMenuDia.dismiss();
             }
         });
-        fenceMenuDia.create().show();
+        //删除围栏
+        delFence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //获取组拼的删除的url
+                String deleteUrl=deleteFence();
+                //删除围栏到服务器
+                fenceListPresenter.CRUDFence(deleteUrl);
+                Log.d(TAG,"确定按钮-deleteUrl"+"\n"+deleteUrl);
+                //获取服务器围栏列表数据
+                fenceListPresenter.loadFenceList(urlPath);
+                Toast.makeText(getContext(),"删除成功", Toast.LENGTH_SHORT).show();
+                fenceMenuDia.dismiss();
+            }
+        });
     }
 
     //弹出显示报警信息的窗口
@@ -502,25 +600,84 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         alertMsgWin.setContentView(alertView);
         alertMsgWin.setOutsideTouchable(true);
         alertMsgWin.setFocusable(true);
-        alertMsgWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
+        alertMsgWin.setBackgroundDrawable(new BitmapDrawable());
+//        alertMsgWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
+        alertMsgWin.showAsDropDown(mainActivity.findViewById(R.id.relative_tittle));
         ImageView iv_no_data= (ImageView) alertView.findViewById(R.id.iv_no_data);
-        ListView msgListView=(ListView)alertView.findViewById(R.id.push_list);
+        msgListView = (ListView)alertView.findViewById(R.id.push_list);
         alertView.findViewById(R.id.iv_dismiss_msg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertMsgWin.dismiss();
             }
         });
-
-        int allMsgCount=mainActivity.getAllAlertMsgCount();
-        Log.d(TAG,"allMsgCount-"+allMsgCount);
-        if (allMsgCount!=0){
+        //获取报警信息服务实例
+        alertMsgService = AlertMsgService.getMsgServiceInstance(getContext());
+        int msgCount=alertMsgService.getMsgCount();
+        if (msgCount!=0){
             iv_no_data.setVisibility(View.GONE);
         }
+        alertMsgBeanList=alertMsgService.getScrollData();
         AlertMsgAdapter alertMsgAdapter=new AlertMsgAdapter(getContext());
-        alertMsgAdapter.setAlertMsgBeanList(AlertMsgService.
-                getMsgServiceInstance(getContext()).getScrollData(1,10,""));
+        alertMsgAdapter.setAlertMsgBeanList(alertMsgBeanList);
         msgListView.setAdapter(alertMsgAdapter);
+        //列表长按事件
+        msgListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AlertMsgBean alertMsgBean=alertMsgService.getScrollData().get(i);
+                showAlertDialog(alertMsgBean);
+                Log.d(TAG,"长按-msg_id-"+alertMsgBean.getMsg_id());
+                return false;
+            }
+        });
+    }
+
+    //长按报警信息列表弹出菜单
+    private void showAlertDialog(final AlertMsgBean alertMsgBean){
+        LayoutInflater inflater=LayoutInflater.from(getContext());
+        View dialogView=inflater.inflate(R.layout.fence_alert_dialog,null);
+        TextView see_alert= (TextView) dialogView.findViewById(R.id.tv_see_alert);
+        TextView del_alert= (TextView) dialogView.findViewById(R.id.tv_del_alert);
+        AlertDialog.Builder mBuilder= new AlertDialog.Builder(getContext());
+        mBuilder.setView(dialogView);
+        final AlertDialog alertMenuDia=mBuilder.create();
+        alertMenuDia.show();
+        final String msg_id= String.valueOf(alertMsgBean.getMsg_id());
+        //弹出框消失时更新列表
+        /*alertMenuDia.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                List<AlertMsgBean> alertMsgList=AlertMsgService.getMsgServiceInstance(getContext()).getScrollData();
+                AlertMsgAdapter alertMsgAdapter=new AlertMsgAdapter(getContext());
+                alertMsgAdapter.setAlertMsgBeanList(alertMsgList);
+                msgListView.setAdapter(alertMsgAdapter);
+            }
+        });*/
+        //查看报警信息
+        see_alert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertMenuDia.dismiss();
+            }
+        });
+        //删除报警信息
+        del_alert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                int del_line=AlertMsgService.getMsgServiceInstance(getContext()).deletOne(msg_id);
+                //更新列表
+                List<AlertMsgBean> alertMsgList=AlertMsgService.getMsgServiceInstance(getContext()).getScrollData();
+                AlertMsgAdapter alertMsgAdapter=new AlertMsgAdapter(getContext());
+                alertMsgAdapter.setAlertMsgBeanList(alertMsgList);
+                msgListView.setAdapter(alertMsgAdapter);
+
+                alertMenuDia.dismiss();
+                Toast.makeText(getContext(),"删除id为："+msg_id+"的报警信息",Toast.LENGTH_SHORT).show();
+                Log.d(TAG,"删除-msg_id-"+msg_id+"\n"+"del_line-"+del_line);
+            }
+        });
     }
 
     private Circle getUpdateCircle() {
@@ -539,44 +696,135 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         this.longClickId = longClickId;
     }
 
+    private String getLongClickMsg_Id() {
+        return longClickMsg_Id;
+    }
+
+    private void setLongClickMsg_Id(String longClickMsg_Id) {
+        this.longClickMsg_Id = longClickMsg_Id;
+    }
+
     @Override
     public void onAttach(Context context) {
+        Log.d(TAG,"onAttach");
         super.onAttach(context);
         mainActivity = (MyMainActivity) getActivity();
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG,"onResume");
         mv_fence.onResume();
+//        if (aMap==null){
+//            aMap = mv_fence.getMap();
+//        }
+
+        //地图定位事件
+        aMap.setLocationSource(mLocationSource);
+        aMap.setMyLocationEnabled(true);
+        //启动定位
+        aMap.clear();
+        mapLocationClient.startLocation();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG,"onPause");
         mv_fence.onPause();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.d(TAG,"onSaveInstanceState");
         mv_fence.onSaveInstanceState(outState);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG,"onDestroy");
         mv_fence.onDestroy();
+//        locationChangedListener=null;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d(TAG,"onDetach");
         //mView和aMap同时设为null，切换页面后回来才不出错
         mView=null;
         aMap=null;
     }
+
+    /**
+     * 地图定位声明
+     */
+    private LocationSource mLocationSource=new LocationSource() {
+        //启动定位
+        @Override
+        public void activate(OnLocationChangedListener onLocationChangedListener) {
+            locationChangedListener = onLocationChangedListener;
+            if (mapLocationClient==null){
+                mapLocationClient=new AMapLocationClient(getContext());
+                mapLocationClientOption=new AMapLocationClientOption();
+                //设置客户端定位监听回调
+                mapLocationClient.setLocationListener(aMapLocationListener);
+                //设置客户端监听参数
+                mapLocationClientOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+                mapLocationClientOption.setNeedAddress(true);//返回地址信息
+                mapLocationClientOption.setWifiScan(true);//强行刷新WiFi
+                mapLocationClientOption.setMockEnable(false);//不允许模拟位置
+                mapLocationClientOption.setOnceLocation(true);//是否定位一次
+//                mapLocationClientOption.setInterval(5000);//定位时间间隔
+                mapLocationClient.setLocationOption(mapLocationClientOption);
+                //启动监听
+                mapLocationClient.startLocation();
+                Log.d(TAG,"activate开始定位");
+            }
+        }
+
+        //停止定位
+        @Override
+        public void deactivate() {
+            locationChangedListener=null;
+            if (mapLocationClient!=null){
+                mapLocationClient.stopLocation();
+                Log.d(TAG,"deactivate停止定位");
+            }
+            mapLocationClient=null;
+        }
+    };
+    //客户端定位监听回调
+    private AMapLocationListener aMapLocationListener=new AMapLocationListener() {
+        @Override
+        public void onLocationChanged(AMapLocation aMapLocation) {
+            if (locationChangedListener!=null && aMapLocation!=null){
+                if (aMapLocation.getErrorCode()==0){
+                    //获取当前位置
+                    LatLng latLng=new LatLng(aMapLocation.getLatitude(),aMapLocation.getLongitude());
+                    //显示当前定位
+                    aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
+                    MarkerOptions options=new MarkerOptions();
+                    options.position(latLng);
+                    options.title("您的位置");
+                    options.visible(true);
+                    BitmapDescriptor bd= BitmapDescriptorFactory
+                            .fromBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.loc_current));
+                    options.icon(bd);
+                    //设置当前位置标记
+                    Marker marker=aMap.addMarker(options);
+                    marker.showInfoWindow();
+                    Log.d(TAG,"定位成功");
+                }else {
+                    Log.d(TAG,"定位失败--"+"error code--"+aMapLocation.getErrorCode()+"\n"+
+                            "error info--"+aMapLocation.getErrorInfo());
+                }
+            }
+        }
+    };
 
     /**
      * 自定义输入框输入监听类

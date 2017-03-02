@@ -16,7 +16,6 @@
         android:padding="10dp"
         android:drawablePadding="5dp"
         android:background="@null"
-
         android:singleLine="true"
         android:maxLength="20"
         android:hint="请输入监控号码"

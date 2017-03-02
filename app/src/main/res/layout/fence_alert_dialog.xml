@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    >
+
+    <TextView
+        android:id="@+id/tv_see_alert"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="查看报警信息"
+        android:textSize="20sp"
+        android:background="@drawable/selector_text_click"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#858585"
+        />
+    <TextView
+        android:id="@+id/tv_del_alert"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="删除报警信息"
+        android:textSize="20sp"
+        android:background="@drawable/selector_text_click"
+        />
+
+</LinearLayout>

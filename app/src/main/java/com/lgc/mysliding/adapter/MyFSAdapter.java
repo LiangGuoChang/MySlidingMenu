@@ -53,4 +53,5 @@ public class MyFSAdapter extends FragmentStatePagerAdapter{
 //    public void setTitles(String[] titles){
 //
 //    }
+
 }

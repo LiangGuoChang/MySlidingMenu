@@ -1,64 +1,78 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/alert_msg_background"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="3dp"
+    android:background="#00ffffff"
     >
 
-    <TextView
-        android:id="@+id/text_view_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="ID: "
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="3dp"
+        android:background="@drawable/alert_msg_background"
+        >
 
-    <TextView
-        android:id="@+id/push_msg_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/text_view_id"
-        android:layout_toEndOf="@+id/text_view_id"
-        android:layout_alignParentTop="true"
-        android:text="1489579377435"
-        />
+        <TextView
+            android:id="@+id/text_view_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="ID: "
+            />
 
-    <TextView
-        android:id="@+id/push_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/push_msg_id"
-        android:layout_marginTop="5dp"
-        android:textSize="18sp"
-        android:text="报警信息标题"
-        android:textColor="#858585"
-        />
+        <TextView
+            android:id="@+id/push_msg_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/text_view_id"
+            android:layout_toEndOf="@+id/text_view_id"
+            android:layout_alignParentTop="true"
+            android:text="1489579377435"
+            />
 
-    <TextView
-        android:id="@+id/push_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/push_title"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/push_msg_id"
-        android:layout_marginTop="8dp"
-        android:text="00:00:00"
-        android:textColor="#858585"
-        />
+        <TextView
+            android:id="@+id/push_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/push_msg_id"
+            android:layout_marginTop="5dp"
+            android:textSize="18sp"
+            android:text="报警信息标题"
+            android:textColor="#858585"
+            />
 
-    <TextView
-        android:id="@+id/push_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/push_title"
-        android:layout_marginTop="5dp"
-        android:text="报警信息内容"
-        android:textColor="#858585"
-        />
+        <TextView
+            android:id="@+id/push_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/push_title"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/push_msg_id"
+            android:layout_marginTop="8dp"
+            android:text="2017-02-27 00:00:00"
+            android:textColor="#858585"
+            />
+
+        <TextView
+            android:id="@+id/push_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/push_title"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="报警信息内容"
+            android:textColor="#858585"
+            />
+
+    </RelativeLayout>
 
 </RelativeLayout>

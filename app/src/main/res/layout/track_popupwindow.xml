@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#cfbad8ff"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#00ffffff"
     >
-    <View
-        android:id="@+id/view_pop"
-        android:layout_width="match_parent"
-        android:layout_height="0.1dp"
-        android:background="#d1d0d0"
-        />
 
-    <LinearLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/fence_list_background"
+        >
+
+    <RelativeLayout
         android:id="@+id/ll_mac_line"
-        android:layout_below="@id/view_pop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -22,23 +25,31 @@
         android:layout_marginTop="10dp"
         >
         <TextView
+            android:id="@+id/textview_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center"
-            android:text="MAC/手机号:"
+            android:layout_centerVertical="true"
+            android:text="mac/手机号:"
             android:textSize="18sp"
             android:textColor="#000000"
             />
 
-        <EditText
+        <com.lgc.mysliding.views.MyEditTextDel
             android:id="@+id/et_device_id"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/textview_1"
+            android:layout_toEndOf="@+id/textview_1"
             android:hint="输入MAC地址/手机号码"
+            android:gravity="center_horizontal"
+            android:background="@null"
+            android:drawablePadding="5dp"
+            android:padding="10dp"
             android:textSize="18sp"
             android:textColor="#000000"
             android:maxLines="1"
@@ -46,7 +57,7 @@
             android:digits="@string/search_mac"
             />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/ll_time_line"
@@ -55,15 +66,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         >
 
         <TextView
-            android:id="@+id/search_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
             android:gravity="center"
             android:layout_gravity="center_vertical"
             android:text="查询时间段:"
@@ -72,10 +80,10 @@
             />
        <RadioGroup
            android:id="@+id/radio_group"
-           android:layout_width="wrap_content"
+           android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:layout_marginLeft="20dp"
-           android:layout_marginStart="20dp"
+           android:layout_marginLeft="10dp"
+           android:layout_marginStart="10dp"
            android:orientation="horizontal"
            >
            <RadioButton
@@ -123,12 +131,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text=" 开 始 时 间 :"
+            android:text="开 始 时 间 :"
             android:textSize="18sp"
             android:textColor="#000000"
             android:id="@+id/start_text"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -136,8 +142,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="18dp"
-            android:layout_marginStart="18dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_toRightOf="@+id/start_text"
             android:layout_toEndOf="@+id/start_text"
             android:orientation="horizontal"
@@ -228,12 +234,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text=" 结 束 时 间 :"
+            android:text="结 束 时 间 :"
             android:textSize="18sp"
             android:textColor="#000000"
             android:id="@+id/end_text"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -241,8 +245,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="18dp"
-            android:layout_marginStart="18dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_toRightOf="@+id/end_text"
             android:layout_toEndOf="@+id/end_text"
             android:orientation="horizontal"
@@ -333,7 +337,9 @@
         android:layout_alignStart="@+id/ll_end_line"
         android:layout_marginLeft="34dp"
         android:layout_marginStart="34dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -346,9 +352,11 @@
         android:id="@+id/btn_ensure"
         android:layout_marginRight="27dp"
         android:layout_marginEnd="27dp"
+        android:layout_marginBottom="5dp"
         android:layout_alignTop="@+id/btn_cancel"
         android:layout_alignRight="@+id/ll_end_line"
         android:layout_alignEnd="@+id/ll_end_line" />
 
+    </RelativeLayout>
 
 </RelativeLayout>

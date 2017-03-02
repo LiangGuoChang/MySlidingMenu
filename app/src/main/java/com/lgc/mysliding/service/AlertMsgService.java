@@ -54,33 +54,44 @@ public class AlertMsgService {
         Cursor cursor=db.rawQuery("select count(*) from alertmessage",null);
         try{
             cursor.moveToFirst();
+
             Log.d(TAG, "getMsgCount: "+cursor.getInt(0));
             return cursor.getInt(0);
+//            Log.d(TAG, "getMsgCount: "+cursor.getCount());
+//            return cursor.getCount();
         }finally {
             cursor.close();
         }
     }
 
+    //删除指定msg_id的报警信息
+    public int deletOne(String msg_id){
+        SQLiteDatabase db=alertMsgOpenHelper.getWritableDatabase();
+        int delLine=db.delete("alertmessage","msg_id=?",new String[]{msg_id});
+        Log.d(TAG, "deletOne-"+delLine);
+        return delLine;
+    }
+
     //从数据库获取可以显示到报警信息
-    public List<AlertMsgBean> getScrollData(int currentPage,int lineSize,String msg_id){
-        String firstResult=String.valueOf((currentPage-1)*lineSize);
+    public List<AlertMsgBean> getScrollData(/*int currentPage,int lineSize,String msg_id*/){
+//        String firstResult=String.valueOf((currentPage-1)*lineSize);
         SQLiteDatabase db=alertMsgOpenHelper.getReadableDatabase();
         Cursor cursor=null;
         try{
-            if (msg_id == null || "".equals(msg_id)){
+//            if (msg_id == null || "".equals(msg_id)){
                 cursor = db
                         .query("alertmessage",
                                 new String[] { "id,msg_id,title,content,activity,msgActionType,update_time" },
-                                null, null, null, null, "update_time DESC",
-                                firstResult + "," + lineSize);
-            }else {
-                cursor = db
+                                null, null, null, null, "update_time DESC");
+//                                firstResult + "," + lineSize);
+//            }else {
+                /*cursor = db
                         .query("alertmessage",
                                 new String[] { "id,msg_id,title,content,activity,msgActionType,update_time" },
                                 "msg_id like ?", new String[] { msg_id + "%" },
-                                null, null, "update_time DESC", firstResult
-                                        + "," + lineSize);
-            }
+                                null, null, "update_time DESC");
+//                                firstResult + "," + lineSize);*/
+//            }
             List<AlertMsgBean> alertMsgBeanList=new ArrayList<AlertMsgBean>();
             while (cursor.moveToNext()){
                 alertMsgBeanList.add(new AlertMsgBean(cursor.getInt(cursor.getColumnIndex("id")),

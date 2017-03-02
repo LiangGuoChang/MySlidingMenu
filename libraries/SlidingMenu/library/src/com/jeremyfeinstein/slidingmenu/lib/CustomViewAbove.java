@@ -172,16 +172,16 @@ public class CustomViewAbove extends ViewGroup {
 				if (mViewBehind != null) {
 					switch (position) {
 					case 0:
-					case 2:
+//					case 2:
 						mViewBehind.setChildrenEnabled(true);
 						break;
-					case 1:
-						mViewBehind.setChildrenEnabled(false);
-						break;
+//					case 1:
+//						mViewBehind.setChildrenEnabled(false);
+//						break;
 					}
 				}
 			}
-		});
+		});// TODO: 2017/3/2 以上case 2，case 1 源码是没注释掉的 
 
 		final float density = context.getResources().getDisplayMetrics().density;
 		mFlingDistance = (int) (MIN_DISTANCE_FOR_FLING * density);
@@ -648,8 +648,7 @@ public class CustomViewAbove extends ViewGroup {
 			} else {
 				mIsUnableToDrag = true;
 			}
-			break; // TODO: 2016/12/21  修改为 return mQuickReturn
-//			return mQuickReturn;
+			break; // TODO: 2016/12/21  可修改为 return mQuickReturn
 		case MotionEventCompat.ACTION_POINTER_UP:
 			onSecondaryPointerUp(ev);
 			break;
@@ -696,8 +695,7 @@ public class CustomViewAbove extends ViewGroup {
 			int index = MotionEventCompat.getActionIndex(ev);
 			mActivePointerId = MotionEventCompat.getPointerId(ev, index);
 			mLastMotionX = mInitialMotionX = ev.getX();
-			break; // TODO: 2016/12/21 修改为 return mQuickReturn
-//			return mQuickReturn;
+			break; // TODO: 2016/12/21 可修改为 return mQuickReturn
 		case MotionEvent.ACTION_MOVE:
 			if (!mIsBeingDragged) {	
 				determineDrag(ev);

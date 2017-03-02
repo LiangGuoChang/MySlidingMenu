@@ -15,10 +15,12 @@ public class MyViewPager extends ViewPager{
 
     public MyViewPager(Context context) {
         super(context);
+        this.setOffscreenPageLimit(0);
     }
 
     public MyViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.setOffscreenPageLimit(0);
     }
 
     /**

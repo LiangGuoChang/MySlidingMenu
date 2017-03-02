@@ -2,7 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="3dp"
+    android:background="#00ffffff"
+    >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/fence_list_background"
+        >
 
     <LinearLayout
         android:orientation="horizontal"
@@ -16,45 +28,136 @@
         <TextView
             android:id="@+id/tv_fence_name"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="某某街围栏"
             android:textSize="12sp"
             />
 
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:gravity="center_vertical"
-            android:text="经纬度:"
-            android:textSize="12sp"
-            />
-        <TextView
-            android:id="@+id/tv_fence_location"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:gravity="center_vertical"
-            android:text="115.77291059910935
-115.77291059910935"
-            android:textSize="12sp"
-            />
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="半径(米):"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:id="@+id/tv_fence_radius"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="5000"
+                android:textSize="13sp"
+                />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tv_fence_alter"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:text="进/出报警"
             android:textSize="12sp"
-            android:gravity="center_vertical"
-            />
+            android:gravity="center_vertical" />
+
+
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginStart="10dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="经纬度:"-->
+            <!--android:textSize="12sp"-->
+            <!--/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/tv_fence_location"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="4"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="115.77291059910935-->
+<!--115.77291059910935"-->
+            <!--android:textSize="12sp"-->
+            <!--/>-->
     </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="经度:"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:id="@+id/tv_longitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="115.77291059910935"
+                android:textSize="12sp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="纬度:"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:id="@+id/tv_latitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="115.77291059910935"
+                android:textSize="12sp"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,39 +169,22 @@
         >
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="半径(米):"
-            android:textSize="12sp"
-            />
-        <TextView
-            android:id="@+id/tv_fence_radius"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="5000"
-            android:textSize="13sp"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
             android:text="监控号码:"
             android:textSize="12sp"
             />
 
         <TextView
             android:id="@+id/tv_fence_phone"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
             android:gravity="center_vertical"
             android:text="13888888888"
             android:textSize="12sp"
             />
 
+    </LinearLayout>
 
     </LinearLayout>
 

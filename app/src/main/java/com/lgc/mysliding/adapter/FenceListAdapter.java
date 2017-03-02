@@ -58,7 +58,8 @@ public class FenceListAdapter extends BaseAdapter{
             viewHolder=new ViewHolder();
             view= LayoutInflater.from(mContext).inflate(R.layout.fence_list_item,null);
             viewHolder.tv_fenceName= (TextView) view.findViewById(R.id.tv_fence_name);
-            viewHolder.tv_fenceLocation= (TextView) view.findViewById(R.id.tv_fence_location);
+            viewHolder.tv_longitude=(TextView)view.findViewById(R.id.tv_longitude);
+            viewHolder.tv_latitude=(TextView)view.findViewById(R.id.tv_latitude);
             viewHolder.tv_fenceAlert= (TextView) view.findViewById(R.id.tv_fence_alter);
             viewHolder.tv_fenceRadius= (TextView) view.findViewById(R.id.tv_fence_radius);
             viewHolder.tv_fencePhone= (TextView) view.findViewById(R.id.tv_fence_phone);
@@ -92,14 +93,14 @@ public class FenceListAdapter extends BaseAdapter{
         for (int j=0;j<fencePhones.size();j++) {
             phones=phones+fencePhones.get(j);
             if (j<fencePhones.size()-1){
-//                phones=phones+"+";
-                phones=phones+"\n";
+                phones=phones+"/";
+//                phones=phones+"\n";
             }
             Log.d(TAG,"fencePhones-"+j+"-"+fencePhones.get(j));
         }
         viewHolder.tv_fenceName.setText(mFenceListBean.getName());
-        viewHolder.tv_fenceLocation.setText(lon+"\n"+lat);
-//        viewHolder.tv_fenceLocation.setText("经纬度："+"/");
+        viewHolder.tv_longitude.setText(lon);
+        viewHolder.tv_latitude.setText(lat);
         viewHolder.tv_fenceAlert.setText(alertStr);
         viewHolder.tv_fenceRadius.setText(radius);
         viewHolder.tv_fencePhone.setText(phones);
@@ -109,7 +110,8 @@ public class FenceListAdapter extends BaseAdapter{
     //布局优化内嵌类
     static class ViewHolder{
         TextView tv_fenceName;
-        TextView tv_fenceLocation;
+        TextView tv_longitude;
+        TextView tv_latitude;
         TextView tv_fenceAlert;
         TextView tv_fenceRadius;
         TextView tv_fencePhone;

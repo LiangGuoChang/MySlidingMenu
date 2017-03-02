@@ -13,4 +13,7 @@
     <color name="menu_click">#cbcbcc</color>
     <color name="menu_unclick">#ffffff</color>
 
+    <color name="fence_menu_click">#ffffff</color>
+    <color name="fence_menu">#e4e2e2</color>
+
 </resources>

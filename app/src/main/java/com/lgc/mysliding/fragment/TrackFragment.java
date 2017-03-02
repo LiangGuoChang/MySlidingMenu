@@ -4,6 +4,7 @@ package com.lgc.mysliding.fragment;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -139,15 +140,19 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
         popupView = getLayoutInflater(this.getArguments())
                 .inflate(R.layout.track_popupwindow,null,false);
         //创建popupWindow,设置高宽，并获取焦点true
-        popupWindow = new PopupWindow(popupView,mView.getMeasuredWidth()
-                ,mView.getMeasuredHeight()/3 + 150,true);
+        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        popupWindow.setContentView(popupView);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.showAsDropDown(myMainActivity.findViewById(R.id.relative_tittle));
         //设置popupWindow消失监听
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 //窗口消失，设置时间段选择标志
                 isSelected=false;
-                iv_search_trace.setImageResource(R.drawable.arrows_up);
+                iv_search_trace.setImageResource(R.drawable.search_trace_up);
 
                 // TODO: 2017/1/12  popupWindow 消失，启动回放任务
 //                runnable=new Runnable() {
@@ -243,12 +248,12 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
             case R.id.iv_search_trace:
                 if (popupWindow!=null && popupWindow.isShowing()){
                     popupWindow.dismiss();
-                    iv_search_trace.setImageResource(R.drawable.arrows_up);
+                    iv_search_trace.setImageResource(R.drawable.search_trace_up);
                     return;
                 }else {
                     initPopupWindow();
-                    popupWindow.showAsDropDown(view,0,20);
-                    iv_search_trace.setImageResource(R.drawable.arrows_down);
+//                    popupWindow.showAsDropDown(view,0,20);
+                    iv_search_trace.setImageResource(R.drawable.search_trace_down);
                 }
                 break;
 
@@ -263,19 +268,19 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
             //确定按扭
             case R.id.btn_ensure:
 
-                //设置回放按钮可以点击
+                /*//设置回放按钮可以点击
                 if (!btn_replay.isEnabled()){
                     btn_replay.setEnabled(true);
-                }
+                }*/
 
                 //选择了时间段并且时间段不为0才能执行
-                if (isSelected&&(startTime>0&&endTime>0)){
+                if (isSelected && (startTime>0 && endTime>0)){
                     // TODO: 2017/1/13 先清除地图
                     if (aMap!=null){
                         aMap.clear();
                     }
                     //判断是否为自定义的
-                    if (selectCustom==true){
+                    if (selectCustom){
                         getCustomTime();
                     }
                     //获取时间匹配的列表
@@ -288,6 +293,10 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                     //如果开始时间，结束时间不为0才取消窗口
                     if ((startTime>0&&endTime>0)&&(popupWindow!=null && popupWindow.isShowing())){
                         popupWindow.dismiss();
+                        //设置回放按钮可以点击
+                        if (!btn_replay.isEnabled()){
+                            btn_replay.setEnabled(true);
+                        }
                         return;
                     }
                 }

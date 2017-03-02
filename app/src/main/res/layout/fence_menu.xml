@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="146.67dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="right"
+    >
+    <LinearLayout
+        android:layout_width="146.67dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="#e4e2e2"
+        >
+        <TextView
+            android:id="@+id/tv_add_fence"
+            android:layout_width="match_parent"
+            android:layout_height="40.56dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="添加围栏"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:clickable="true"
+            android:background="@drawable/selector_fence_menu"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/white" />
+        <TextView
+            android:id="@+id/tv_show_fence"
+            android:layout_width="match_parent"
+            android:layout_height="40.56dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="围栏列表"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:clickable="true"
+            android:background="@drawable/selector_fence_menu"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/white" />
+        <TextView
+            android:id="@+id/tv_show_alert"
+            android:layout_width="match_parent"
+            android:layout_height="40.56dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="报警信息"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:clickable="true"
+            android:background="@drawable/selector_fence_menu"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/white" />
+        <TextView
+            android:id="@+id/tv_fence_list"
+            android:layout_width="match_parent"
+            android:layout_height="40.56dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="所有围栏"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:clickable="true"
+            android:background="@drawable/selector_fence_menu"
+            />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

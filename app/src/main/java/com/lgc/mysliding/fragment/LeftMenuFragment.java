@@ -147,7 +147,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
 //        View mview= slMenu.getContent();
 //        Log.d(TAG,"getContent--"+mview.getId());
 
-        //关闭菜单，返回主页面
+        //关闭菜单，返回主页面 // TODO: 2017/3/2
         if(slMenu.isMenuShowing()){
             slMenu.showContent();
         }
