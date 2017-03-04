@@ -114,6 +114,7 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
     private ListView msgListView;
     private AlertMsgService alertMsgService;//报警信息服务
     private List<AlertMsgBean> alertMsgBeanList=new ArrayList<AlertMsgBean>();//报警信息集合
+    private List<Circle> circleList=new ArrayList<Circle>();//所有围栏集合
     private LocationSource.OnLocationChangedListener locationChangedListener;//地图定位回调
     private AMapLocationClient mapLocationClient;
     private AMapLocationClientOption mapLocationClientOption;
@@ -505,6 +506,12 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
             mFenceListAdapter = new FenceListAdapter(getContext(),fenceListBeen);
             lv_fenceList.setAdapter(mFenceListAdapter);
         }else {
+            //先清除之前显示过的所有地图
+            if (circleList.size()>0){
+                for (Circle circle:circleList) {
+                    circle.remove();
+                }
+            }
             //在地图上绘制所有围栏
             drawAllFence(fenceListBeen);
         }
@@ -512,19 +519,26 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
 
     //绘制所有围栏
     private void drawAllFence(List<FenceBean.FenceListBean> fenceListBeen){
+
+        //先清除围栏列表
+        if (circleList.size()>0){
+            circleList.clear();
+        }
+
         for (FenceBean.FenceListBean fenceBean:fenceListBeen) {
 //            drawFence(new LatLng(fenceBean.getLatitude(),fenceBean.getLongitude()),
 //                    (double) fenceBean.getRadius());
-            aMap.addCircle(new CircleOptions()
+            Circle circle=aMap.addCircle(new CircleOptions()
                     .center(new LatLng(fenceBean.getLatitude(),fenceBean.getLongitude()))
                     .radius((double) fenceBean.getRadius())
                     .fillColor(Color.argb(100,247,101,101))
                     .strokeColor(Color.argb(100,101,101,101))
                     .strokeWidth(1));
+            circleList.add(circle);
         }
 
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(new LatLng(fenceListBeen.get(0).getLatitude(),fenceListBeen.get(0).getLongitude())));
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(14));
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(16));
     }
 
     //对围栏进行增删改时获取服务器返回的信息
