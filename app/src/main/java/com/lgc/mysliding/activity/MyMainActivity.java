@@ -56,6 +56,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private AlertMsgService alertMsgService;//获取报警信息服务
     private int allAlertMsgCount=0;//全部报警信息记录
     private NoCacheViewPager noCacheViewPager;
+    private RelativeLayout relat_tittle;
 
 
     @Override
@@ -71,6 +72,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         intentFilter.addAction("com.lgc.mysliding.reciver.UPDATE_LISTVIEW");
         registerReceiver(msgReceiver,intentFilter);
 
+        relat_tittle = (RelativeLayout)findViewById(R.id.relative_tittle);//标题栏
         show_menu = (RelativeLayout) findViewById(R.id.show_menu);
         my_title = (TextView) findViewById(R.id.tv_my_title);
         iv_search_mac = (ImageView) findViewById(R.id.iv_search_mac);//探针管理的搜索按钮
@@ -191,6 +193,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                 setTitle(title);
 
                 if(position==0){
+                    relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式 全屏触摸
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
                     //显示搜索控件
@@ -203,6 +206,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     iv_fenceMenu.setVisibility(View.INVISIBLE);
                     iv_fenceMenu.setClickable(false);
                 }else if(position==1){
+                    relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式 边缘触摸
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                     //显示轨迹查询控件
@@ -215,6 +219,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     iv_fenceMenu.setVisibility(View.INVISIBLE);
                     iv_fenceMenu.setClickable(false);
                 }else if (position == 2){
+                    relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                     //电子围栏控件
@@ -226,7 +231,21 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //隐藏轨迹查询控件
                     iv_search_trace.setVisibility(View.INVISIBLE);
                     iv_search_trace.setClickable(false);
-                }else if (position > 2){
+                }else if(position==3){
+                    relat_tittle.setVisibility(View.GONE);
+                    //打开菜单的触摸方式
+                    menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.INVISIBLE);
+                    iv_fenceMenu.setClickable(false);
+                    //隐藏搜索控件
+                    iv_search_mac.setVisibility(View.INVISIBLE);
+                    iv_search_mac.setClickable(false);
+                    //隐藏轨迹查询控件
+                    iv_search_trace.setVisibility(View.INVISIBLE);
+                    iv_search_trace.setClickable(false);
+                }else if (position > 3){
+                    relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
                     //电子围栏控件

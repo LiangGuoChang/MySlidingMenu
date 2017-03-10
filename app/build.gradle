@@ -23,16 +23,17 @@ dependencies {
     compile project(':libraries:SlidingMenu/library')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:design:25.1.0'
     compile files('libs/Amap_2DMap_V3.0.0_20161227.jar')
     compile files('libs/AMap_Search_V3.6.1_20161222.jar')
-    compile 'com.google.code.gson:gson:2.8.0'
     compile files('libs/jg_filter_sdk_1.1.jar')
     compile files('libs/wup-1.0.0.E-SNAPSHOT.jar')
     compile files('libs/Xg_sdk_v2.47_20161026_0936.jar')
     compile files('libs/AMapNavi_1.9.4_AMapLocation_3.1.0_20161201.jar')
     compile files('libs/AMap_Location_V3.2.1_20161228.jar')
     compile files('libs/Android_Map3D_SDK_V4.1.3_20161208.jar')
+    compile files('libs/Msc.jar')
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:support-v4:25.2.0'
+    compile 'com.android.support:design:25.2.0'
+    compile 'com.google.code.gson:gson:2.8.0'
 }

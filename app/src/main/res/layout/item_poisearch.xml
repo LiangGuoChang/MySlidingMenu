@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/selector_poi_item"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
+    >
+
+    <TextView
+        android:id="@+id/tv_poi_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:text="惠州市民政局"
+        android:textSize="15sp"
+        android:textColor="@android:color/black"
+        />
+    <TextView
+        android:id="@+id/tv_poi_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/tv_poi_name"
+        android:text="云山西路6号行政中心"
+        android:textSize="13sp"
+        android:textColor="@android:color/darker_gray"
+        />
+
+    <TextView
+        android:id="@+id/tv_poi_district"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/tv_poi_address"
+        android:text="广东省惠州市惠城区"
+        android:textSize="13sp"
+        android:textColor="@android:color/darker_gray"
+        />
+
+</RelativeLayout>

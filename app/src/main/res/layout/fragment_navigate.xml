@@ -1,13 +1,188 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-        <com.amap.api.navi.AMapNaviView
-            android:id="@+id/navi_view"
+        <RelativeLayout
+            android:id="@+id/rl_nv_ttop"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="#b41c36d4"
+            >
 
-        </com.amap.api.navi.AMapNaviView>
+                <RelativeLayout
+                    android:id="@+id/rl_nv_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
+                    >
+                        <!--<ImageView
+                            android:id="@+id/iv_nv_back"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/nv_back"
+                            />-->
+                        <LinearLayout
+                            android:id="@+id/ll_nv_start"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:background="#648e9cf2"
+                            >
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginStart="5dp"
+                                    android:text="从"
+                                    android:textSize="15sp"
+                                    android:textColor="@android:color/white"
+                                    />
+                                <TextView
+                                    android:id="@+id/tv_start_poi"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_marginStart="8dp"
+                                    android:hint="我的位置"
+                                    android:textColorHint="@android:color/white"
+                                    android:textSize="19sp"
+                                    android:textColor="@android:color/white"
+                                    />
+                        </LinearLayout>
 
-</FrameLayout>
+                        <LinearLayout
+                            android:id="@+id/ll_end"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_below="@+id/ll_nv_start"
+                            android:background="#648e9cf2"
+                            >
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginStart="5dp"
+                                    android:text="到"
+                                    android:textSize="15sp"
+                                    android:textColor="@android:color/white"
+                                    />
+
+                                <TextView
+                                    android:id="@+id/tv_end_poi"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_marginStart="8dp"
+                                    android:hint="输入终点"
+                                    android:textColorHint="@android:color/white"
+                                    android:textSize="19sp"
+                                    android:textColor="@android:color/white"
+                                    />
+
+                        </LinearLayout>
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rl_nv_top"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    >
+                        <TextView
+                            android:id="@+id/tv_drive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="驾车"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="18sp"
+                            />
+                        <TextView
+                            android:id="@+id/tv_ride"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="骑行"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="18sp"
+                            />
+                        <TextView
+                            android:id="@+id/tv_walk"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:text="步行"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="18sp"
+                            />
+
+                </LinearLayout>
+
+        </RelativeLayout>
+
+<!--        <com.amap.api.maps2d.MapView
+            android:id="@+id/nv_mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            >
+        </com.amap.api.maps2d.MapView>-->
+
+
+        <com.amap.api.maps.TextureMapView
+            android:id="@+id/nv_mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_nv_ttop"
+            >
+        </com.amap.api.maps.TextureMapView>
+
+        <Button
+            android:id="@+id/btn_navi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="开始导航"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

@@ -1,39 +1,48 @@
 package com.lgc.mysliding.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
-import com.amap.api.navi.AMapNavi;
-import com.amap.api.navi.AMapNaviListener;
-import com.amap.api.navi.AMapNaviView;
-import com.amap.api.navi.AMapNaviViewListener;
-import com.amap.api.navi.model.AMapLaneInfo;
-import com.amap.api.navi.model.AMapNaviCross;
-import com.amap.api.navi.model.AMapNaviInfo;
-import com.amap.api.navi.model.AMapNaviLocation;
-import com.amap.api.navi.model.AMapNaviStaticInfo;
-import com.amap.api.navi.model.AMapNaviTrafficFacilityInfo;
-import com.amap.api.navi.model.AimLessModeCongestionInfo;
-import com.amap.api.navi.model.AimLessModeStat;
-import com.amap.api.navi.model.NaviInfo;
-import com.autonavi.tbt.NaviStaticInfo;
-import com.autonavi.tbt.TrafficFacilityInfo;
+import com.amap.api.maps.TextureMapView;
+import com.amap.api.services.help.Tip;
+import com.lgc.mysliding.AmapNavigation.GPSNaviActivity;
 import com.lgc.mysliding.R;
+import com.lgc.mysliding.activity.EnterActivity;
 
 
-public class NavigateFragment extends Fragment implements AMapNaviViewListener, AMapNaviListener {
+public class NavigateFragment extends Fragment implements View.OnClickListener {
+
+    private static final String TAG="NavigateFragment";
+    private static final int POI_RESULT=300;
+    private static final int POI_REQUEST_START=301;
+    private static final int POI_REQUEST_END=302;
+    private static final int POI_START_TYPE=303;
+    private static final int POI_END_TYPE=308;
 
     private View mView;
-    private AMapNaviView aMapNaviView;
-    private AMapNavi aMapNavi;
+    private Button btn_navi;
+    private TextureMapView mMapView;
+    private com.amap.api.maps.AMap mAmap;
+    private TextView start_point;//起点
+    private TextView end_point;//终点
+    private TextView drive;//驾车
+    private TextView ride;//骑行
+    private TextView walk;//步行
+    private Tip startTip;//起点
+    private Tip endTip;//终点
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG,"onCreateView");
         if (null==mView){
             mView = inflater.inflate(R.layout.fragment_navigate, container, false);
         }
@@ -41,247 +50,116 @@ public class NavigateFragment extends Fragment implements AMapNaviViewListener, 
         return mView;
     }
 
+    //初始化控件
     private void initView(Bundle bundle){
-        aMapNaviView = (AMapNaviView) mView.findViewById(R.id.navi_view);
-        aMapNaviView.setAMapNaviViewListener(this);
-        aMapNaviView.onCreate(bundle);
+        mMapView = (TextureMapView)mView.findViewById(R.id.nv_mapview);
+        mMapView.onCreate(bundle);
+        if (mAmap==null){
+            mAmap = mMapView.getMap();
+        }
+        start_point = (TextView)mView.findViewById(R.id.tv_start_poi);
+        start_point.setOnClickListener(this);
+        end_point = (TextView)mView.findViewById(R.id.tv_end_poi);
+        end_point.setOnClickListener(this);
+        drive = (TextView)mView.findViewById(R.id.tv_drive);
+        drive.setOnClickListener(this);
+        ride = (TextView)mView.findViewById(R.id.tv_ride);
+        ride.setOnClickListener(this);
+        walk = (TextView)mView.findViewById(R.id.tv_walk);
+        walk.setOnClickListener(this);
+        btn_navi = (Button)mView.findViewById(R.id.btn_navi);
+        btn_navi.setOnClickListener(this);
+    }
 
-        aMapNavi = AMapNavi.getInstance(getContext());
-        aMapNavi.addAMapNaviListener(this);
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_navi://开始导航
+                Intent start=new Intent(getContext(), GPSNaviActivity.class);
+                startActivity(start);
+                break;
+            case R.id.tv_start_poi://获取起点位置
+                Intent startPoi=new Intent(getContext(), EnterActivity.class);
+                Bundle startBundle=new Bundle();
+                startBundle.putInt("item",3);
+                startBundle.putInt("poiType",POI_START_TYPE);
+                startPoi.putExtras(startBundle);
+                startActivityForResult(startPoi,POI_REQUEST_START);
+                break;
+            case R.id.tv_end_poi://获取终点位置
+                Intent endPoi=new Intent(getContext(), EnterActivity.class);
+                Bundle endBundle=new Bundle();
+                endBundle.putInt("item",3);
+                endBundle.putInt("poiType",POI_END_TYPE);
+                endPoi.putExtras(endBundle);
+                startActivityForResult(endPoi,POI_REQUEST_END);
+                break;
+            case R.id.tv_drive://驾车
+                break;
+            case R.id.tv_ride://骑行
+                break;
+            case R.id.tv_walk://步行
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode==POI_RESULT){
+            Bundle tipBundle=data.getExtras();
+            switch (requestCode){
+                case POI_REQUEST_START://获得起点
+                    startTip=tipBundle.getParcelable("select_tip");
+                    if (startTip != null) {
+                        Log.d(TAG,"startTip--"+startTip.getName());
+                        start_point.setText(startTip.getName());
+                    }
+                    break;
+                case POI_REQUEST_END://获得终点
+                    endTip=tipBundle.getParcelable("select_tip");
+                    if (endTip != null) {
+                        Log.d(TAG,"endTip--"+endTip.getName());
+                        end_point.setText(endTip.getName());
+                    }
+                    break;
+            }
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        aMapNaviView.onResume();
+        Log.d(TAG,"onResume");
+        mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        aMapNaviView.onPause();
+        Log.d(TAG,"onPause");
+        mMapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        aMapNaviView.onDestroy();
-        aMapNavi.destroy();
+        Log.d(TAG,"onDestroy");
+        mMapView.onDestroy();
     }
 
     @Override
-    public void onNaviSetting() {
-
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG,"onSaveInstanceState");
+        mMapView.onSaveInstanceState(outState);
     }
 
     @Override
-    public void onNaviCancel() {
-
-    }
-
-    @Override
-    public boolean onNaviBackClick() {
-        return false;
-    }
-
-    @Override
-    public void onNaviMapMode(int i) {
-
-    }
-
-    @Override
-    public void onNaviTurnClick() {
-
-    }
-
-    @Override
-    public void onNextRoadClick() {
-
-    }
-
-    @Override
-    public void onScanViewButtonClick() {
-
-    }
-
-    @Override
-    public void onLockMap(boolean b) {
-
-    }
-
-    @Override
-    public void onNaviViewLoaded() {
-
-    }
-
-    @Override
-    public void onInitNaviFailure() {
-
-    }
-
-    /**
-     * AmapNavi对象实例化成功后回调该方法
-     */
-    @Override
-    public void onInitNaviSuccess() {
-        /**
-         * 方法:
-         *   int strategy=mAMapNavi.strategyConvert(congestion, avoidhightspeed, cost, hightspeed, multipleroute);
-         * 参数:
-         * @congestion 躲避拥堵
-         * @avoidhightspeed 不走高速
-         * @cost 避免收费
-         * @hightspeed 高速优先
-         * @multipleroute 多路径
-         *
-         * 说明:
-         *      以上参数都是boolean类型，其中multipleroute参数表示是否多条路线，如果为true则此策略会算出多条路线。
-         * 注意:
-         *      不走高速与高速优先不能同时为true
-         *      高速优先与避免收费不能同时为true
-         */
-
-        int strategy=0;
-        try {
-            strategy=aMapNavi.strategyConvert(true,false,false,false,false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        aMapNavi.calculateDriveRoute()
-    }
-
-    @Override
-    public void onStartNavi(int i) {
-
-    }
-
-    @Override
-    public void onTrafficStatusUpdate() {
-
-    }
-
-    @Override
-    public void onLocationChange(AMapNaviLocation aMapNaviLocation) {
-
-    }
-
-    @Override
-    public void onGetNavigationText(int i, String s) {
-
-    }
-
-    @Override
-    public void onEndEmulatorNavi() {
-
-    }
-
-    @Override
-    public void onArriveDestination() {
-
-    }
-
-    @Override
-    public void onArriveDestination(NaviStaticInfo naviStaticInfo) {
-
-    }
-
-    @Override
-    public void onArriveDestination(AMapNaviStaticInfo aMapNaviStaticInfo) {
-
-    }
-
-    @Override
-    public void onCalculateRouteSuccess() {
-
-    }
-
-    @Override
-    public void onCalculateRouteFailure(int i) {
-
-    }
-
-    @Override
-    public void onReCalculateRouteForYaw() {
-
-    }
-
-    @Override
-    public void onReCalculateRouteForTrafficJam() {
-
-    }
-
-    @Override
-    public void onArrivedWayPoint(int i) {
-
-    }
-
-    @Override
-    public void onGpsOpenStatus(boolean b) {
-
-    }
-
-    @Override
-    public void onNaviInfoUpdated(AMapNaviInfo aMapNaviInfo) {
-
-    }
-
-    @Override
-    public void onNaviInfoUpdate(NaviInfo naviInfo) {
-
-    }
-
-    @Override
-    public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo aMapNaviTrafficFacilityInfo) {
-
-    }
-
-    @Override
-    public void OnUpdateTrafficFacility(TrafficFacilityInfo trafficFacilityInfo) {
-
-    }
-
-    @Override
-    public void showCross(AMapNaviCross aMapNaviCross) {
-
-    }
-
-    @Override
-    public void hideCross() {
-
-    }
-
-    @Override
-    public void showLaneInfo(AMapLaneInfo[] aMapLaneInfos, byte[] bytes, byte[] bytes1) {
-
-    }
-
-    @Override
-    public void hideLaneInfo() {
-
-    }
-
-    @Override
-    public void onCalculateMultipleRoutesSuccess(int[] ints) {
-
-    }
-
-    @Override
-    public void notifyParallelRoad(int i) {
-
-    }
-
-    @Override
-    public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo[] aMapNaviTrafficFacilityInfos) {
-
-    }
-
-    @Override
-    public void updateAimlessModeStatistics(AimLessModeStat aimLessModeStat) {
-
-    }
-
-    @Override
-    public void updateAimlessModeCongestionInfo(AimLessModeCongestionInfo aimLessModeCongestionInfo) {
-
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG,"onDetach");
+        mView=null;
+        mAmap=null;
     }
 }

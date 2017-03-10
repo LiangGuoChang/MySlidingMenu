@@ -68,7 +68,10 @@
         <activity android:name=".activity.MLoginActivity" />
         <activity android:name=".activity.EnterActivity" />
         <activity android:name=".activity.AMapFragmentActivity" />
-        <activity android:name=".activity.MAmapActivity"></activity>
+        <activity android:name=".activity.MAmapActivity"/>
+        <activity android:name=".AmapNavigation.NaviBaseActivity"/>
+        <activity android:name=".AmapNavigation.GPSNaviActivity"/>
+
 
 
         <receiver android:name="com.lgc.mysliding.receiver.AlertMsgReceiver"
@@ -164,5 +167,11 @@
     <!-- 【可选】 信鸽SDK所需权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
+
+
+    <!--讯飞语音权限-->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
 
 </manifest>

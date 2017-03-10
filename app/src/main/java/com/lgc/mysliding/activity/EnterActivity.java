@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.lgc.mysliding.AmapNavigation.POISearchFragment;
 import com.lgc.mysliding.R;
 import com.lgc.mysliding.fragment.AboutFragment;
 import com.lgc.mysliding.fragment.LoginFragment;
@@ -20,6 +21,7 @@ public class EnterActivity extends Activity {
     private FragmentManager fragmentManager;
     private LoginFragment loginFragment;
     private AboutFragment aboutFragment;
+    private POISearchFragment poiSearchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class EnterActivity extends Activity {
         //先将所有的Fragment隐藏
         hideFragments(transaction);
         switch (item){
-            case 1:
+            case 1://登录页
                 if (loginFragment==null){
                     loginFragment=new LoginFragment();
                     transaction.add(R.id.enter_frame_id,loginFragment);
@@ -50,12 +52,20 @@ public class EnterActivity extends Activity {
                     transaction.show(loginFragment);
                 }
                 break;
-            case 2:
+            case 2://关于页
                 if (aboutFragment==null){
                     aboutFragment=new AboutFragment();
                     transaction.add(R.id.enter_frame_id,aboutFragment);
                 }else {
                     transaction.show(aboutFragment);
+                }
+                break;
+            case 3://导航起点，终点 poi页
+                if (poiSearchFragment==null){
+                    poiSearchFragment=new POISearchFragment();
+                    transaction.add(R.id.enter_frame_id,poiSearchFragment);
+                }else {
+                    transaction.show(poiSearchFragment);
                 }
                 break;
         }
@@ -70,6 +80,9 @@ public class EnterActivity extends Activity {
         }
         if (null!=aboutFragment){
             transaction.hide(aboutFragment);
+        }
+        if (null != poiSearchFragment){
+            transaction.hide(poiSearchFragment);
         }
     }
 }

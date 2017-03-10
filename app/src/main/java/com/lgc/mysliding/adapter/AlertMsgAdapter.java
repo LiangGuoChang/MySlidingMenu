@@ -42,7 +42,7 @@ public class AlertMsgAdapter extends BaseAdapter{
 
     @Override
     public Object getItem(int i) {
-        return (null == alertMsgBeanList ? 0 : alertMsgBeanList.get(i));
+        return (null == alertMsgBeanList ? null : alertMsgBeanList.get(i));
     }
 
     @Override
