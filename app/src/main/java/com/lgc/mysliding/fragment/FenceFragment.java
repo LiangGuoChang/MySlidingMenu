@@ -148,21 +148,6 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
 //        //地图定位事件
         aMap.setLocationSource(mLocationSource);
         aMap.setMyLocationEnabled(true);
-
-        /*mainActivity.getSlidingMenu().setOnClosedListener(new SlidingMenu.OnClosedListener() {
-            @Override
-            public void onClosed() {
-                boolean b=aMap.getUiSettings().isZoomGesturesEnabled();
-                Log.d(TAG,"onClosed-"+b);
-            }
-        });
-        mainActivity.getSlidingMenu().setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
-            @Override
-            public void onOpened() {
-                boolean b=aMap.getUiSettings().isZoomGesturesEnabled();
-                Log.d(TAG,"onOpened-"+b);
-            }
-        });*/
     }
 
     //初始化用户输入围栏信息PopupWindow窗口

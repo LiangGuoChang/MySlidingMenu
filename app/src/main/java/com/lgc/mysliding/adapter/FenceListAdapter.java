@@ -14,7 +14,7 @@ import com.lgc.mysliding.bean.FenceBean;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/2/18.
+ * Created by lgc on 2017/2/18.
  * 围栏列表适配器
  */
 public class FenceListAdapter extends BaseAdapter{

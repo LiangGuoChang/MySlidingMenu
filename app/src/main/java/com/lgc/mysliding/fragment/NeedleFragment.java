@@ -23,8 +23,10 @@ import com.lgc.mysliding.MyApp;
 import com.lgc.mysliding.R;
 import com.lgc.mysliding.activity.AMapFragmentActivity;
 import com.lgc.mysliding.activity.MyMainActivity;
+import com.lgc.mysliding.adapter.DeviceListAdapter;
 import com.lgc.mysliding.adapter.MyDeviceAdapter;
 import com.lgc.mysliding.bean.DetectorInfoBean;
+import com.lgc.mysliding.bean.DetectorLists;
 import com.lgc.mysliding.presenter.DevicePresenter;
 import com.lgc.mysliding.view_interface.ViewInterface;
 
@@ -35,9 +37,8 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
 
     private static final String TAG="NeedleFragment";
     private static final int ListChange=2017;
-//    private String url="http://192.168.1.184:8080/json/my.json";
-    private String url="http://192.168.1.184:8080/json/detectorInfo1.json";
-//    private String url="http://o1510u4870.iok.la/1/json/detectorInfo1.json";
+//    private String url="http://192.168.1.184:8080/json/detectorInfo1.json";
+    private String url="http://218.15.154.6:8080/detector_list?";
     private View mView;
     private ListView lv_detector;
     private EditText et_search;
@@ -45,8 +46,14 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
     private RelativeLayout rl_search;
     private ImageView iv_clear_search;
     private MyDeviceAdapter adapter;
+
     private List<DetectorInfoBean.DeviceListBean> mDeviceList= new ArrayList<>();
     private List<DetectorInfoBean.DeviceListBean> searchDeviceList= new ArrayList<>();
+
+    private DeviceListAdapter deviceListAdapter;
+    private List<DetectorLists.DetectorListBean> mDeviceListBeen=new ArrayList<>();
+    private List<DetectorLists.DetectorListBean> searchDeviceListBeen=new ArrayList<>();
+
     private List<MarkerOptions> markerOptions;
     private MyApp myApp;
     private MyDeviceAdapter myAppAdapter;
@@ -108,7 +115,7 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
                 break;
             //清空EditText的内容
             case R.id.iv_clear_search:
-                if (/*et_search!=null || */et_search.getText().toString().trim().length()!=0){
+                if (et_search.getText().toString().trim().length()!=0){
                     et_search.setText("");
                 }
                 break;
@@ -158,21 +165,20 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
 
     //解析json数据获取列表数据
     @Override
-    public void showDevice(List<DetectorInfoBean.DeviceListBean> deviceListBeen) {
+    public void showDevice(List<DetectorLists.DetectorListBean> deviceListBeen) {
 
-        mDeviceList=deviceListBeen;
-//        adapter = new MyDeviceAdapter(getContext(),deviceListBeen);
+        /*mDeviceList=deviceListBeen;
         adapter = new MyDeviceAdapter(getContext(),mDeviceList);
         myAppAdapter = myApp.myDeviceAdapter;
-        myAppAdapter =adapter;
+        myAppAdapter =adapter;*/
 
+        mDeviceListBeen=deviceListBeen;
+        deviceListAdapter=new DeviceListAdapter(getContext(),mDeviceListBeen);
         //一开始先显示所有列表
-        lv_detector.setAdapter(adapter);
-
-        Log.d(TAG,"showDevice--"+ adapter);
+        lv_detector.setAdapter(deviceListAdapter);
+        Log.d(TAG,"showDevice--"+ deviceListAdapter);
 
         myApp.setDeviceListBeen(deviceListBeen);
-        Log.d(TAG,"mDeviceList--"+mDeviceList.size());
         Log.d(TAG,"myApp--"+myApp.getDeviceListBeen().size());
     }
 
@@ -181,15 +187,18 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
 
         Log.d(TAG,"refreshListView--"+searchStr);
 
-        Log.d(TAG,"mDeviceList--"+mDeviceList.size());
+        Log.d(TAG,"mDeviceList--"+mDeviceListBeen.size());
 
         //每次输入都先清除匹配的列表
-        searchDeviceList.clear();
+        searchDeviceListBeen.clear();
 
         //搜索为空时显示所有数据
         if (searchStr==null || searchStr.trim().length()==0){
-            adapter = new MyDeviceAdapter(getContext(),mDeviceList);
-            lv_detector.setAdapter(adapter);
+            /*adapter = new MyDeviceAdapter(getContext(),mDeviceList);
+            lv_detector.setAdapter(adapter);*/
+
+            deviceListAdapter=new DeviceListAdapter(getContext(),mDeviceListBeen);
+            lv_detector.setAdapter(deviceListAdapter);
             lv_detector.invalidateViews();
 
             Log.d(TAG, "显示所有");
@@ -197,14 +206,21 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
 
         //搜索不为空时显示匹配的数据
         if (/*searchStr!=null && */searchStr.trim().length()!=0){
-            for (DetectorInfoBean.DeviceListBean d:mDeviceList) {
+            /*for (DetectorInfoBean.DeviceListBean d:mDeviceList) {
                 if (d.getMac().toLowerCase().contains(searchStr.toLowerCase())){
                     searchDeviceList.add(d);
                 }
+            }*/
+            for (DetectorLists.DetectorListBean d:mDeviceListBeen) {
+                if (d.getMac().toLowerCase().contains(searchStr.toLowerCase())){
+                    searchDeviceListBeen.add(d);
+                }
             }
-            Log.d(TAG,"searchDeviceList--"+searchDeviceList.size());
-            adapter=new MyDeviceAdapter(getContext(),searchDeviceList);
-            lv_detector.setAdapter(adapter);
+            Log.d(TAG,"searchDeviceList--"+searchDeviceListBeen.size());
+            /*adapter=new MyDeviceAdapter(getContext(),searchDeviceList);
+            lv_detector.setAdapter(adapter);*/
+            deviceListAdapter=new DeviceListAdapter(getContext(),searchDeviceListBeen);
+            lv_detector.setAdapter(deviceListAdapter);
             lv_detector.invalidateViews();
 
             Log.d(TAG,"显示搜索匹配");

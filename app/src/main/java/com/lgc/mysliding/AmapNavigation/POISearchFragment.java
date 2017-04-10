@@ -13,8 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.amap.api.services.core.AMapException;
@@ -74,10 +75,12 @@ public class POISearchFragment extends Fragment implements View.OnClickListener,
 
     //初始化控件
     private void initView(){
-        ImageView poi_back= (ImageView) mView.findViewById(R.id.iv_poi_back);
-        Button poi_search= (Button) mView.findViewById(R.id.btn_poi_search);
+        LinearLayout poi_back= (LinearLayout) mView.findViewById(R.id.ll_poi_back);
         poi_back.setOnClickListener(this);
+        Button poi_search= (Button) mView.findViewById(R.id.btn_poi_search);
         poi_search.setOnClickListener(this);
+        RelativeLayout rl_my_location= (RelativeLayout) mView.findViewById(R.id.rl_my_location);
+        rl_my_location.setOnClickListener(this);
         lv_poi_result = (ListView) mView.findViewById(R.id.lv_poi_result);
         et_startEnd = (MyEditTextDel) mView.findViewById(R.id.et_start_end);
         et_startEnd.setHint(etHint);
@@ -96,6 +99,17 @@ public class POISearchFragment extends Fragment implements View.OnClickListener,
         switch (view.getId()){
             case R.id.btn_poi_search://搜索
                 doSearchQuery();
+                break;
+            case R.id.ll_poi_back://返回键
+                getActivity().finish();
+                break;
+            case R.id.rl_my_location://选择我的位置
+                Intent tipIntent=new Intent();
+                Bundle tipBundle=new Bundle();
+                tipBundle.putBoolean("my_location_type",true);//设置使用当前定位
+                tipIntent.putExtras(tipBundle);
+                getActivity().setResult(POI_RESULT,tipIntent);
+                getActivity().finish();
                 break;
         }
     }
@@ -133,9 +147,9 @@ public class POISearchFragment extends Fragment implements View.OnClickListener,
             inputtips.setInputtipsListener(this);
             inputtips.requestInputtipsAsyn();
         }else {//清空前面保存过的数据
-            if (lv_poi_result!=null){
-                lv_poi_result.removeAllViews();
-            }
+            /*if (lv_poi_result!=null){
+                lv_poi_result.removeAllViews();//出错
+            }*/
             tipList.clear();
         }
     }
@@ -213,9 +227,21 @@ public class POISearchFragment extends Fragment implements View.OnClickListener,
         Intent tipIntent=new Intent();
         Bundle tipBundle=new Bundle();
         tipBundle.putParcelable("select_tip",mTip);
+        tipBundle.putBoolean("my_location_type",false);//设置不使用当前定位
         tipIntent.putExtras(tipBundle);
         getActivity().setResult(POI_RESULT,tipIntent);
         getActivity().finish();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG,"onDetach");
+    }
 }

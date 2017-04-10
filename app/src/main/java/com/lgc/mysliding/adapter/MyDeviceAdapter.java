@@ -19,6 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 已过时
+ */
+
 public class MyDeviceAdapter extends DeviceBaseAdapter{
 
     private static final String TAG="MyDeviceAdapter";

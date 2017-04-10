@@ -2,6 +2,10 @@ package com.lgc.mysliding.bean;
 
 import java.util.List;
 
+/**
+ * 已过时
+ */
+
 public class DetectorInfoBean {
 
     private List<DeviceListBean> device_list;

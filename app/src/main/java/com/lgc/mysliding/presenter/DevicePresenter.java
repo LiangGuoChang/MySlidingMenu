@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lgc.mysliding.MyApp;
-import com.lgc.mysliding.bean.DetectorInfoBean;
+import com.lgc.mysliding.bean.DetectorLists;
 import com.lgc.mysliding.model.model_imp.DeviceModelImp;
 import com.lgc.mysliding.model.model_interface.ModelInterface;
 import com.lgc.mysliding.view_interface.ViewInterface;
@@ -49,8 +49,13 @@ public class DevicePresenter {
 
                 //使用Gson解析到对应的实体类
                 Gson gson=new Gson();
-                DetectorInfoBean detectorInfoBean=gson.fromJson(json,DetectorInfoBean.class);
+
+                /*DetectorInfoBean detectorInfoBean=gson.fromJson(json,DetectorInfoBean.class);
                 List<DetectorInfoBean.DeviceListBean> device_list=detectorInfoBean.getDevice_list();
+                Log.d(TAG,"getDevice_list--"+device_list.size());*/
+
+                DetectorLists detectorLists=gson.fromJson(json,DetectorLists.class);
+                List<DetectorLists.DetectorListBean> device_list=detectorLists.getDetector_list();
                 Log.d(TAG,"getDevice_list--"+device_list.size());
                 //返回数据集合
                 viewInterface.showDevice(device_list);

@@ -1,6 +1,6 @@
 package com.lgc.mysliding.view_interface;
 
-import com.lgc.mysliding.bean.DetectorInfoBean;
+import com.lgc.mysliding.bean.DetectorLists;
 
 import java.util.List;
 
@@ -9,5 +9,6 @@ import java.util.List;
  */
 public interface ViewInterface {
 
-    void showDevice(List<DetectorInfoBean.DeviceListBean> deviceListBeen);
+//    void showDevice(List<DetectorInfoBean.DeviceListBean> deviceListBeen);
+void showDevice(List<DetectorLists.DetectorListBean> deviceListBeen);
 }

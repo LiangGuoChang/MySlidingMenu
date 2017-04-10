@@ -21,7 +21,7 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.lgc.mysliding.MyApp;
 import com.lgc.mysliding.R;
 import com.lgc.mysliding.adapter.MInfoWindowAdapter;
-import com.lgc.mysliding.bean.DetectorInfoBean;
+import com.lgc.mysliding.bean.DetectorLists;
 
 import java.util.List;
 
@@ -32,7 +32,10 @@ public class AMapFragmentActivity extends FragmentActivity {
     private LocationSource.OnLocationChangedListener mLocationChangedListener;
     private AMapLocationClient mapLocationClient;
     private AMapLocationClientOption mapLocationClientOption;
-    private List<DetectorInfoBean.DeviceListBean> deviceListBeen;
+
+//    private List<DetectorInfoBean.DeviceListBean> deviceListBeen;
+
+    private List<DetectorLists.DetectorListBean> mDeviceListBeen;
 //    private List<MarkerOptions> markerOptions;
 
     private double lat;
@@ -63,30 +66,45 @@ public class AMapFragmentActivity extends FragmentActivity {
     private void initMarker(){
         //获取解析的数据，进行描点
         MyApp myApp= (MyApp) getApplicationContext();
-        deviceListBeen=myApp.getDeviceListBeen();
-        int deviceSize=deviceListBeen.size();
+        mDeviceListBeen=myApp.getDeviceListBeen();
+        int deviceSize=mDeviceListBeen.size();
         Log.d(TAG,"deviceSize--"+deviceSize);
 
         LatLng select = null;
         if (deviceSize>0){
             for (int i=0;i<deviceSize;i++){
-                String mac=deviceListBeen.get(i).getMac();
+                String mac=mDeviceListBeen.get(i).getMac();
                 Log.d(TAG,"deviceListBeen--"+mac);
 
-                lat=deviceListBeen.get(i).getLatitude();
-                lon=deviceListBeen.get(i).getLongitude();
+                lat=mDeviceListBeen.get(i).getLatitude();
+                lon=mDeviceListBeen.get(i).getLongitude();
                 LatLng latLng =new LatLng(lat, lon);
                 MarkerOptions options = new MarkerOptions();
                 options.position(latLng);
-                options.period(deviceListBeen.get(i).getRssi());//信号强度
-                options.title(deviceListBeen.get(i).getMac());//mac地址
-//                options.snippet(String.valueOf(lat));//位置信息
+
+                if (mDeviceListBeen.get(i).getStatus().equals("01")){//正常
+                    options.period(1);
+                    BitmapDescriptor bd = BitmapDescriptorFactory
+                            .fromBitmap(BitmapFactory.decodeResource(getResources(),
+                                    R.drawable.on_line));
+                    options.icon(bd);
+                }else if (mDeviceListBeen.get(i).getStatus().equals("02")){//离线
+                    options.period(2);
+                    BitmapDescriptor bd = BitmapDescriptorFactory
+                            .fromBitmap(BitmapFactory.decodeResource(getResources(),
+                                    R.drawable.off_line));
+                    options.icon(bd);
+                }
+                options.title(mDeviceListBeen.get(i).getMac());//mac地址
+                options.snippet(mDeviceListBeen.get(i).getAddress());//位置信息
                 options.visible(true);
+
                 if (mac.equals(select_mac)) {
                     select=latLng;
-                    BitmapDescriptor bd = BitmapDescriptorFactory
-                            .fromBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.mselect));
-                    options.icon(bd);
+                    /*BitmapDescriptor bd = BitmapDescriptorFactory
+                            .fromBitmap(BitmapFactory.decodeResource(getResources(),
+                                    R.drawable.oselect));
+                    options.icon(bd);*/
                     Log.d(TAG,"select--"+mac.equals(select_mac));
 
                     Marker marker = aMap.addMarker(options);

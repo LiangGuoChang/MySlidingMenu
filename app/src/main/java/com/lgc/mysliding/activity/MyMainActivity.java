@@ -6,13 +6,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
@@ -21,7 +25,7 @@ import com.lgc.mysliding.adapter.MyFSAdapter;
 import com.lgc.mysliding.fragment.CorrelateFragment;
 import com.lgc.mysliding.fragment.FenceFragment;
 import com.lgc.mysliding.fragment.LeftMenuFragment;
-import com.lgc.mysliding.fragment.NavigateFragment;
+import com.lgc.mysliding.fragment.NavigationFragment;
 import com.lgc.mysliding.fragment.NeedleFragment;
 import com.lgc.mysliding.fragment.TrackFragment;
 import com.lgc.mysliding.fragment.VideoFragment;
@@ -58,6 +62,16 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private NoCacheViewPager noCacheViewPager;
     private RelativeLayout relat_tittle;
 
+    // 定义一个变量，来标识是否退出
+    private static boolean isExit = false;
+
+    private Handler backHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit=false;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -164,13 +178,15 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         NeedleFragment needleFragment=new NeedleFragment();
         TrackFragment trackFragment=new TrackFragment();
         FenceFragment fenceFragment=new FenceFragment();
-        NavigateFragment navigateFragment=new NavigateFragment();
+//        NavigateFragment navigateFragment=new NavigateFragment();
+        NavigationFragment navigationFragment=new NavigationFragment();
         VideoFragment videoFragment=new VideoFragment();
         CorrelateFragment correlateFragment=new CorrelateFragment();
         mFragments.add(needleFragment);
         mFragments.add(trackFragment);
         mFragments.add(fenceFragment);
-        mFragments.add(navigateFragment);
+//        mFragments.add(navigateFragment);
+        mFragments.add(navigationFragment);
         mFragments.add(videoFragment);
         mFragments.add(correlateFragment);
 
@@ -231,7 +247,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //隐藏轨迹查询控件
                     iv_search_trace.setVisibility(View.INVISIBLE);
                     iv_search_trace.setClickable(false);
-                }else if(position==3){
+                }/*else if(position==3){
                     relat_tittle.setVisibility(View.GONE);
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
@@ -244,7 +260,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //隐藏轨迹查询控件
                     iv_search_trace.setVisibility(View.INVISIBLE);
                     iv_search_trace.setClickable(false);
-                }else if (position > 3){
+                }*/else if (position > 2){
                     relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
@@ -354,6 +370,27 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出", Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            backHandler.sendEmptyMessageDelayed(0, 2000);
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
+
     //设置标题
     private void setTitle(String title){
         my_title.setText(title);
@@ -384,11 +421,6 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         super.onDestroy();
     }
 
-
-    //    @Override
-//    public void onSelectViewPager(int selectItem) {
-//        selectViewPager(selectItem);
-//    }
 
     public class MsgReceiver extends BroadcastReceiver{
 

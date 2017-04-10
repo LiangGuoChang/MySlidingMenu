@@ -57,7 +57,7 @@ public class NaviBaseActivity extends Activity implements AMapNaviListener,AMapN
         mAmapNavi.addAMapNaviListener(mTtsManager);
 
         //设置模拟导航行车速度
-        mAmapNavi.setEmulatorNaviSpeed(60);
+        mAmapNavi.setEmulatorNaviSpeed(80);
         startList.add(mStartLatlng);
         endList.add(mEndLatlng);
     }

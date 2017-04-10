@@ -16,4 +16,7 @@
     <color name="fence_menu_click">#ffffff</color>
     <color name="fence_menu">#e4e2e2</color>
 
+    <color name="tab_unselect">#001c36d4</color>
+    <color name="tab_select">#b44aa7e9</color>
+    <color name="tab_text_unselect">#dcdcdc</color>
 </resources>

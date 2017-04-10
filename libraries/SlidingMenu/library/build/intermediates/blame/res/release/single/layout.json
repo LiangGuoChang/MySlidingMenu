@@ -32,12 +32,12 @@
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
     },
     {
-        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\layout\\notification_action_tombstone.xml",
-        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\notification_action_tombstone.xml"
-    },
-    {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple_overlay_action_mode.xml",
         "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
+    },
+    {
+        "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\layout\\notification_action_tombstone.xml",
+        "source": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.1.0\\res\\layout\\notification_action_tombstone.xml"
     },
     {
         "merged": "D:\\AndroidProj\\MySlidingMenu\\libraries\\SlidingMenu\\library\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_part_time.xml",

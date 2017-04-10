@@ -78,11 +78,11 @@
         >
 
         <TextView
-            android:layout_width="130dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="探针MAC"
             android:textColor="#000000"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:gravity="center"
             android:layout_gravity="center_vertical"
             />
@@ -93,10 +93,10 @@
             />
 
         <TextView
-            android:layout_width="105dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="时间"
-            android:textSize="20sp"
+            android:text="上次活跃时间"
+            android:textSize="15sp"
             android:textColor="#000000"
             android:gravity="center"
             android:layout_gravity="center_vertical"
@@ -107,9 +107,9 @@
             android:background="#818181"
             />
         <TextView
-            android:layout_width="40dp"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="信号强度"
+            android:text="状态"
             android:textSize="15sp"
             android:textColor="#000000"
             android:gravity="center"
@@ -123,8 +123,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="地点"
-            android:textSize="20sp"
+            android:text="探针位置"
+            android:textSize="15sp"
             android:textColor="#000000"
             android:gravity="center"
             android:layout_gravity="center_vertical"

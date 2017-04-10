@@ -7,7 +7,7 @@ import android.content.pm.PackageManager;
 
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.lgc.mysliding.adapter.MyDeviceAdapter;
-import com.lgc.mysliding.bean.DetectorInfoBean;
+import com.lgc.mysliding.bean.DetectorLists;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +19,7 @@ public class MyApp extends Application{
     private static final String TAG="MyApp";
     private static MyApp myApp;
     //解析json数据后的数据列表集合
-    private List<DetectorInfoBean.DeviceListBean> deviceListBeen;
+    private List<DetectorLists.DetectorListBean> deviceListBeen;
     private List<MarkerOptions> markerOptions;
     public MyDeviceAdapter myDeviceAdapter;
 
@@ -44,11 +44,11 @@ public class MyApp extends Application{
         this.markerOptions = markerOptions;
     }
 
-    public List<DetectorInfoBean.DeviceListBean> getDeviceListBeen() {
+    public List<DetectorLists.DetectorListBean> getDeviceListBeen() {
         return deviceListBeen;
     }
 
-    public void setDeviceListBeen(List<DetectorInfoBean.DeviceListBean> deviceListBeen) {
+    public void setDeviceListBeen(List<DetectorLists.DetectorListBean> deviceListBeen) {
         this.deviceListBeen = deviceListBeen;
     }
 

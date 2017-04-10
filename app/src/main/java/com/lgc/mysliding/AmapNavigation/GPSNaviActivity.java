@@ -1,9 +1,13 @@
 package com.lgc.mysliding.AmapNavigation;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.amap.api.navi.AMapNaviView;
 import com.amap.api.navi.enums.NaviType;
+import com.amap.api.navi.model.NaviLatLng;
+import com.amap.api.services.core.LatLonPoint;
 import com.lgc.mysliding.R;
 
 /**
@@ -12,11 +16,40 @@ import com.lgc.mysliding.R;
  */
 public class GPSNaviActivity extends NaviBaseActivity {
 
+    protected final String TAG="GPSNaviActivity";
+    private final static int ROUTE_TYPE_DRIVE = 1;
+    private final static int ROUTE_TYPE_RIDE = 2;
+    private final static int ROUTE_TYPE_WALK = 3;
+    private int mRouteType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_gps_navigate);
+
+        Intent naviIntent=getIntent();
+        Bundle naviBundle=naviIntent.getExtras();
+        LatLonPoint start=naviBundle.getParcelable("startPoint");
+        LatLonPoint end=naviBundle.getParcelable("endPoint");
+        mRouteType=naviBundle.getInt("route_type",1);
+        if (start != null) {
+            mStartLatlng=new NaviLatLng(start.getLatitude(),start.getLongitude());
+        }
+        if (end != null) {
+            mEndLatlng=new NaviLatLng(end.getLatitude(),end.getLongitude());
+        }
+        if (startList!=null && startList.size()>0){
+            startList.clear();
+        }
+        if (endList!=null && endList.size()>0){
+            endList.clear();
+        }
+        if (startList != null) {
+            startList.add(mStartLatlng);
+        }
+        if (endList != null) {
+            endList.add(mEndLatlng);
+        }
         mAmapNaviView= (AMapNaviView) findViewById(R.id.navi_view);
         mAmapNaviView.onCreate(savedInstanceState);
         mAmapNaviView.setAMapNaviViewListener(this);
@@ -46,7 +79,16 @@ public class GPSNaviActivity extends NaviBaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mAmapNavi.calculateDriveRoute(startList,endList,mWayPointList,strategy);
+        if (mRouteType==ROUTE_TYPE_DRIVE){
+            mAmapNavi.calculateDriveRoute(startList,endList,mWayPointList,strategy);
+            Log.d(TAG,"驾车");
+        }else if (mRouteType==ROUTE_TYPE_WALK){
+            mAmapNavi.calculateWalkRoute(mStartLatlng,mEndLatlng);
+            Log.d(TAG,"步行");
+        }else if (mRouteType==ROUTE_TYPE_RIDE){
+            mAmapNavi.calculateRideRoute(mStartLatlng,mEndLatlng);
+            Log.d(TAG,"骑行");
+        }
     }
 
     /**
@@ -55,6 +97,14 @@ public class GPSNaviActivity extends NaviBaseActivity {
     @Override
     public void onCalculateRouteSuccess() {
         super.onCalculateRouteSuccess();
-        mAmapNavi.startNavi(NaviType.GPS);
+        mAmapNavi.startNavi(NaviType.EMULATOR);
     }
+
+    @Override
+    public void onCalculateMultipleRoutesSuccess(int[] ints) {
+        super.onCalculateMultipleRoutesSuccess(ints);
+        Log.d(TAG,"multiple-"+ints.length);
+    }
+
+
 }
