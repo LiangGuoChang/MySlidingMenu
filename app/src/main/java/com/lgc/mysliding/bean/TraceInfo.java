@@ -3,7 +3,8 @@ package com.lgc.mysliding.bean;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/1/11.
+ * Created by lgc on 2017/1/11.
+ * 已过时
  */
 public class TraceInfo {
     private List<TraceBean> trace;

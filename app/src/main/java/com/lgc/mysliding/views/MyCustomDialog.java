@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,9 +32,11 @@ public class MyCustomDialog extends Dialog implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fence_add_phone);
         //设置标题
-        setTitle(titleName);
+//        setTitle(titleName);
+
         //获取控件
         et_addPhone = (EditText) findViewById(R.id.et_add_phone);
         btn_savePhone = (Button) findViewById(R.id.btn_save_phone);

@@ -1,28 +1,35 @@
 package com.lgc.mysliding.fragment;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
@@ -37,7 +44,15 @@ import com.lgc.mysliding.MyApp;
 import com.lgc.mysliding.R;
 import com.lgc.mysliding.activity.MyMainActivity;
 import com.lgc.mysliding.adapter.TraceAmapInfoWin;
+import com.lgc.mysliding.adapter.TraceFeatureAdapter;
+import com.lgc.mysliding.bean.TraceBean;
 import com.lgc.mysliding.bean.TraceInfo;
+import com.lgc.mysliding.presenter.TracePresenter;
+import com.lgc.mysliding.view_interface.TraceInterface;
+import com.lgc.mysliding.views.MyEditTextDel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,7 +64,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TrackFragment extends Fragment implements View.OnClickListener {
+public class TrackFragment extends Fragment implements View.OnClickListener, TraceInterface {
 
     private static final String TAG="TrackFragment";
     private static final long aWeek=99999999;
@@ -94,6 +109,12 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
     private ArrayList<LatLng> deltaLatlngs=new ArrayList<LatLng>();
     //用于画线的经纬度集合
     private ArrayList<LatLng> delta_path=new ArrayList<LatLng>();
+    private ListView lv_trace;
+    private ImageView iv_dismiss_trace;
+    private TracePresenter tracePresenter;
+    private PopupWindow searchWin;//搜索框
+    private ProgressDialog progDialog;//进度框
+    private PopupWindow traceWindow;//轨迹弹出框
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,6 +123,9 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
             mView = inflater.inflate(R.layout.fragment_track, container, false);
             initView(savedInstanceState);
         }
+
+        //通过presenter层获取json数据
+        tracePresenter = new TracePresenter(this);
 
         //解析assets目录下的json数据
         traceInfoList=getJson();
@@ -246,7 +270,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
 
             //显示和隐藏popupwindow
             case R.id.iv_search_trace:
-                if (popupWindow!=null && popupWindow.isShowing()){
+               /* if (popupWindow!=null && popupWindow.isShowing()){
                     popupWindow.dismiss();
                     iv_search_trace.setImageResource(R.drawable.search_trace_up);
                     return;
@@ -254,7 +278,15 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                     initPopupWindow();
 //                    popupWindow.showAsDropDown(view,0,20);
                     iv_search_trace.setImageResource(R.drawable.search_trace_down);
+                }*/
+                if (searchWin!=null && searchWin.isShowing()){
+                    searchWin.dismiss();
+                    iv_search_trace.setImageResource(R.drawable.search_trace_up);
+                }else {
+                    popupSearchWin();
+                    iv_search_trace.setImageResource(R.drawable.search_trace_down);
                 }
+
                 break;
 
             //取消按钮
@@ -293,6 +325,16 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                     //如果开始时间，结束时间不为0才取消窗口
                     if ((startTime>0&&endTime>0)&&(popupWindow!=null && popupWindow.isShowing())){
                         popupWindow.dismiss();
+
+                        /*popupTraceList();//13680739741
+                        String url="http://218.15.154.6:8080/feature/query/phone?request={\"phone\":\"13680739741\",\"get_trace_num\":true}";
+                        tracePresenter.loadFeatureList(url);*/
+
+                        //隐藏轨迹列表窗体
+                        if (traceWindow!=null && traceWindow.isShowing()){
+                            traceWindow.dismiss();
+                        }
+
                         //设置回放按钮可以点击
                         if (!btn_replay.isEnabled()){
                             btn_replay.setEnabled(true);
@@ -571,6 +613,122 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                     }
                 };
          }
+    }
+
+    /**
+     * 弹出搜索框
+     */
+    private void popupSearchWin(){
+        View searchView=getLayoutInflater(this.getArguments())
+                .inflate(R.layout.trace_search_popup,null);
+        searchWin = new PopupWindow(searchView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        searchWin.setContentView(searchView);
+        searchWin.setOutsideTouchable(true);
+        searchWin.setBackgroundDrawable(new BitmapDrawable());
+        searchWin.showAsDropDown(myMainActivity.findViewById(R.id.relative_tittle));
+        final MyEditTextDel et_search_id= (MyEditTextDel) searchView.findViewById(R.id.et_search_id);
+        Button btn_search= (Button) searchView.findViewById(R.id.btn_search);
+        Button btn_unsearch= (Button) searchView.findViewById(R.id.btn_unsearch);
+        searchWin.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                iv_search_trace.setImageResource(R.drawable.search_trace_up);
+            }
+        });
+
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!TextUtils.isEmpty(et_search_id.getText().toString().trim())){
+                    String searchUrl=getSearchUrl(et_search_id.getText().toString().trim());
+                    popupTraceList();
+                    tracePresenter.loadFeatureList(searchUrl);
+                    showProgressDialog();//显示进度框
+                    searchWin.dismiss();
+                }else {
+                    Toast.makeText(getContext(),"请输入MAC/手机号",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        btn_unsearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchWin.dismiss();
+            }
+        });
+    }
+
+    /**
+     * 组拼查询URL
+     * @param searchId
+     * @return
+     */
+    private String getSearchUrl(String searchId){
+        //http://218.15.154.6:8080/feature/query/phone?request={"phone":"13680739741","get_trace_num":true}
+        String searchURL="http://218.15.154.6:8080/feature/query/phone?request=";
+        JSONObject searchObject=new JSONObject();
+        try {
+            searchObject.put("phone",searchId);
+            searchObject.put("get_trace_num",true);
+            String searchStr=String.valueOf(searchObject);
+            searchURL=searchURL.trim()+searchStr.trim();
+            Log.d(TAG,"-searchURL-"+searchURL);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return searchURL;
+    }
+
+    /**
+     * 弹出轨迹列表框，显示列表
+     */
+    private void popupTraceList(){
+        View traceView=getLayoutInflater(this.getArguments())
+                .inflate(R.layout.trace_mac_list_popup,null);
+        traceWindow = new PopupWindow(traceView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        traceWindow.setContentView(traceView);
+        traceWindow.setOutsideTouchable(true);
+        traceWindow.setBackgroundDrawable(new BitmapDrawable());
+        //android 7.0 弹出窗另外设置
+        if (Build.VERSION.SDK_INT == 24){
+            int[] location=new int[2];
+            myMainActivity.findViewById(R.id.relative_tittle).getLocationOnScreen(location);
+            traceWindow.showAtLocation(myMainActivity.findViewById(R.id.relative_tittle),
+                    Gravity.NO_GRAVITY,
+                    0,
+                    location[1]+myMainActivity.findViewById(R.id.relative_tittle).getHeight()+15);
+        }else {
+            traceWindow.showAsDropDown(myMainActivity.findViewById(R.id.relative_tittle),0,15);
+        }
+
+        lv_trace = (ListView) traceView.findViewById(R.id.lv_trace_list);
+        iv_dismiss_trace = (ImageView) traceView.findViewById(R.id.iv_dismiss_trace);
+        //取消窗口按钮
+        iv_dismiss_trace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                traceWindow.dismiss();
+            }
+        });
+        //选择
+        lv_trace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                initPopupWindow();
+            }
+        });
+    }
+
+    //获得返回的轨迹列表
+    @Override
+    public void showFeatureList(List<TraceBean.FeatureListBean> feature_list) {
+        dissmissProgressDialog();//隐藏进度框
+        TraceFeatureAdapter featureAdapter=new TraceFeatureAdapter(getContext(),feature_list);
+        lv_trace.setAdapter(featureAdapter);
     }
 
     //必须重写
@@ -875,6 +1033,28 @@ public class TrackFragment extends Fragment implements View.OnClickListener {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    /**
+     * 显示进度框
+     */
+    private void showProgressDialog() {
+        if (progDialog == null)
+            progDialog = new ProgressDialog(getContext());
+        progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progDialog.setIndeterminate(false);
+        progDialog.setCancelable(true);
+        progDialog.setMessage("正在搜索");
+        progDialog.show();
+    }
+
+    /**
+     * 隐藏进度框
+     */
+    private void dissmissProgressDialog() {
+        if (progDialog != null) {
+            progDialog.dismiss();
         }
     }
 

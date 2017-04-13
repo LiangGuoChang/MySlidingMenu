@@ -2,6 +2,9 @@ package com.lgc.mysliding.bean;
 
 import java.util.List;
 
+/**
+ * 未使用
+ */
 public class TraceBeanList {
 
     private List<TraceBean> traceList;

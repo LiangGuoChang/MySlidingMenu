@@ -77,6 +77,12 @@ public class DeviceListAdapter extends BaseAdapter {
         }
         vHolder.tv_address.setText(mDetectorListBean.getAddress());//位置
 
+        if(i%2==0){
+            view.setBackgroundResource(R.color.double_item);
+        }else {
+            view.setBackgroundResource(R.color.single_item);
+        }
+
         return view;
     }
 

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -155,7 +156,11 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         popupView = getLayoutInflater(this.getArguments()).inflate(R.layout.fence_popupwin,null,false);
         //创建PopupWindow，参数true为获取焦点
         popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,true);
+                ViewGroup.LayoutParams.MATCH_PARENT,true);
+
+
+
+        popupWindow.showAtLocation(rl_fence,Gravity.CENTER,0,0);
         //初始化popupView上控件
         et_fName = (MyEditTextDel) popupView.findViewById(R.id.et_fence_name);
         et_fRadio = (MyEditTextDel) popupView.findViewById(R.id.et_fence_radio);
@@ -371,8 +376,19 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         fenceListWin.setOutsideTouchable(true);
         fenceListWin.setFocusable(true);
         fenceListWin.setBackgroundDrawable(new BitmapDrawable());
-//        fenceListWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
-        fenceListWin.showAsDropDown(mainActivity.findViewById(R.id.relative_tittle));
+
+        //android 7.0 弹出窗另外设置
+        if (Build.VERSION.SDK_INT == 24){
+            int[] location=new int[2];
+            mainActivity.findViewById(R.id.relative_tittle).getLocationOnScreen(location);
+            fenceListWin.showAtLocation(mainActivity.findViewById(R.id.relative_tittle),
+                    Gravity.NO_GRAVITY,
+                    0,
+                    location[1]+mainActivity.findViewById(R.id.relative_tittle).getHeight()+15);
+        }else {
+            fenceListWin.showAsDropDown(mainActivity.findViewById(R.id.relative_tittle));
+        }
+
         iv_dismiss_fence = (ImageView) fenceseView.findViewById(R.id.iv_dismiss_fence);
         lv_fenceList = (ListView) fenceseView.findViewById(R.id.lv_fence_list);
         //长按列表项事件监听
@@ -388,7 +404,7 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
             popupWindow.dismiss();
         }else {
             initPopup();
-            popupWindow.showAtLocation(rl_fence,Gravity.CENTER,0,0);
+//            popupWindow.showAtLocation(rl_fence,Gravity.CENTER,0,0);
             Log.d(TAG,"popup-showing");
         }
         //获取点击位置的经纬度
@@ -600,8 +616,19 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         alertMsgWin.setOutsideTouchable(true);
         alertMsgWin.setFocusable(true);
         alertMsgWin.setBackgroundDrawable(new BitmapDrawable());
-//        alertMsgWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
-        alertMsgWin.showAsDropDown(mainActivity.findViewById(R.id.relative_tittle));
+
+        //android 7.0 弹出窗另外设置
+        if (Build.VERSION.SDK_INT == 24){
+            int[] location=new int[2];
+            mainActivity.findViewById(R.id.relative_tittle).getLocationOnScreen(location);
+            alertMsgWin.showAtLocation(mainActivity.findViewById(R.id.relative_tittle),
+                    Gravity.NO_GRAVITY,
+                    0,
+                    location[1]+mainActivity.findViewById(R.id.relative_tittle).getHeight()+15);
+        }else {
+            alertMsgWin.showAsDropDown(mainActivity.findViewById(R.id.relative_tittle));
+        }
+
         ImageView iv_no_data= (ImageView) alertView.findViewById(R.id.iv_no_data);
         msgListView = (ListView)alertView.findViewById(R.id.push_list);
         alertView.findViewById(R.id.iv_dismiss_msg).setOnClickListener(new View.OnClickListener() {

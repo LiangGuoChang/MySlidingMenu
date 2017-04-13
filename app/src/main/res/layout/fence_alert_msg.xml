@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="10dp"
+    android:paddingTop="5dp"
     android:paddingBottom="15dp"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
@@ -58,6 +58,7 @@
                 android:layout_marginTop="50dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_nodata"
+                android:background="#c8ffffff"
                 />
 
             <ListView

@@ -54,9 +54,6 @@ public class MInfoWindowAdapter implements AMap.InfoWindowAdapter {
         tv_mac = (TextView) mView.findViewById(R.id.tv_set_mac);
         tv_address = (TextView) mView.findViewById(R.id.tv_set_address);
 
-        //异步设置位置信息
-//        new MyDeviceAdapter.AddressTask(tv_address,doubles).execute(doubles);
-
         tv_status.setText(status);//设置状态
         tv_mac.setText(mac);//设置mac地址
         tv_address.setText(address);//设置位置信息
