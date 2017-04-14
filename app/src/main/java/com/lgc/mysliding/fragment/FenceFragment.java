@@ -119,6 +119,8 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
     private LocationSource.OnLocationChangedListener locationChangedListener;//地图定位回调
     private AMapLocationClient mapLocationClient;
     private AMapLocationClientOption mapLocationClientOption;
+    private Marker newFenceMarker;//新建围栏marker
+    private Circle createCircle;//新建或者修改的围栏圈
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -157,9 +159,6 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
         //创建PopupWindow，参数true为获取焦点
         popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,true);
-
-
-
         popupWindow.showAtLocation(rl_fence,Gravity.CENTER,0,0);
         //初始化popupView上控件
         et_fName = (MyEditTextDel) popupView.findViewById(R.id.et_fence_name);
@@ -232,7 +231,7 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
             case R.id.iv_fence_menu:
                 showFenceMenu(iv_fence_menu);
                 break;
-            //确定按钮事件
+            //确定新建围栏
             case R.id.btn_set:
                 if (fenceName!=null && fenceRadius >0 && fencePhoneList.size()>0 && alertType >=0){
                     //创建围栏
@@ -250,8 +249,10 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
                         //先清除修改前的围栏
                         Circle before=getUpdateCircle();
                         before.remove();
+
                         //绘制修改的围栏
                         drawFence(fenceLatlng,(double) fenceRadius);
+
                         //获取组拼的修改url
                         String updateUrl=updateFence();
                         //修改围栏到服务器
@@ -259,19 +260,40 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
                         Log.d(TAG,"确定按钮-updateUrl"+"\n"+updateUrl);
                         Toast.makeText(getActivity().getApplicationContext(),"修改成功"
                                 , Toast.LENGTH_SHORT).show();
+
+                        //先清除之前显示过的所有地图
+                        if (circleList.size()>0){
+                            for (Circle circle:circleList) {
+                                circle.remove();
+                            }
+                        }
+                        //设置修改标志
+                        isUpdate=false;
                     }
+
                     if (popupWindow!=null && popupWindow.isShowing()){
                         popupWindow.dismiss();
+                        if (newFenceMarker != null){
+                            newFenceMarker.remove();
+                        }
                     }
                 }else {
                     Toast.makeText(getActivity().getApplicationContext(),"请输入详细围栏信息"
                             , Toast.LENGTH_SHORT).show();
                 }
                 break;
-            //取消按钮事件
+            //取消新建围栏
             case R.id.btn_unset:
                 if (popupWindow!=null && popupWindow.isShowing()){
                     popupWindow.dismiss();
+                    if (newFenceMarker != null){
+                        newFenceMarker.remove();
+                    }
+                    //先清除需要修改的围栏
+                    Circle before=getUpdateCircle();
+                    if (before!=null){
+                        before.remove();
+                    }
                 }
                 break;
             //取消围栏列表按钮
@@ -330,11 +352,11 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
             public void onClick(View view) {
                 pw.dismiss();
                 Log.d(TAG,"选择围栏列表");
+
                 if (fenceListWin != null && fenceListWin.isShowing()){
                     fenceListWin.dismiss();
                 }else {
                     popupFenceWin();
-//                    fenceListWin.showAtLocation(rl_fence,Gravity.CENTER,0,0);
                     isSetList=true;//显示围栏列表标志
                 }
                 //获取服务器围栏列表数据
@@ -358,6 +380,12 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
             public void onClick(View view) {
                 pw.dismiss();
                 Log.d(TAG,"显示所有围栏");
+
+                //清除新建的或者修改后的围栏
+                if (createCircle!=null){
+                    createCircle.remove();
+                }
+
                 isSetList=false;//显示所有围栏
                 //获取服务器所有围栏数据
                 fenceListPresenter.loadFenceList(urlPath);
@@ -400,6 +428,21 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
     //地图点击事件，弹出用户添加围栏popupWindow窗口
     @Override
     public void onMapClick(LatLng latLng) {
+
+        if (newFenceMarker!=null){
+            newFenceMarker.remove();
+//            newFenceMarker.destroy();
+        }
+        //获取点击位置的经纬度
+        fenceLatlng=latLng;
+        fenceLat=latLng.latitude;
+        fenceLng=latLng.longitude;
+        newFenceMarker = aMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title("新建围栏位置")
+                .icon(BitmapDescriptorFactory
+                        .fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fence_location))));
+
         if (popupWindow!=null && popupWindow.isShowing()){
             popupWindow.dismiss();
         }else {
@@ -407,16 +450,13 @@ public class FenceFragment extends Fragment implements View.OnClickListener, AMa
 //            popupWindow.showAtLocation(rl_fence,Gravity.CENTER,0,0);
             Log.d(TAG,"popup-showing");
         }
-        //获取点击位置的经纬度
-        fenceLatlng=latLng;
-        fenceLat=latLng.latitude;
-        fenceLng=latLng.longitude;
+
         Log.d(TAG,"fenceLat--"+fenceLat+"\n"+"fenceLng--"+fenceLng);
     }
 
     //在高德地图上画围栏圆圈
     private Circle drawFence(LatLng latLng,double radio){
-        Circle createCircle=aMap.addCircle(new CircleOptions()
+        createCircle = aMap.addCircle(new CircleOptions()
                 .center(latLng)
                 .radius(radio)
                 .fillColor(Color.argb(100,247,101,101))

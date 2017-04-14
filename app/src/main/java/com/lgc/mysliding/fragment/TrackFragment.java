@@ -1,6 +1,7 @@
 package com.lgc.mysliding.fragment;
 
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -15,11 +16,14 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +33,7 @@ import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps2d.AMap;
@@ -50,6 +55,10 @@ import com.lgc.mysliding.bean.TraceInfo;
 import com.lgc.mysliding.presenter.TracePresenter;
 import com.lgc.mysliding.view_interface.TraceInterface;
 import com.lgc.mysliding.views.MyEditTextDel;
+import com.lgc.mysliding.wheelview.DateUtils;
+import com.lgc.mysliding.wheelview.JudgeDate;
+import com.lgc.mysliding.wheelview.ScreenInfo;
+import com.lgc.mysliding.wheelview.WheelMain;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +70,7 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -115,6 +125,9 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
     private PopupWindow searchWin;//搜索框
     private ProgressDialog progDialog;//进度框
     private PopupWindow traceWindow;//轨迹弹出框
+
+    private WheelMain wheelMainDate;
+    private  String beginTime;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -194,6 +207,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         rb_week = (RadioButton) popupView.findViewById(R.id.rb_week);
         rb_day = (RadioButton) popupView.findViewById(R.id.rb_day);
         rb_custom = (RadioButton) popupView.findViewById(R.id.rb_custom);
+        TextView start_text= (TextView) popupView.findViewById(R.id.start_text);
         //开始时间
         startYear = (EditText) popupView.findViewById(R.id.et_start_year);
         startMount = (EditText) popupView.findViewById(R.id.et_start_mount);
@@ -261,8 +275,83 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
             }
         });
 
+        start_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBottoPopupWindow("选择结束时间");
+            }
+        });
 
     }
+
+    private java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public void showBottoPopupWindow(String title) {
+        WindowManager manager = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display defaultDisplay = manager.getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        defaultDisplay.getMetrics(outMetrics);
+        int width = outMetrics.widthPixels;
+        View menuView = LayoutInflater.from(getContext()).inflate(R.layout.show_popup_window,null);
+        final PopupWindow mPopupWindow = new PopupWindow(menuView, ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.MATCH_PARENT);
+        ScreenInfo screenInfoDate = new ScreenInfo(getActivity());
+        wheelMainDate = new WheelMain(menuView, true);
+        wheelMainDate.screenheight = screenInfoDate.getHeight();
+        String time = DateUtils.currentMonth().toString();
+        Calendar calendar = Calendar.getInstance();
+        if (JudgeDate.isDate(time, "yyyy-MM-DD")) {
+            try {
+                calendar.setTime(new Date(time));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        wheelMainDate.initDateTimePicker(year, month, day, hours,minute);
+        final String currentTime = wheelMainDate.getTime().toString();
+//        mPopupWindow.setAnimationStyle(R.style.AnimationPreview);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow.showAtLocation(myMainActivity.findViewById(R.id.relative_tittle), Gravity.CENTER, 0, 0);
+        mPopupWindow.setOnDismissListener(new poponDismissListener());
+//        backgroundAlpha(0.6f);
+        TextView tv_cancle = (TextView) menuView.findViewById(R.id.tv_cancle);
+        TextView tv_ensure = (TextView) menuView.findViewById(R.id.tv_ensure);
+        TextView tv_pop_title = (TextView) menuView.findViewById(R.id.tv_pop_title);
+//        tv_pop_title.setText("选择起始时间");
+        tv_pop_title.setText(title);
+        tv_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                mPopupWindow.dismiss();
+//                backgroundAlpha(1f);
+            }
+        });
+
+        tv_ensure.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                beginTime = wheelMainDate.getTime().toString();
+                try {
+                    Date begin = dateFormat.parse(currentTime);
+                    Date end = dateFormat.parse(beginTime);
+//                    tv_house_time.setText(DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm));
+                    Log.d(TAG,"开始时间-"+DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                mPopupWindow.dismiss();
+//                backgroundAlpha(1f);
+            }
+        });
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -1056,6 +1145,20 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         if (progDialog != null) {
             progDialog.dismiss();
         }
+    }
+
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        lp.alpha = bgAlpha;
+        getActivity().getWindow().setAttributes(lp);
+    }
+
+    class poponDismissListener implements PopupWindow.OnDismissListener {
+        @Override
+        public void onDismiss() {
+//            backgroundAlpha(1f);
+        }
+
     }
 
 }

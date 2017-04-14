@@ -30,15 +30,32 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_centerVertical="true"
-            android:text="mac/手机号:"
+            android:text="查询号码:"
             android:textSize="18sp"
             android:textColor="#000000"
             />
+
+        <!--<TextView
+            android:id="@+id/tv_search_id"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/textview_1"
+            android:layout_toEndOf="@+id/textview_1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:text="7c7d3d32d223"
+            android:textSize="15sp"
+            android:textColor="#2286bf"
+            android:background="@drawable/fence_list_background"
+            />-->
 
         <com.lgc.mysliding.views.MyEditTextDel
             android:id="@+id/et_device_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:layout_alignParentEnd="true"
@@ -49,7 +66,7 @@
             android:background="@null"
             android:drawablePadding="5dp"
             android:padding="10dp"
-            android:textSize="15sp"
+            android:textSize="13sp"
             android:textColor="#000000"
             android:maxLines="1"
             android:maxLength="20"
@@ -73,7 +90,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="center_vertical"
-            android:text="查询时间段:"
+            android:text="查询时段:"
             android:textSize="18sp"
             android:textColor="#000000"
             />
@@ -84,6 +101,7 @@
            android:layout_marginLeft="10dp"
            android:layout_marginStart="10dp"
            android:orientation="horizontal"
+           android:background="@drawable/fence_list_background"
            >
            <RadioButton
                android:id="@+id/rb_week"
@@ -91,27 +109,23 @@
                android:layout_height="wrap_content"
                android:layout_weight="1"
                android:text="1周前"
-               android:textSize="14sp"
+               android:textColor="#2286bf"
                />
            <RadioButton
                android:id="@+id/rb_day"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="3dp"
-               android:layout_marginStart="3dp"
                android:layout_weight="1"
                android:text="1天前"
-               android:textSize="14sp"
+               android:textColor="#2286bf"
                />
            <RadioButton
                android:id="@+id/rb_custom"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="3dp"
-               android:layout_marginStart="3dp"
                android:layout_weight="1"
                android:text="自定义"
-               android:textSize="14sp"
+               android:textColor="#2286bf"
                />
        </RadioGroup>
 
@@ -130,7 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="开 始 时 间 :"
+            android:text="开始时间:"
             android:textSize="18sp"
             android:textColor="#000000"
             android:id="@+id/start_text"
@@ -146,6 +160,7 @@
             android:layout_toRightOf="@+id/start_text"
             android:layout_toEndOf="@+id/start_text"
             android:orientation="horizontal"
+            android:background="@drawable/fence_list_background"
             >
             <EditText
                 android:id="@+id/et_start_year"
@@ -160,6 +175,8 @@
                 android:maxLength="4"
                 android:enabled="false"
                 />
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -233,7 +250,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="结 束 时 间 :"
+            android:text="结束时间:"
             android:textSize="18sp"
             android:textColor="#000000"
             android:id="@+id/end_text"
@@ -249,6 +266,7 @@
             android:layout_toRightOf="@+id/end_text"
             android:layout_toEndOf="@+id/end_text"
             android:orientation="horizontal"
+            android:background="@drawable/fence_list_background"
             >
             <EditText
                 android:id="@+id/et_end_year"
@@ -328,12 +346,14 @@
             android:layout_below="@+id/ll_end_line"
             android:layout_alignLeft="@+id/ll_end_line"
             android:layout_alignStart="@+id/ll_end_line"
-            >
+            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="#ecebeb"
+                android:background="#858585"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentLeft="true"
@@ -345,7 +365,7 @@
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="30dp"
-                android:background="#ecebeb"
+                android:background="#858585"
                 android:id="@+id/view2"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true" />

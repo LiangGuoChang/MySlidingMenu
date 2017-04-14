@@ -13,5 +13,10 @@
         <item name="android:indeterminateDrawable">@drawable/refresh_progress</item>
     </style>
 
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@anim/pop_push_up_in</item>
+        <item name="android:windowExitAnimation">@anim/pop_push_down_out</item>
+    </style>
+
 
 </resources>
