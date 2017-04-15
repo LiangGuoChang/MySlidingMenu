@@ -1,5 +1,6 @@
 package com.lgc.mysliding.wheelview;
 
+import android.util.Log;
 import android.view.View;
 
 import com.lgc.mysliding.R;
@@ -8,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WheelMain {
+
+	private static final String TAG="WheelMain";
 
 	private View view;
 	private WheelView wv_year;
@@ -112,11 +115,15 @@ public class WheelMain {
 		OnWheelChangedListener wheelListener_year = new OnWheelChangedListener() {
 			public void onChanged(WheelView wheel, int oldValue, int newValue) {
 				int year_num = newValue + START_YEAR;
-				boolean isLeapYear  = (((wv_year.getCurrentItem() + START_YEAR) % 4 == 0 && (wv_year
-						.getCurrentItem() + START_YEAR) % 100 != 0)
-						|| (wv_year.getCurrentItem() + START_YEAR) % 400 == 0);
 
-					if ((year_num % 4 == 0 && year_num % 100 != 0)
+				/*boolean isLeapYear  = (((wv_year.getCurrentItem() + START_YEAR) % 4 == 0 && (wv_year
+						.getCurrentItem() + START_YEAR) % 100 != 0)
+						|| (wv_year.getCurrentItem() + START_YEAR) % 400 == 0);*/
+
+				Log.d(TAG,"-OnWheelChangedListener-year_num-"+year_num);
+				Log.d(TAG,"-OnWheelChangedListener-get_year-"+(wv_year.getCurrentItem() + START_YEAR));
+
+				/*if ((year_num % 4 == 0 && year_num % 100 != 0)
 							|| year_num % 400 == 0){
 						wv_day.setAdapter(new NumericWheelAdapter(
 								1, 29));
@@ -128,6 +135,38 @@ public class WheelMain {
 							1, 28));
 					if(wv_day.getCurrentItem()>27){
 						wv_day.setCurrentItem(27);
+					}
+				}*/
+
+				int y_month=wv_month.getCurrentItem()+1;
+				Log.d(TAG,"-m_month-"+y_month);
+
+				boolean leapYear=(year_num % 4 == 0 && year_num % 100 != 0)
+						|| year_num % 400 == 0;
+
+
+				if (list_big.contains(String.valueOf(y_month))){
+					wv_day.setAdapter(new NumericWheelAdapter(
+							1, 31));
+				}else if (list_little.contains(String.valueOf(y_month))){
+					wv_day.setAdapter(new NumericWheelAdapter(
+							1, 30));
+					if (wv_day.getCurrentItem()>29){
+						wv_day.setCurrentItem(29);
+					}
+				}else {
+					if (leapYear){
+						wv_day.setAdapter(new NumericWheelAdapter(
+								1, 29));
+						if (wv_day.getCurrentItem()>28){
+							wv_day.setCurrentItem(28);
+						}
+					}else{
+						wv_day.setAdapter(new NumericWheelAdapter(
+								1, 28));
+						if(wv_day.getCurrentItem()>27){
+							wv_day.setCurrentItem(27);
+						}
 					}
 				}
 			}
@@ -141,7 +180,7 @@ public class WheelMain {
 						.getCurrentItem() + START_YEAR) % 100 != 0)
 						|| (wv_year.getCurrentItem() + START_YEAR) % 400 == 0);
 
-				if (month_num==4||month_num==6||month_num==9||month_num==11){
+				/*if (month_num==4||month_num==6||month_num==9||month_num==11){
 					if (wv_day.getCurrentItem()>29){
 						wv_day.setCurrentItem(29);
 					}
@@ -151,7 +190,10 @@ public class WheelMain {
 					}else if(wv_day.getCurrentItem()>27){
 						wv_day.setCurrentItem(27);
 					}
-				}
+				}*/
+
+				Log.d(TAG,"-OnWheelChangedListener-current-"+wv_year.getCurrentItem());
+				Log.d(TAG,"-OnWheelChangedListener-current+start-"+(wv_year.getCurrentItem()+ START_YEAR));
 
 				// 判断大小月及是否闰年,用来确定"日"的数据
 				if (list_big.contains(String.valueOf(month_num))) {
