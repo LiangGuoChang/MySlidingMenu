@@ -35,23 +35,22 @@
             android:textColor="#000000"
             />
 
-        <!--<TextView
+        <TextView
             android:id="@+id/tv_search_id"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
+            android:layout_height="30dp"
             android:gravity="center"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/textview_1"
             android:layout_toEndOf="@+id/textview_1"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:text="7c7d3d32d223"
             android:textSize="15sp"
             android:textColor="#2286bf"
             android:background="@drawable/fence_list_background"
-            />-->
+            />
 
-        <com.lgc.mysliding.views.MyEditTextDel
+       <!-- <com.lgc.mysliding.views.MyEditTextDel
             android:id="@+id/et_device_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +70,7 @@
             android:maxLines="1"
             android:maxLength="20"
             android:digits="@string/search_mac"
-            />
+            />-->
 
     </RelativeLayout>
 
@@ -162,7 +161,7 @@
             android:orientation="horizontal"
             android:background="@drawable/fence_list_background"
             >
-            <EditText
+            <!--<EditText
                 android:id="@+id/et_start_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -230,6 +229,17 @@
                 android:text="日"
                 android:textSize="18sp"
                 android:textColor="#000000"
+                />-->
+            <TextView
+                android:id="@+id/tv_start_time"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="15sp"
+                android:textColor="#28bc90"
+                android:hint="点击获取开始时间"
+                android:gravity="center"
+                android:enabled="false"
+                android:clickable="false"
                 />
 
         </LinearLayout>
@@ -268,7 +278,7 @@
             android:orientation="horizontal"
             android:background="@drawable/fence_list_background"
             >
-            <EditText
+            <!--<EditText
                 android:id="@+id/et_end_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -334,6 +344,18 @@
                 android:text="日"
                 android:textSize="18sp"
                 android:textColor="#000000"
+                />-->
+
+            <TextView
+                android:id="@+id/tv_end_time"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="15sp"
+                android:textColor="#bf223f"
+                android:hint="点击获取结束时间"
+                android:gravity="center"
+                android:enabled="false"
+                android:clickable="false"
                 />
 
         </LinearLayout>

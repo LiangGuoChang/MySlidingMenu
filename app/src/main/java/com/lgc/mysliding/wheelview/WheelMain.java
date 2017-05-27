@@ -53,16 +53,14 @@ public class WheelMain {
 
 		// 年
 		wv_year = (WheelView) view.findViewById(R.id.year);
-		wv_year.setAdapter(new NumericWheelAdapter(
-				START_YEAR, END_YEAR));
+		wv_year.setAdapter(new NumericWheelAdapter(START_YEAR, END_YEAR));
 		wv_year.setCyclic(true);// 可循环滚动
 		wv_year.setLabel("年");// 添加文字
 		wv_year.setCurrentItem(year - START_YEAR);// 初始化时显示的数据
 
 		// 月
 		wv_month = (WheelView) view.findViewById(R.id.month);
-		wv_month.setAdapter(new NumericWheelAdapter(
-				1, 12));
+		wv_month.setAdapter(new NumericWheelAdapter(1, 12));
 		wv_month.setCyclic(true);
 		wv_month.setLabel("月");
 		wv_month.setCurrentItem(month);
@@ -72,19 +70,15 @@ public class WheelMain {
 		wv_day.setCyclic(true);
 		// 判断大小月及是否闰年,用来确定"日"的数据
 		if (list_big.contains(String.valueOf(month + 1))) {
-			wv_day.setAdapter(new NumericWheelAdapter(
-					1, 31));
+			wv_day.setAdapter(new NumericWheelAdapter(1, 31));
 		} else if (list_little.contains(String.valueOf(month + 1))) {
-			wv_day.setAdapter(new NumericWheelAdapter(
-					1, 30));
+			wv_day.setAdapter(new NumericWheelAdapter(1, 30));
 		} else {
 			// 闰年
 			if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
-				wv_day.setAdapter(new NumericWheelAdapter(
-						1, 29));
+				wv_day.setAdapter(new NumericWheelAdapter(1, 29));
 			else
-				wv_day.setAdapter(new NumericWheelAdapter(
-						1, 28));
+				wv_day.setAdapter(new NumericWheelAdapter(1, 28));
 		}
 
 		wv_day.setLabel("日");
@@ -143,7 +137,6 @@ public class WheelMain {
 
 				boolean leapYear=(year_num % 4 == 0 && year_num % 100 != 0)
 						|| year_num % 400 == 0;
-
 
 				if (list_big.contains(String.valueOf(y_month))){
 					wv_day.setAdapter(new NumericWheelAdapter(

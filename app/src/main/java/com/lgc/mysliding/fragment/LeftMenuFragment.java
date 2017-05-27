@@ -179,7 +179,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
             updateText(click_correlate,Color.BLACK);
             updateText(click_about,Color.BLACK);
 
-            updateNext(R.drawable.next);
+//            updateNext(R.drawable.next);
 
             Log.d(TAG,"更新登录了的UI");
 
@@ -202,7 +202,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
             updateText(click_correlate,Color.GRAY);
             updateText(click_about,Color.GRAY);
 
-            updateNext(R.drawable.next_g);
+//            updateNext(R.drawable.next_g);
 
             Log.d(TAG,"更新注销了的UI");
         }

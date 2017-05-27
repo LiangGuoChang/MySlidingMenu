@@ -7,7 +7,7 @@
     >
 
     <LinearLayout
-        android:layout_width="209dp"
+        android:layout_width="230dp"
         android:layout_height="100dp"
         android:orientation="vertical"
         android:background="@drawable/inforwindow_bg"
@@ -39,10 +39,12 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="#000000"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:text="2017-04-10 08:54:23"
                 />
         </LinearLayout>
 
@@ -79,10 +81,12 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="#000000"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:text="2017-04-10 08:54:23"
                 />
         </LinearLayout>
 
@@ -118,10 +122,11 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="#000000"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
                 />
         </LinearLayout>
 

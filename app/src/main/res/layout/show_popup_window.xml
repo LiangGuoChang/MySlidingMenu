@@ -2,7 +2,7 @@
     android:id="@+id/rel_select"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#b4cecece"
+    android:background="#64000000"
     >
 
     <LinearLayout
@@ -90,7 +90,10 @@
             android:textSize="18sp"
             android:textColor="#ff0000"
             android:layout_weight="1"
-            android:text="取消" />
+            android:text="取消"
+            android:clickable="true"
+            android:background="@drawable/selector_date"
+            />
 
 
         <TextView
@@ -102,7 +105,10 @@
             android:padding="5dp"
             android:layout_weight="1"
             android:textSize="18sp"
-            android:text="确定" />
+            android:text="确定"
+            android:clickable="true"
+            android:background="@drawable/selector_date"
+            />
     </LinearLayout>
 
     </LinearLayout>

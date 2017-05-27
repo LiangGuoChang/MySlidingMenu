@@ -13,9 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -26,7 +24,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -50,8 +47,10 @@ import com.lgc.mysliding.R;
 import com.lgc.mysliding.activity.MyMainActivity;
 import com.lgc.mysliding.adapter.TraceAmapInfoWin;
 import com.lgc.mysliding.adapter.TraceFeatureAdapter;
+import com.lgc.mysliding.adapter.TracePointsAdapter;
 import com.lgc.mysliding.bean.TraceBean;
 import com.lgc.mysliding.bean.TraceInfo;
+import com.lgc.mysliding.bean.TracePoints;
 import com.lgc.mysliding.presenter.TracePresenter;
 import com.lgc.mysliding.view_interface.TraceInterface;
 import com.lgc.mysliding.views.MyEditTextDel;
@@ -77,48 +76,38 @@ import java.util.List;
 public class TrackFragment extends Fragment implements View.OnClickListener, TraceInterface {
 
     private static final String TAG="TrackFragment";
-    private static final long aWeek=99999999;
-    private static final long aDay=000000;
     private long startTime;//开始时间
     private long endTime;//结束时间
     private boolean isSelected=false;//是否选择时间段
-    private boolean selectCustom=false;//设置选择自定义标志
     private boolean isReplay;//设置回放标记
 
     private View mView;
     private MyMainActivity myMainActivity;
     private ImageView iv_search_trace;
     private PopupWindow popupWindow;
-    private RadioGroup radioGroup;
-    private EditText et_device_id;
-    private RadioButton rb_week;
-    private RadioButton rb_day;
-    private RadioButton rb_custom;
     private View popupView;
-    private EditText startYear;
-    private EditText startDay;
-    private EditText startMount;
-    private EditText endYear;
-    private EditText endMount;
-    private EditText endDay;
-    private Button btn_cancel;
-    private Button btn_ensure;
-    private Button btn_replay;
+//    private Button btn_cancel;
+//    private Button btn_ensure;
+//    private Button btn_replay;
     private SeekBar sb_play;
     private MapView map_view;
     private AMap aMap;
     private Marker marker=null;//轨迹点
     private LatLng latLng;//轨迹点经纬度
     //解析到的原始数据集合
-    private List<TraceInfo.TraceBean> traceInfoList=new ArrayList<TraceInfo.TraceBean>();
+//    private List<TraceInfo.TraceBean> traceInfoList=new ArrayList<TraceInfo.TraceBean>();
     //匹配时间的集合
-    private List<TraceInfo.TraceBean> deltaList=new ArrayList<TraceInfo.TraceBean>();
+//    private List<TraceInfo.TraceBean> deltaList=new ArrayList<TraceInfo.TraceBean>();
     //用于画轨迹点集合
-    private List<TraceInfo.TraceBean> path_list=new ArrayList<TraceInfo.TraceBean>();//暂不使用
+//    private List<TraceInfo.TraceBean> path_list=new ArrayList<TraceInfo.TraceBean>();//暂不使用
+
     //匹配时间的经纬度集合
     private ArrayList<LatLng> deltaLatlngs=new ArrayList<LatLng>();
     //用于画线的经纬度集合
     private ArrayList<LatLng> delta_path=new ArrayList<LatLng>();
+    //轨迹点集合
+    private List<TracePoints.TraceBean> mPoints=new ArrayList<TracePoints.TraceBean>();
+
     private ListView lv_trace;
     private ImageView iv_dismiss_trace;
     private TracePresenter tracePresenter;
@@ -127,7 +116,12 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
     private PopupWindow traceWindow;//轨迹弹出框
 
     private WheelMain wheelMainDate;
-    private  String beginTime;
+    private TextView tv_search_mac;
+    private TextView tv_start_time;
+    private TextView tv_end_time;
+    private PopupWindow listWin;
+    private TracePointsAdapter tracePointsAdapter;
+    private TextView tv_replay;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -141,9 +135,8 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         tracePresenter = new TracePresenter(this);
 
         //解析assets目录下的json数据
-        traceInfoList=getJson();
-        //异步解析assets目录下的json数据
-//        new getJsonAsyncTask(traceInfoList,"trace.json").execute("trace.json");
+//        traceInfoList=getJson();
+
         Log.d(TAG,"onCreateView");
         Log.d(TAG,"sb_play--"+sb_play.getProgress());
         return mView;
@@ -152,7 +145,11 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
     //初始化view
     private void initView(Bundle bundle){
         sb_play = (SeekBar) mView.findViewById(R.id.sb_play);
-        btn_replay = (Button) mView.findViewById(R.id.btn_replay);
+//        btn_replay = (Button) mView.findViewById(R.id.btn_replay);
+        tv_replay = (TextView) mView.findViewById(R.id.tv_replay);
+        tv_replay.setOnClickListener(this);
+        TextView tv_list= (TextView) mView.findViewById(R.id.tv_list);
+        tv_list.setOnClickListener(this);
         //初始化地图
         map_view = (MapView) mView.findViewById(R.id.map_view_2d);
         map_view.onCreate(bundle);
@@ -164,16 +161,16 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         //弹出popupView窗口按钮
         iv_search_trace = myMainActivity.iv_search_trace;
         iv_search_trace.setOnClickListener(this);
-
         sb_play.setOnSeekBarChangeListener(new MSeekBarChangeListener());
-        btn_replay.setOnClickListener(this);
+//        btn_replay.setOnClickListener(this);
         Log.d(TAG,"initView");
+
     }
 
     /**
      * 初始化popupwindow
      */
-    private void initPopupWindow(){
+    private void initPopupWindow(final String strMac){
         popupView = getLayoutInflater(this.getArguments())
                 .inflate(R.layout.track_popupwindow,null,false);
         //创建popupWindow,设置高宽，并获取焦点true
@@ -202,34 +199,71 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         });
 
         //初始 popupView 控件
-        et_device_id = (EditText) popupView.findViewById(R.id.et_device_id);
-        radioGroup = (RadioGroup) popupView.findViewById(R.id.radio_group);
-        rb_week = (RadioButton) popupView.findViewById(R.id.rb_week);
-        rb_day = (RadioButton) popupView.findViewById(R.id.rb_day);
-        rb_custom = (RadioButton) popupView.findViewById(R.id.rb_custom);
-        TextView start_text= (TextView) popupView.findViewById(R.id.start_text);
-        //开始时间
-        startYear = (EditText) popupView.findViewById(R.id.et_start_year);
-        startMount = (EditText) popupView.findViewById(R.id.et_start_mount);
-        startDay = (EditText) popupView.findViewById(R.id.et_start_day);
-        //设置输入监听
-        startYear.addTextChangedListener(new MeditextWatcher(startYear));
-        startMount.addTextChangedListener(new MeditextWatcher(startMount));
-        startDay.addTextChangedListener(new MeditextWatcher(startDay));
-        //结束时间
-        endYear = (EditText) popupView.findViewById(R.id.et_end_year);
-        endMount = (EditText) popupView.findViewById(R.id.et_end_mount);
-        endDay = (EditText) popupView.findViewById(R.id.et_end_day);
-        //设置输入监听
-        endYear.addTextChangedListener(new MeditextWatcher(endYear));
-        endMount.addTextChangedListener(new MeditextWatcher(endMount));
-        endDay.addTextChangedListener(new MeditextWatcher(endDay));
-        //取消、确定
-        btn_cancel = (Button) popupView.findViewById(R.id.btn_cancel);
-        btn_ensure = (Button) popupView.findViewById(R.id.btn_ensure);
+        tv_search_mac = (TextView) popupView.findViewById(R.id.tv_search_id);
+        tv_search_mac.setText(strMac);
+        RadioGroup radioGroup = (RadioGroup) popupView.findViewById(R.id.radio_group);
+        RadioButton rb_week = (RadioButton) popupView.findViewById(R.id.rb_week);
+        RadioButton rb_day = (RadioButton) popupView.findViewById(R.id.rb_day);
+        RadioButton rb_custom = (RadioButton) popupView.findViewById(R.id.rb_custom);
+        tv_start_time = (TextView) popupView.findViewById(R.id.tv_start_time);
+        tv_end_time = (TextView) popupView.findViewById(R.id.tv_end_time);
 
-        btn_cancel.setOnClickListener(this);
-        btn_ensure.setOnClickListener(this);
+        //取消、确定
+        Button btn_cancel = (Button) popupView.findViewById(R.id.btn_cancel);
+        Button btn_ensure = (Button) popupView.findViewById(R.id.btn_ensure);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (popupWindow!=null && popupWindow.isShowing()){
+                    popupWindow.dismiss();
+                }
+            }
+        });
+        btn_ensure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //测试数据-->
+                startTime = 1462198037;
+                endTime = 1494226620;
+                //测试数据-->
+
+                //选择了时间段并且时间段不为0才能执行
+                if (isSelected){
+                    //先清除地图
+                    if (aMap!=null){
+                        aMap.clear();
+                    }
+
+                    /*//获取时间匹配的列表
+                    getDeltaList();
+
+                    //在地图上显示标记
+                    setAmapMarker();*/
+
+                    //获取轨迹点
+                    getTracePoints(strMac,startTime,endTime);
+                    //在地图上显示标记
+//                    setAmapMarker();
+
+                    //如果开始时间，结束时间不为0才取消窗口
+                    if ((startTime>0 && endTime>0) && (popupWindow!=null && popupWindow.isShowing())){
+                        popupWindow.dismiss();
+
+                        //隐藏轨迹列表窗体
+                        if (traceWindow!=null && traceWindow.isShowing()){
+                            traceWindow.dismiss();
+                        }
+                        //设置回放按钮可以点击
+                        /*if (!tv_replay.isEnabled()){
+                            tv_replay.setEnabled(true);
+                        }*/
+                    }
+                }else {
+                    Toast.makeText(getContext(),"请选择时间段",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         //时间段选项监听
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -242,31 +276,17 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
                 switch (i){
                     case R.id.rb_week:
                         Log.d(TAG,"选择一周前");
-                        //设置标志为不选择自定义
-                        selectCustom=false;
                         aWeekORaDay(R.id.rb_week);
-                        //测试数据--> // TODO: 2017/1/12 这里获取匹配的集合的经纬度集合
-                        startTime = 1462198037;
-                        endTime = 1462198837;
-                        //测试数据-->
                         break;
 
                     case R.id.rb_day:
                         Log.d(TAG,"选择一天前");
-                        //设置标志为不选择自定义
-                        selectCustom=false;
                         aWeekORaDay(R.id.rb_day);
-                        //测试数据--> // TODO: 2017/1/12 这里获取匹配的集合的经纬度集合
-                        startTime = 1462198037;
-                        endTime = 1462198837;
-                        //测试数据-->
                         break;
 
                     case R.id.rb_custom:
                         Log.d(TAG,"选择自定义");
-                        //设置标志为选择自定义
-                        selectCustom=true;
-                        //把开始时间和结束时间设为0
+                        //先把开始时间和结束时间设为0
                         startTime=endTime=0L;
                         Log.d(TAG,"startTime=="+startTime+"-"+"endTime=="+endTime);
                         setCustomUI();
@@ -275,17 +295,23 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
             }
         });
 
-        start_text.setOnClickListener(new View.OnClickListener() {
+        tv_start_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBottoPopupWindow("选择结束时间");
+                showBottoPopupWindow("选择开始时间",1);
+            }
+        });
+        tv_end_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBottoPopupWindow("选择结束时间",2);
             }
         });
 
     }
 
     private java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    public void showBottoPopupWindow(String title) {
+    private void showBottoPopupWindow(final String title, final int timeStyle) {
         WindowManager manager = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
         Display defaultDisplay = manager.getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -297,7 +323,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         ScreenInfo screenInfoDate = new ScreenInfo(getActivity());
         wheelMainDate = new WheelMain(menuView, true);
         wheelMainDate.screenheight = screenInfoDate.getHeight();
-        String time = DateUtils.currentMonth().toString();
+        final String time = DateUtils.currentMonth().toString();
         Calendar calendar = Calendar.getInstance();
         if (JudgeDate.isDate(time, "yyyy-MM-DD")) {
             try {
@@ -323,7 +349,6 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         TextView tv_cancle = (TextView) menuView.findViewById(R.id.tv_cancle);
         TextView tv_ensure = (TextView) menuView.findViewById(R.id.tv_ensure);
         TextView tv_pop_title = (TextView) menuView.findViewById(R.id.tv_pop_title);
-//        tv_pop_title.setText("选择起始时间");
         tv_pop_title.setText(title);
         tv_cancle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -337,13 +362,24 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
 
             @Override
             public void onClick(View arg0) {
-                beginTime = wheelMainDate.getTime().toString();
+                String beginTime = wheelMainDate.getTime().toString();
                 try {
-                    Date begin = dateFormat.parse(currentTime);
-                    Date end = dateFormat.parse(beginTime);
-//                    tv_house_time.setText(DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm));
-                    Log.d(TAG,"开始时间-"+DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm));
-                } catch (ParseException e) {
+                    //获得选择的时间
+                    String selectTime=DateUtils.formateStringH(beginTime,DateUtils.yyyyMMddHHmm);
+                    if (!TextUtils.isEmpty(selectTime)){
+                        if (timeStyle==1){
+                            tv_start_time.setText(selectTime);
+                            startTime=getSelectTime(selectTime)/1000L;
+                            Log.d(TAG,title+"-"+startTime);
+                        }else if (timeStyle==2){
+                            tv_end_time.setText(selectTime);
+                            endTime=getSelectTime(selectTime)/1000L;
+                            Log.d(TAG,title+"-"+endTime);
+                        }
+                    }
+                    Log.d(TAG,title+"-"+selectTime);
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 mPopupWindow.dismiss();
@@ -352,6 +388,19 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         });
     }
 
+    //获取选择的时间的时间戳
+    private long getSelectTime(String timeStr){
+        SimpleDateFormat cuStart=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date;
+        long cusTime = 0;
+        try {
+            date=cuStart.parse(timeStr);
+            cusTime=date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cusTime;
+    }
 
     @Override
     public void onClick(View view) {
@@ -359,15 +408,6 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
 
             //显示和隐藏popupwindow
             case R.id.iv_search_trace:
-               /* if (popupWindow!=null && popupWindow.isShowing()){
-                    popupWindow.dismiss();
-                    iv_search_trace.setImageResource(R.drawable.search_trace_up);
-                    return;
-                }else {
-                    initPopupWindow();
-//                    popupWindow.showAsDropDown(view,0,20);
-                    iv_search_trace.setImageResource(R.drawable.search_trace_down);
-                }*/
                 if (searchWin!=null && searchWin.isShowing()){
                     searchWin.dismiss();
                     iv_search_trace.setImageResource(R.drawable.search_trace_up);
@@ -375,49 +415,48 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
                     popupSearchWin();
                     iv_search_trace.setImageResource(R.drawable.search_trace_down);
                 }
-
                 break;
 
             //取消按钮
-            case R.id.btn_cancel:
+            /*case R.id.btn_cancel:
                 if (popupWindow!=null && popupWindow.isShowing()){
                     popupWindow.dismiss();
                     return;
                 }
-                break;
+                break;*/
 
             //确定按扭
-            case R.id.btn_ensure:
+            /*case R.id.btn_ensure:
 
-                /*//设置回放按钮可以点击
-                if (!btn_replay.isEnabled()){
+                //设置回放按钮可以点击
+                *//*if (!btn_replay.isEnabled()){
                     btn_replay.setEnabled(true);
-                }*/
+                }*//*
+
+                //测试数据-->
+                startTime = 1462198037;
+                endTime = 1462198837;
+                //测试数据-->
 
                 //选择了时间段并且时间段不为0才能执行
-                if (isSelected && (startTime>0 && endTime>0)){
-                    // TODO: 2017/1/13 先清除地图
+                if (isSelected){
+                    //先清除地图
                     if (aMap!=null){
                         aMap.clear();
                     }
-                    //判断是否为自定义的
-                    if (selectCustom){
-                        getCustomTime();
-                    }
+
                     //获取时间匹配的列表
                     getDeltaList();
-                    // TODO: 2017/1/13
-//                    sb_play.setMax(deltaList.size());
-//                    sb_play.setProgress(0);
+
                     //在地图上显示标记
                     setAmapMarker();
                     //如果开始时间，结束时间不为0才取消窗口
-                    if ((startTime>0&&endTime>0)&&(popupWindow!=null && popupWindow.isShowing())){
+                    if ((startTime>0 && endTime>0) && (popupWindow!=null && popupWindow.isShowing())){
                         popupWindow.dismiss();
 
-                        /*popupTraceList();//13680739741
+                        *//*popupTraceList();//13680739741
                         String url="http://218.15.154.6:8080/feature/query/phone?request={\"phone\":\"13680739741\",\"get_trace_num\":true}";
-                        tracePresenter.loadFeatureList(url);*/
+                        tracePresenter.loadFeatureList(url);*//*
 
                         //隐藏轨迹列表窗体
                         if (traceWindow!=null && traceWindow.isShowing()){
@@ -431,10 +470,11 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
                         return;
                     }
                 }
-                break;
+                break;*/
 
             //回放按钮
-            case R.id.btn_replay:
+            /*case R.id.btn_replay:
+                Log.d(TAG,"回放-deltaLatlngs.size"*//*+deltaLatlngs.size()*//*);
                 //判断是否在回放
                 if (!isReplay){
                     //如果处于停止
@@ -454,16 +494,49 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
                     isReplay=false;
                     btn_replay.setText("回放");
                 }
+                break;*/
+            case R.id.tv_replay:
+                if (mPoints!=null && mPoints.size() > 0) {
+                    //判断是否在回放
+                    if (!isReplay) {
+                        //如果处于停止
+                        if (deltaLatlngs.size() > 0) {
+                            //假如回放到最后，则设为 0
+                            if (sb_play.getProgress() == sb_play.getMax()) {
+                                sb_play.setProgress(0);
+                            }
+                            //设置为回放状态
+                            isReplay = true;
+                            tv_replay.setText("停止");
+                            timer.postDelayed(runnable, 10);//延迟0.01秒再执行
+                        }
+                    } else {
+                        //如果处于回放状态,移除定时器,设置为停止
+                        timer.removeCallbacks(runnable);
+                        isReplay = false;
+                        tv_replay.setText("回放");
+                    }
+                }else {
+                    Toast.makeText(getContext(),"未有查询的设备",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.tv_list:
+                if (mPoints!=null && mPoints.size() > 0){
+                    if (listWin!=null && listWin.isShowing()){
+                        listWin.dismiss();
+                    }else {
+                        showTraceListWin();
+                    }
+                }else {
+                    Toast.makeText(getContext(),"未有查询的设备",Toast.LENGTH_SHORT).show();
+                }
+
                 break;
         }
     }
     
-    //根据开始和结束时间获取时间匹配的列表
+    /*//根据开始和结束时间获取时间匹配的列表
     private void getDeltaList() {
-//        //测试数据--> // TODO: 2017/1/12 这里获取匹配的集合的经纬度集合
-//        startTime = 1462198037;
-//        endTime = 1462198837;
-//        //测试数据-->
         Log.d(TAG, "getDeltaList-" + "startTime-" + startTime + "-endTime-" + endTime);
         //先清空列表
         path_list.clear();
@@ -495,6 +568,59 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
             Log.d(TAG,"path_list--"+path_list.size());
             Log.d(TAG, "deltaLatlngs--" + deltaLatlngs.size());
         }
+    }*/
+
+    // TODO: 2017/5/26 弹出轨迹列表窗
+    private void showTraceListWin(){
+        View v=getLayoutInflater(getArguments()).inflate(R.layout.trace_points_list,null);
+        listWin = new PopupWindow(v,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        listWin.setContentView(v);
+        listWin.setOutsideTouchable(true);
+        listWin.setBackgroundDrawable(new BitmapDrawable());
+        //android 7.0 弹出窗另外设置
+        if (Build.VERSION.SDK_INT == 24){
+            int[] location=new int[2];
+            myMainActivity.findViewById(R.id.relative_tittle).getLocationOnScreen(location);
+            listWin.showAtLocation(myMainActivity.findViewById(R.id.relative_tittle),
+                    Gravity.NO_GRAVITY,
+                    0,
+                    location[1]+myMainActivity.findViewById(R.id.relative_tittle).getHeight()+15);
+        }else {
+            listWin.showAsDropDown(myMainActivity.findViewById(R.id.relative_tittle),0,15);
+        }
+        ListView lv_trace_points= (ListView) v.findViewById(R.id.lv_trace_points);
+        if (tracePointsAdapter!=null){
+            lv_trace_points.setAdapter(tracePointsAdapter);
+        }
+        ImageView iv_dimiss_list= (ImageView) v.findViewById(R.id.iv_dismiss_list);
+        iv_dimiss_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listWin.dismiss();
+            }
+        });
+
+    }
+
+
+    //组拼URL并且获取轨迹点
+    private void getTracePoints(String mac,long enter_time,long leave_time){
+        String url="http://218.15.154.6:8080/trace?request=";
+        JSONObject jsonObject=new JSONObject();
+        try {
+            jsonObject.put("query_type","01");
+            jsonObject.put("mac",mac);
+            jsonObject.put("start_time",enter_time);
+            jsonObject.put("end_time",leave_time);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        url=url.trim()+String.valueOf(jsonObject).trim();
+        Log.d(TAG,"轨迹点URL-"+url);
+        tracePresenter.loadTracePoints(url);
+        showProgressDialog();
     }
 
     //设选择一周前或者一天前的时间
@@ -505,19 +631,14 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         endTime=currentTime/1000L;//获取当前10位时间戳
         Log.d(TAG,"currentTime=="+currentTime+"\n"+"endTime=="+endTime);
 
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String currentStr=sdf.format(startDate);
         Log.d(TAG,"currentStr=="+currentStr);
 
-        String currentYear=currentStr.substring(0,4);
-        String currentMount=currentStr.substring(5,7);
-        String currentDay=currentStr.substring(8,10);
-        endYear.setText(currentYear);
-        endYear.setEnabled(false);
-        endMount.setText(currentMount);
-        endMount.setEnabled(false);
-        endDay.setText(currentDay);
-        endDay.setEnabled(false);
+        tv_end_time.setText(currentStr);
+        tv_end_time.setClickable(false);
+        tv_end_time.setEnabled(false);
+
         //开始时间
         String startStr="";
         switch (i){
@@ -526,7 +647,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
                 startTime=((currentTime/1000-60*60*24*7)/(60*60*24))*60*60*24-60*60*8;
                 Log.d(TAG,"startTime=="+startTime);
                 Date weekDate=new Date(startTime*1000L);
-                SimpleDateFormat weekSdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat weekSdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 startStr=weekSdf.format(weekDate);
                 Log.d(TAG,"weekStr=="+startStr);
                 break;
@@ -535,7 +656,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
                 startTime=((currentTime/1000-60*60*24)/(60*60*24))*60*60*24-60*60*8;
                 Log.d(TAG,"startTime=="+startTime);
                 Date dayDate=new Date(startTime*1000L);
-                SimpleDateFormat daySdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat daySdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 startStr=daySdf.format(dayDate);
                 Log.d(TAG,"dayStr=="+startStr);
                 break;
@@ -545,75 +666,24 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         }
         //设置开始时间
         if (!("".equals(startStr))){
-            String year=startStr.substring(0,4);
-            String mount=startStr.substring(5,7);
-            String day=startStr.substring(8,10);
-            startYear.setText(year);
-            startYear.setEnabled(false);
-            startMount.setText(mount);
-            startMount.setEnabled(false);
-            startDay.setText(day);
-            startDay.setEnabled(false);
+            tv_start_time.setText(startStr);
+            tv_start_time.setClickable(false);
+            tv_start_time.setEnabled(false);
         }
     }
 
-    //设置为自定义
+    //设置为自定义选择时间
     private void setCustomUI(){
-        startYear.setEnabled(true);
-        startYear.setText("");
-        startMount.setEnabled(true);
-        startMount.setText("");
-        startDay.setEnabled(true);
-        startDay.setText("");
-        endYear.setEnabled(true);
-        endYear.setText("");
-        endMount.setEnabled(true);
-        endMount.setText("");
-        endDay.setEnabled(true);
-        endDay.setText("");
-    }
-
-    //获取自定义的时间换算为时间戳
-    private void getCustomTime(){
-        //获取开始时间
-        String custStart = "";
-        if (!StartCustYear.equals("") && !StartCustMount.equals("") && !StartCustDay.equals("")){
-            custStart=StartCustYear.trim()+StartCustMount.trim()+StartCustDay.trim();
-            Log.d(TAG,"custStart=="+custStart);
-        }
-        //获取结束时间
-        String custEnd = "";
-        if (!EndCustYear.equals("") && !EndCustMount.equals("") && !EndCustDay.equals("")){
-            custEnd=EndCustYear.trim()+EndCustMount.trim()+EndCustDay.trim();
-            Log.d(TAG,"custEnd=="+custEnd);
-        }
-        if (!custStart.equals("")&&!custEnd.equals("")){
-            long startT=getCustom(custStart)/1000;
-            Log.d(TAG,"stratT=="+startT);
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date startD=new Date(startT*1000L);
-            Log.d(TAG,"开始:"+sdf.format(startD));
-
-            long endT=getCustom(custEnd)/1000;
-            Log.d(TAG,"endT=="+endT);
-            Date endD=new Date(endT*1000L);
-            Log.d(TAG,"结束：:"+sdf.format(endD));
-        }
-    }
-    private long getCustom(String timeStr){
-        SimpleDateFormat cuStart=new SimpleDateFormat("yyyyMMdd");
-        Date date;
-        long cusTime = 0;
-        try {
-            date=cuStart.parse(timeStr);
-            cusTime=date.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return cusTime;
+        tv_start_time.setEnabled(true);
+        tv_start_time.setClickable(true);
+        tv_start_time.setText("");
+        tv_end_time.setEnabled(true);
+        tv_end_time.setClickable(true);
+        tv_end_time.setText("");
     }
 
     //解析assets目录下的json文件数据
+    @Nullable
     private List<TraceInfo.TraceBean> getJson(){
         AssetManager assetManager= MyApp.getMyApp().getBaseContext().getAssets();
         try {
@@ -650,7 +720,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
     }
 
     /**
-     *获去匹配的时间集合后，在地图上显示标记
+     *获取匹配的时间集合后，在地图上显示标记
      */
     private void setAmapMarker(){
         Log.d(TAG,"setAmapMarker");
@@ -659,43 +729,16 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         }else {
             Log.d(TAG,"aMap==null");
         }
-         if (!deltaList.isEmpty()){
-//             List<LatLng> lngList=new ArrayList<LatLng>();
+         if (!mPoints.isEmpty()){
              ArrayList<LatLng> lngList=deltaLatlngs;
-//             int daltaSize=deltaList.size();
-//             double lat;
-//             double lon;
-//             LatLng latLng;
-//             MarkerOptions options;
-//             Marker marker;
              LatLng first;
-//             for (TraceInfo.TraceBean traceBean:deltaList){
-//                 lat=traceBean.getLatitude();
-//                 lon=traceBean.getLongitude();
-//                 latLng=new LatLng(lat,lon);
-////                 lngList.add(latLng);
-//                 options=new MarkerOptions();
-//                 options.position(latLng);
-//                 options.title(String.valueOf(traceBean.getEnter_time()));
-//                 options.visible(true);
-//                 marker=aMap.addMarker(options);
-//                 if (traceBean.equals(deltaList.get(0))){
-//                     marker.showInfoWindow();
-//                 }
-//             }
              first=lngList.get(0);
              aMap.moveCamera(CameraUpdateFactory.changeLatLng(first));
              aMap.moveCamera(CameraUpdateFactory.zoomTo(14));
 
              Log.d(TAG,"放大地图");
-//             Polyline polyline=aMap.addPolyline(new PolylineOptions()
-//                     .addAll(lngList)
-//                     .color(Color.rgb(9,129,260))
-//                     .width(8f)
-//                     .visible(true));
-
-               // TODO: 2017/1/12  setAmapMarker 在第一次成功显示之后，启动回放任务
-                runnable=new Runnable() {
+             //在第一次成功显示之后，启动回放任务
+             runnable=new Runnable() {
                     @Override
                     public void run() {
                         handler.sendMessage(Message.obtain(handler,1));
@@ -807,7 +850,9 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         lv_trace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                initPopupWindow();
+                TextView tv_mac= (TextView) view.findViewById(R.id.tv_trace_mac);
+                String mac=tv_mac.getText().toString().trim();
+                initPopupWindow(mac);
             }
         });
     }
@@ -818,6 +863,36 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         dissmissProgressDialog();//隐藏进度框
         TraceFeatureAdapter featureAdapter=new TraceFeatureAdapter(getContext(),feature_list);
         lv_trace.setAdapter(featureAdapter);
+    }
+
+    //获得某一设备的轨迹点
+    @Override
+    public void showTracePoints(List<TracePoints.TraceBean> tracePoints) {
+        dissmissProgressDialog();//隐藏进度框
+        deltaLatlngs.clear();
+        mPoints.clear();
+//        mPoints=tracePoints;
+        mPoints.addAll(tracePoints);
+        for (TracePoints.TraceBean traceBean : mPoints){
+            LatLng latlng=new LatLng(traceBean.getLatitude(),traceBean.getLongitude());
+            deltaLatlngs.add(latlng);
+        }
+
+        //创建适配器实例
+        tracePointsAdapter = new TracePointsAdapter(getContext(),mPoints);
+
+        Log.d(TAG,"points-"+mPoints.size());
+        Log.d(TAG,"deltaLatlngs-"+deltaLatlngs.size());
+
+        sb_play.setMax(deltaLatlngs.size());
+        sb_play.setProgress(0);
+        //在地图上显示标记
+        setAmapMarker();
+//        sb_play.setOnSeekBarChangeListener(new MSeekBarChangeListener());
+        Log.d(TAG,"sb_play.max="+sb_play.getMax());
+        Log.d(TAG,"sb_play.progress="+sb_play.getProgress());
+        Log.d(TAG,"deltaLatlngs.size()="+deltaLatlngs.size());
+
     }
 
     //必须重写
@@ -880,66 +955,6 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
         Log.d(TAG,"onDetach");
     }
 
-    private String StartCustYear;
-    private String StartCustMount;
-    private String StartCustDay;
-    private String EndCustYear;
-    private String EndCustMount;
-    private String EndCustDay;
-
-    /**
-     * 自定义EditText输入监听类
-     */
-    private class MeditextWatcher implements TextWatcher {
-
-        private EditText editext;
-
-        private MeditextWatcher(EditText mEditext){
-            this.editext=mEditext;
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            switch (editext.getId()){
-                case R.id.et_start_year:
-                    StartCustYear= charSequence.toString();
-                    Log.d(TAG,"StartCustYear::"+StartCustYear);
-                    break;
-                case R.id.et_start_mount:
-                    StartCustMount= charSequence.toString();
-                    Log.d(TAG,"StartCustMount::"+StartCustMount);
-                    break;
-                case R.id.et_start_day:
-                    StartCustDay= charSequence.toString();
-                    Log.d(TAG,"StartCustDay::"+StartCustDay);
-                    break;
-                case R.id.et_end_year:
-                    EndCustYear= charSequence.toString();
-                    Log.d(TAG,"EndCustYear::"+EndCustYear);
-                    break;
-                case R.id.et_end_mount:
-                    EndCustMount= charSequence.toString();
-                    Log.d(TAG,"EndCustMount::"+EndCustMount);
-                    break;
-                case R.id.et_end_day:
-                    EndCustDay= charSequence.toString();
-                    Log.d(TAG,"EndCustDay::"+EndCustDay);
-                    break;
-            }
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-        }
-    }
-
     private Handler timer=new Handler();//定时器
     private Runnable runnable=null;
     /**
@@ -957,7 +972,7 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
                 }else {
                     //进度条到达最大值，停止回放任务
                     isReplay=false;
-                    btn_replay.setText("回放");
+                    tv_replay.setText("回放");
                 }
             }
         }
@@ -981,9 +996,9 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
 //        aMap.addMarker(new MarkerOptions()
 //                .position(deltaLatlngs.get(0))
 //                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_point)));
-        latLng=new LatLng(deltaList.get(0).getLatitude(),deltaList.get(0).getLongitude());
-        enDate=new Date(deltaList.get(0).getEnter_time()*1000L);
-        leDate=new Date(deltaList.get(0).getLeave_time()*1000L);
+        latLng=new LatLng(mPoints.get(0).getLatitude(),mPoints.get(0).getLongitude());
+        enDate=new Date(mPoints.get(0).getEnter_time()*1000L);
+        leDate=new Date(mPoints.get(0).getLeave_time()*1000L);
         enStr=sdf.format(enDate);
         leStr=sdf.format(leDate);
         marker=aMap.addMarker(new MarkerOptions()
@@ -1007,9 +1022,9 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
 //                .position(replayPos)
 //                .title("在这里")
 //                .icon(BitmapDescriptorFactory.fromResource(R.drawable.location_here)));
-        latLng=new LatLng(deltaList.get(curretPos-1).getLatitude(),deltaList.get(curretPos-1).getLongitude());
-        enDate=new Date(deltaList.get(curretPos-1).getEnter_time()*1000L);
-        leDate=new Date(deltaList.get(curretPos-1).getLeave_time()*1000L);
+        latLng=new LatLng(mPoints.get(curretPos-1).getLatitude(),mPoints.get(curretPos-1).getLongitude());
+        enDate=new Date(mPoints.get(curretPos-1).getEnter_time()*1000L);
+        leDate=new Date(mPoints.get(curretPos-1).getLeave_time()*1000L);
         enStr=sdf.format(enDate);
         leStr=sdf.format(leDate);
         marker=aMap.addMarker(new MarkerOptions()
@@ -1048,9 +1063,9 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
 
         //添加终点
         if (delta_path.size()==deltaLatlngs.size()){
-            latLng=new LatLng(deltaList.get(deltaList.size()-1).getLatitude(),deltaList.get(deltaList.size()-1).getLongitude());
-            enDate=new Date(deltaList.get(deltaList.size()-1).getEnter_time()*1000L);
-            leDate=new Date(deltaList.get(deltaList.size()-1).getLeave_time()*1000L);
+            latLng=new LatLng(mPoints.get(mPoints.size()-1).getLatitude(),mPoints.get(mPoints.size()-1).getLongitude());
+            enDate=new Date(mPoints.get(mPoints.size()-1).getEnter_time()*1000L);
+            leDate=new Date(mPoints.get(mPoints.size()-1).getLeave_time()*1000L);
             enStr=sdf.format(enDate);
             leStr=sdf.format(leDate);
 //            aMap.addMarker(new MarkerOptions()
@@ -1065,7 +1080,6 @@ public class TrackFragment extends Fragment implements View.OnClickListener, Tra
 
             Log.d(TAG,"添加终点");
         }
-
 
     }
 

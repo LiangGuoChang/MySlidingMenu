@@ -1,6 +1,7 @@
 package com.lgc.mysliding.view_interface;
 
 import com.lgc.mysliding.bean.TraceBean;
+import com.lgc.mysliding.bean.TracePoints;
 
 import java.util.List;
 
@@ -10,4 +11,5 @@ import java.util.List;
  */
 public interface TraceInterface {
     void showFeatureList(List<TraceBean.FeatureListBean> feature_list);
+    void showTracePoints(List<TracePoints.TraceBean> tracePoints);
 }

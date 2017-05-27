@@ -53,6 +53,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     public ImageView iv_search_mac;
     public ImageView iv_search_trace;
     public ImageView iv_fenceMenu;
+    public ImageView iv_navi_search;
 //    private ViewPager mViewPager;
 //    private MyViewPager my_viewpager;
 
@@ -73,6 +74,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         }
     };
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +94,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         iv_search_mac = (ImageView) findViewById(R.id.iv_search_mac);//探针管理的搜索按钮
         iv_search_trace = (ImageView) findViewById(R.id.iv_search_trace);//轨迹查询按钮
         iv_fenceMenu = (ImageView) findViewById(R.id.iv_fence_menu);//电子围栏的菜单按钮
+        iv_navi_search = (ImageView) findViewById(R.id.iv_navigate_search);//目标导航搜索
         show_menu.setOnClickListener(this);
         //设置初始标题
         setTitle(titles[0]);
@@ -151,7 +154,12 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         //设置阴影部分宽度
         menu.setShadowWidthRes(R.dimen.shadow_width);
         //设置菜单宽度
-        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        RelativeLayout ll= (RelativeLayout) findViewById(R.id.relative_tittle);
+        ll.measure(0,0);
+        int width=ll.getMeasuredWidth();
+        Log.d(TAG,"width--"+width);
+//        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        menu.setBehindOffset(width*3/4);
         //设置背景淡入淡出效果
         menu.setFadeDegree(0.35f);
         //主页面淡入淡出效果 自定义的
@@ -221,6 +229,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //电子围栏控件
                     iv_fenceMenu.setVisibility(View.INVISIBLE);
                     iv_fenceMenu.setClickable(false);
+                    //目标导航搜索
+                    iv_navi_search.setVisibility(View.INVISIBLE);
+                    iv_navi_search.setClickable(false);
                 }else if(position==1){
                     relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式 边缘触摸
@@ -234,6 +245,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //电子围栏控件
                     iv_fenceMenu.setVisibility(View.INVISIBLE);
                     iv_fenceMenu.setClickable(false);
+                    //目标导航搜索
+                    iv_navi_search.setVisibility(View.INVISIBLE);
+                    iv_navi_search.setClickable(false);
                 }else if (position == 2){
                     relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式
@@ -247,20 +261,26 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //隐藏轨迹查询控件
                     iv_search_trace.setVisibility(View.INVISIBLE);
                     iv_search_trace.setClickable(false);
-                }/*else if(position==3){
-                    relat_tittle.setVisibility(View.GONE);
+                    //目标导航搜索
+                    iv_navi_search.setVisibility(View.INVISIBLE);
+                    iv_navi_search.setClickable(false);
+                }else if(position==3){
+                    relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-                    //电子围栏控件
-                    iv_fenceMenu.setVisibility(View.INVISIBLE);
-                    iv_fenceMenu.setClickable(false);
-                    //隐藏搜索控件
+                    //目标导航搜索
+                    iv_navi_search.setVisibility(View.VISIBLE);
+                    iv_navi_search.setClickable(true);
+                    //显示搜索控件
                     iv_search_mac.setVisibility(View.INVISIBLE);
                     iv_search_mac.setClickable(false);
                     //隐藏轨迹查询控件
                     iv_search_trace.setVisibility(View.INVISIBLE);
                     iv_search_trace.setClickable(false);
-                }*/else if (position > 2){
+                    //电子围栏控件
+                    iv_fenceMenu.setVisibility(View.INVISIBLE);
+                    iv_fenceMenu.setClickable(false);
+                }else if (position > 3){
                     relat_tittle.setVisibility(View.VISIBLE);
                     //打开菜单的触摸方式
                     menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
@@ -273,6 +293,9 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
                     //隐藏轨迹查询控件
                     iv_search_trace.setVisibility(View.INVISIBLE);
                     iv_search_trace.setClickable(false);
+                    //目标导航搜索
+                    iv_navi_search.setVisibility(View.INVISIBLE);
+                    iv_navi_search.setClickable(false);
                 }
 
                 Log.d(TAG,"onPageSelected"+"\n"+"position--"+position+"title--"+title);

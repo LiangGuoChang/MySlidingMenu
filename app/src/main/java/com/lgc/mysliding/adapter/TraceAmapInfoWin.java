@@ -1,8 +1,8 @@
 package com.lgc.mysliding.adapter;
 
 import android.content.Context;
-import android.location.Address;
 import android.location.Geocoder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -10,11 +10,14 @@ import android.widget.TextView;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeAddress;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.lgc.mysliding.MyApp;
 import com.lgc.mysliding.R;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  *轨迹查询的
@@ -50,8 +53,35 @@ public class TraceAmapInfoWin implements AMap.InfoWindowAdapter{
         latLng=marker.getPosition();
         lat=latLng.latitude;
         lng=latLng.longitude;
+        LatLonPoint point=new LatLonPoint(lat,lng);
         //换算经纬度为地址
+        GeocodeSearch geocodeSearch=new GeocodeSearch(context);
+        geocodeSearch.setOnGeocodeSearchListener(new GeocodeSearch.OnGeocodeSearchListener() {
+            @Override
+            public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
+                RegeocodeAddress address=regeocodeResult.getRegeocodeAddress();
+                String addr=address.getFormatAddress();
+                enter_address=addr.substring(3);
+                Log.d("aaa","addr::"+addr);
+            }
+
+            @Override
+            public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
+            }
+        });
+        RegeocodeQuery query=new RegeocodeQuery(point,50,GeocodeSearch.GPS);
+        /*try {
+            geocodeSearch.getFromLocation(query);
+        } catch (AMapException e) {
+            e.printStackTrace();
+            Log.d("aaa","initTraceMarker::"+e.getMessage());
+        }*/
+        geocodeSearch.getFromLocationAsyn(query);
+
+
         Geocoder geocoder=new Geocoder(context);
+        /*Geocoder geocoder=new Geocoder(context);
         try {
             List<Address> addressList=geocoder.getFromLocation(lat,lng,1);
             if(addressList.size()>0){
@@ -60,7 +90,7 @@ public class TraceAmapInfoWin implements AMap.InfoWindowAdapter{
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private View initTraceInfoView(){

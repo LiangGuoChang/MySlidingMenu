@@ -19,4 +19,8 @@
     <color name="tab_unselect">#001c36d4</color>
     <color name="tab_select">#b44aa7e9</color>
     <color name="tab_text_unselect">#dcdcdc</color>
+
+    <color name="date_unclick">#0000dfbb</color>
+    <color name="date_click">#2f22937e</color>
+
 </resources>

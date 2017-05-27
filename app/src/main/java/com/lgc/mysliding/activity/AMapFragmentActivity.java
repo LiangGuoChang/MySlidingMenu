@@ -22,6 +22,8 @@ import com.lgc.mysliding.MyApp;
 import com.lgc.mysliding.R;
 import com.lgc.mysliding.adapter.MInfoWindowAdapter;
 import com.lgc.mysliding.bean.DetectorLists;
+import com.lgc.mysliding.bean.Gps;
+import com.lgc.mysliding.utils.PositionUtil;
 
 import java.util.List;
 
@@ -78,7 +80,11 @@ public class AMapFragmentActivity extends FragmentActivity {
 
                 lat=mDeviceListBeen.get(i).getLatitude();
                 lon=mDeviceListBeen.get(i).getLongitude();
-                LatLng latLng =new LatLng(lat, lon);
+                Gps gps=PositionUtil.gps84_To_Gcj02(lat,lon);
+                LatLng latLng = null;
+                if (gps != null) {
+                    latLng = new LatLng(gps.getWgLat(),gps.getWgLon());
+                }
                 MarkerOptions options = new MarkerOptions();
                 options.position(latLng);
 

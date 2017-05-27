@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "com.lgc.mysliding"
@@ -32,8 +32,8 @@ dependencies {
     compile files('libs/AMap_Location_V3.2.1_20161228.jar')
     compile files('libs/Android_Map3D_SDK_V4.1.3_20161208.jar')
     compile files('libs/Msc.jar')
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support:support-v4:25.3.0'
-    compile 'com.android.support:design:25.3.0'
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:design:25.1.0'
     compile 'com.google.code.gson:gson:2.8.0'
 }

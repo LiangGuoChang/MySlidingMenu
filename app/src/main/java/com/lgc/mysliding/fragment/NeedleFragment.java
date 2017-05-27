@@ -38,7 +38,7 @@ public class NeedleFragment extends Fragment implements ViewInterface, AdapterVi
     private static final String TAG="NeedleFragment";
     private static final int ListChange=2017;
 //    private String url="http://192.168.1.184:8080/json/detectorInfo1.json";
-    private String url="http://218.15.154.6:8080/detector_list?";
+    protected String url="http://218.15.154.6:8080/detector_list?";
     private View mView;
     private ListView lv_detector;
     private EditText et_search;
