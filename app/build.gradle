@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.lgc.mysliding"
-        minSdkVersion 14
-        targetSdkVersion 25
+        minSdkVersion 18
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -20,20 +21,22 @@ android {
 }
 
 dependencies {
-    compile project(':libraries:SlidingMenu/library')
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile files('libs/Amap_2DMap_V3.0.0_20161227.jar')
-    compile files('libs/AMap_Search_V3.6.1_20161222.jar')
-    compile files('libs/jg_filter_sdk_1.1.jar')
-    compile files('libs/wup-1.0.0.E-SNAPSHOT.jar')
-    compile files('libs/Xg_sdk_v2.47_20161026_0936.jar')
-    compile files('libs/AMapNavi_1.9.4_AMapLocation_3.1.0_20161201.jar')
-    compile files('libs/AMap_Location_V3.2.1_20161228.jar')
-    compile files('libs/Android_Map3D_SDK_V4.1.3_20161208.jar')
-    compile files('libs/Msc.jar')
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.google.code.gson:gson:2.8.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation files('libs/Amap_2DMap_V3.0.0_20161227.jar')
+    implementation files('libs/AMap_Search_V3.6.1_20161222.jar')
+    implementation files('libs/jg_filter_sdk_1.1.jar')
+    implementation files('libs/wup-1.0.0.E-SNAPSHOT.jar')
+    implementation files('libs/Xg_sdk_v2.47_20161026_0936.jar')
+    implementation files('libs/AMapNavi_1.9.4_AMapLocation_3.1.0_20161201.jar')
+    implementation files('libs/AMap_Location_V3.2.1_20161228.jar')
+    implementation files('libs/Android_Map3D_SDK_V4.1.3_20161208.jar')
+    implementation files('libs/Msc.jar')
+    //    compile 'com.android.support:appcompat-v7:26.1.0'
+    //    compile 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation project(':libraries:SlidingMenu')
 }

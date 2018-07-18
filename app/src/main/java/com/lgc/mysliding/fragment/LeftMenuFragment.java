@@ -43,6 +43,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
 //    private MainActivity mainActivity;
     private boolean logined;
     private LinearLayout feature;
+    private LinearLayout click_gis;
     //    private MainFragment mainFragment;
 
     @Override
@@ -82,6 +83,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         click_navigate = (LinearLayout) mView.findViewById(R.id.click_navigate);//导航
         click_video_analyst = (LinearLayout) mView.findViewById(R.id.click_video_analyst);//视频分析
         click_correlate = (LinearLayout) mView.findViewById(R.id.click_correlate);//轨迹分析
+        click_gis = mView.findViewById(R.id.click_gis);//电子标签GIS
         click_about = (LinearLayout) mView.findViewById(R.id.click_about);//关于
         feature = (LinearLayout) mView.findViewById(R.id.linear_feature);//整个功能栏
 
@@ -92,8 +94,8 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         click_navigate.setOnClickListener(this);
         click_video_analyst.setOnClickListener(this);
         click_correlate.setOnClickListener(this);
+        click_gis.setOnClickListener(this);
         click_about.setOnClickListener(this);
-
     }
 
     @Override
@@ -125,6 +127,9 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
             case R.id.click_correlate:
                 showFragment(5);
                 break;
+            case R.id.click_gis:
+                showFragment(6);
+                break;
             case R.id.click_about://关于
                 Intent about=new Intent(getActivity(), EnterActivity.class);
                 Bundle bundle1=new Bundle();
@@ -151,6 +156,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
         if(slMenu.isMenuShowing()){
             slMenu.showContent();
         }
+        Log.d(TAG,"showFragment--"+item);
         //调用MyMainActivity中的切换ViewPager的方法
         boolean select= mActivity.selectViewPager(item);
         Log.d(TAG,"select--"+select);
@@ -169,6 +175,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
             click_navigate.getChildAt(0).setBackgroundResource(R.drawable.navigation);
             click_video_analyst.getChildAt(0).setBackgroundResource(R.drawable.video);
             click_correlate.getChildAt(0).setBackgroundResource(R.drawable.correlate);
+            click_gis.getChildAt(0).setBackgroundResource(R.drawable.gis);
             click_about.getChildAt(0).setBackgroundResource(R.drawable.about);
 
             updateText(click_needle,Color.BLACK);
@@ -177,6 +184,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
             updateText(click_navigate,Color.BLACK);
             updateText(click_video_analyst,Color.BLACK);
             updateText(click_correlate,Color.BLACK);
+            updateText(click_gis,Color.BLACK);
             updateText(click_about,Color.BLACK);
 
 //            updateNext(R.drawable.next);
@@ -192,6 +200,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
             click_navigate.getChildAt(0).setBackgroundResource(R.drawable.unnavigation);
             click_video_analyst.getChildAt(0).setBackgroundResource(R.drawable.unvideo);
             click_correlate.getChildAt(0).setBackgroundResource(R.drawable.uncorrelate);
+            click_gis.getChildAt(0).setBackgroundResource(R.drawable.ungis);
             click_about.getChildAt(0).setBackgroundResource(R.drawable.unabout);
 
             updateText(click_needle,Color.GRAY);
@@ -200,6 +209,7 @@ public class LeftMenuFragment extends Fragment implements View.OnClickListener {
             updateText(click_navigate,Color.GRAY);
             updateText(click_video_analyst,Color.GRAY);
             updateText(click_correlate,Color.GRAY);
+            updateText(click_gis,Color.GRAY);
             updateText(click_about,Color.GRAY);
 
 //            updateNext(R.drawable.next_g);

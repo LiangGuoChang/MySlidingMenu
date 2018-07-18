@@ -1,5 +1,6 @@
 package com.lgc.mysliding.activity;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import com.lgc.mysliding.R;
 import com.lgc.mysliding.adapter.MyFSAdapter;
 import com.lgc.mysliding.fragment.CorrelateFragment;
 import com.lgc.mysliding.fragment.FenceFragment;
+import com.lgc.mysliding.fragment.GISFragment;
 import com.lgc.mysliding.fragment.LeftMenuFragment;
 import com.lgc.mysliding.fragment.NavigationFragment;
 import com.lgc.mysliding.fragment.NeedleFragment;
@@ -47,7 +49,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     private RelativeLayout show_menu;
     private SlidingMenu menu;
     private MyFSAdapter myFSAdapter;
-    private String[] titles=new String[]{"探针管理","轨迹查询","电子围栏","目标导航","视频联动分析","轨迹关联分析"};
+    private String[] titles=new String[]{"探针管理","轨迹查询","电子围栏","目标导航","视频联动分析","轨迹关联分析","电子标签GIS"};
     private TextView my_title;
     private String url="http://192.168.1.184:8080/json/detectorInfo.json";
     public ImageView iv_search_mac;
@@ -66,6 +68,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
     // 定义一个变量，来标识是否退出
     private static boolean isExit = false;
 
+    @SuppressLint("HandlerLeak")
     private Handler backHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -190,6 +193,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         NavigationFragment navigationFragment=new NavigationFragment();
         VideoFragment videoFragment=new VideoFragment();
         CorrelateFragment correlateFragment=new CorrelateFragment();
+        GISFragment gisFragment = new GISFragment();
         mFragments.add(needleFragment);
         mFragments.add(trackFragment);
         mFragments.add(fenceFragment);
@@ -197,6 +201,7 @@ public class MyMainActivity extends SlidingFragmentActivity implements View.OnCl
         mFragments.add(navigationFragment);
         mFragments.add(videoFragment);
         mFragments.add(correlateFragment);
+        mFragments.add(gisFragment);
 
         myFSAdapter = new MyFSAdapter(getSupportFragmentManager());
         myFSAdapter.setFragmentList(mFragments);
